@@ -1,25 +1,37 @@
-import os
+import asyncio as aio
+from os.path import dirname, realpath, join
 
 import uvicorn
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 
-from src.dependencies.database_connection import DbConnection
-from src.repositories.user_repository import UserRepository
-from src.services.user_service import UserService
-from src.routers import users
+from dotenv import load_dotenv
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+from src.data import ApplicationDbContext
+from src.routers import UserRouter, AuthRouter
 
 
-app = FastAPI(
-    dependencies=[
-        Depends(DbConnection),
-        Depends(UserRepository),
-        Depends(UserService)
-    ]
-)
-app.include_router(users.router)
+PATH = dirname(dirname(realpath(__file__)))
+
+load_dotenv()
+
+# initialize the database in singleton manner
+loop = aio.new_event_loop()
+db = loop.run_until_complete(ApplicationDbContext.connect(join(PATH, "app.db")))
+
+# add dependencies here to verify the token
+# dependencies=[Depends(verify_token)]
+user_router = UserRouter(db)
+auth_router = AuthRouter(db)
+
+app = FastAPI()
+app.include_router(user_router.router)
+app.include_router(auth_router.router)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app)
+    uvicorn.run(
+        app,
+        loop="asyncio",
+        host="127.0.0.1",
+        port=8000,
+    )

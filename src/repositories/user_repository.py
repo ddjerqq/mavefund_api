@@ -1,63 +1,65 @@
 from __future__ import annotations
 
 import aiosqlite
-from fastapi import Depends
-
 from src.models.user import User
-from src.dependencies.database_connection import DbConnection
 from src.repositories.repository_base import RepositoryBase
 
 
 class UserRepository(RepositoryBase):
-    def __init__(self, db_conn_pool: DbConnection = Depends()):
-        self.__conn = db_conn_pool.get_connection()
+    def __init__(self, connection: aiosqlite.Connection, cursor: aiosqlite.Cursor):
+        self.__conn = connection
+        self.__curs = cursor
+
+    async def get_by_username(self, username: str) -> User | None:
+        await self.__curs.execute("""
+        SELECT *
+        FROM "user"
+        WHERE
+            username = :username
+        """, {"username": username})
+
+        row = await self.__curs.fetchone()
+        return User.from_db(row)
 
     async def save_changes(self) -> None:
         await self.__conn.commit()
 
     async def get_all(self) -> list[User]:
-        cursor: aiosqlite.Cursor = await self.__conn.cursor()
-
-        await cursor.execute("""
+        await self.__curs.execute("""
         SELECT *
         FROM "user"
         """)
 
-        rows = await cursor.fetchall()
+        rows = await self.__curs.fetchall()
         return list(map(User.from_db, rows))
 
     async def get_by_id(self, id: int) -> User | None:
-        cursor: aiosqlite.Cursor = await self.__conn.cursor()
-
-        await cursor.execute("""
+        await self.__curs.execute("""
         SELECT *
         FROM "user"
         WHERE
             id = :id
         """, {"id": id})
 
-        row = await cursor.fetchone()
+        row = await self.__curs.fetchone()
         return User.from_db(row)
 
     async def add(self, entity: User) -> None:
-        cursor: aiosqlite.Cursor = await self.__conn.cursor()
-
-        await cursor.execute("""
+        await self.__curs.execute("""
         INSERT INTO "user"
+        (id, username, email, password_hash, rank)
         VALUES 
         (
-            id = :id,
-            username = :username,
-            email = :email,
-            password_hash = :password_hash,
-            rank = :rank
+            :id,
+            :username,
+            :email,
+            :password_hash,
+            :rank
         )
         """, entity.dict())
 
     async def update(self, entity: User) -> None:
-        cursor: aiosqlite.Cursor = await self.__conn.cursor()
-
-        await cursor.execute("""
+        await self.__curs.execute("""
         UPDATE "user"
         SET
             username = :username,
@@ -68,11 +70,9 @@ class UserRepository(RepositoryBase):
             id = :id
         """, entity.dict())
 
-    async def delete(self, entity: User) -> None:
-        cursor: aiosqlite.Cursor = await self.__conn.cursor()
-
-        await cursor.execute("""
+    async def delete(self, id: int) -> None:
+        await self.__curs.execute("""
         DELETE FROM "user"
         WHERE
             id = :id
-        """, {"id": entity.id})
+        """, {"id": id})

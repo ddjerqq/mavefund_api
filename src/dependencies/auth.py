@@ -34,15 +34,12 @@ async def authenticate_user(
     return user
 
 
-def generate_token(user: User, expires_delta: timedelta | None = None) -> str:
-    expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(minutes=60))
+def generate_token(user: User, expires_delta: timedelta) -> str:
+    expire = datetime.utcnow() + expires_delta
 
     claims = {
-        "id": user.id,
-        "email": user.email,
-        "sub": user.username,
+        "sub": user.id,
         "exp": expire,
-        # TODO "aud": user.rank
     }
 
     token = jwt.encode(claims, key=os.getenv("JWT_SECRET"))
@@ -53,6 +50,7 @@ async def get_current_user(
         token: str = Depends(oauth2_scheme),
         users: UserService = Depends(),
 ) -> User | None:
+
     credentials_exception = HTTPException(
         status_code=401,
         detail="Could not validate credentials",
