@@ -1,8 +1,11 @@
+import nest_asyncio
+nest_asyncio.apply()
 import asyncio as aio
 from os.path import dirname, realpath, join
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import load_dotenv
 
@@ -25,6 +28,18 @@ user_router = UserRouter(db, auth_service)
 auth_router = AuthRouter(db)
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 app.include_router(user_router.router, dependencies=[])
 app.include_router(auth_router.router, dependencies=[])
 
