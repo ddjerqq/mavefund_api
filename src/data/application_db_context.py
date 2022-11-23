@@ -12,7 +12,7 @@ class ApplicationDbContext:
         self.__cursor = cursor
 
         self.users = UserService(connection, cursor)
-        self.auth  = UserAuthService(connection, cursor)
+        self.auth  = UserAuthService(self)
 
     @classmethod
     async def connect(cls, db_path: str, *, loop: aio.AbstractEventLoop = None) -> ApplicationDbContext:

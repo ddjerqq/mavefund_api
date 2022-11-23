@@ -7,8 +7,7 @@ import aiosqlite
 from pydantic import BaseModel
 from jose import jwt
 
-from src.utilities.password_hasher import Password
-from src.utilities.snowflake import Snowflake
+from src.utilities import Password, Snowflake
 
 
 class User(BaseModel):
@@ -17,14 +16,7 @@ class User(BaseModel):
     email: str
     password_hash: str
     rank: int
-    # TODO add discord-like permissions
-    #  bit shifted values,
-    #  0 = no permissions,
-    #  1 = read,
-    #  2 = write,
-    #  4 = admin,
-    #  8 = owner
-    # so on
+    """int: basic user = 0, premium = 1, super_user = 2, admin = 3"""
 
     @classmethod
     def from_db(cls, row: aiosqlite.Row) -> User:
@@ -42,18 +34,19 @@ class User(BaseModel):
 
     @property
     def jwt_token(self) -> str:
-        expires = datetime.utcnow() + timedelta(minutes=60)
+        expires = datetime.now() + timedelta(minutes=60)
         claims = {
-            "sub": self.id,
+            "sub": str(self.id),
             "exp": int(expires.timestamp()),
         }
         return jwt.encode(claims, key=os.getenv("JWT_SECRET"))
 
     @classmethod
-    def new(cls, username: str, email: str, password: str) -> User:
+    def new(cls, username: str, email: str, password: str, rank: int) -> User:
         return cls(
             id=Snowflake(),
             username=username,
             email=email,
-            password=Password.new(password),
+            password_hash=Password.new(password),
+            rank=rank,
         )

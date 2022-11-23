@@ -18,8 +18,19 @@ class UserRepository(RepositoryBase):
             username = :username
         """, {"username": username})
 
-        row = await self.__curs.fetchone()
-        return User.from_db(row)
+        if (row := await self.__curs.fetchone()) is not None:
+            return User.from_db(row)
+
+    async def get_by_email(self, email):
+        await self.__curs.execute("""
+        SELECT *
+        FROM "user"
+        WHERE
+            email = :email
+        """, {"email": email})
+
+        if (row := await self.__curs.fetchone()) is not None:
+            return User.from_db(row)
 
     async def save_changes(self) -> None:
         await self.__conn.commit()
@@ -41,8 +52,8 @@ class UserRepository(RepositoryBase):
             id = :id
         """, {"id": id})
 
-        row = await self.__curs.fetchone()
-        return User.from_db(row)
+        if (row := await self.__curs.fetchone()) is not None:
+            return User.from_db(row)
 
     async def add(self, entity: User) -> None:
         await self.__curs.execute("""

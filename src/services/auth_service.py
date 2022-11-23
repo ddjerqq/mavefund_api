@@ -1,47 +1,45 @@
 from __future__ import annotations
 
+import logging
 import os
-
-import aiosqlite
-
+import typing
 from jose import JWTError, jwt
 
 from src.models.user import User
-from src.services import UserService
-from src.utilities import Password
+if typing.TYPE_CHECKING:
+    from src.data import ApplicationDbContext
 
 
 class UserAuthService:
-    def __init__(self, connection: aiosqlite.Connection, cursor: aiosqlite.Cursor) -> None:
-        self.__users = UserService(connection, cursor)
+    def __init__(self, db: ApplicationDbContext) -> None:
+        self.__users = db.users
 
-    async def authenticate(self, username: str, password: str) -> User | None:
-        user = await self.__users.get_by_username(username)
+    def extract_claims_from_jwt(self, token: str) -> dict[str, ...] | None:
+        """Extract claims from JWT token
 
-        if user and Password.compare(user.password_hash, password):
-            return user
-
-        return None
+        returns the claims if the JWT is valid, None otherwise
+        """
+        try:
+            return jwt.decode(
+                token,
+                os.getenv("JWT_SECRET"),
+                algorithms=["HS256"]
+            )
+        except JWTError:
+            logging.error("JWTError", exc_info=True)
+            return None
 
     async def get_user_from_token(self, token: str) -> User | None:
         """Get user from token
         if this method returns None, raise 401 HTTPException
         """
 
-        # credentials_exception = HTTPException(
-        #     status_code=401,
-        #     detail="Could not validate credentials",
-        # )
-
-        try:
-            claims = jwt.decode(token, os.getenv("JWT_SECRET"))
-            user_id: int = claims.get("sub")
-
-            if user_id is None:
-                return None
-
-        except JWTError:
+        if (claims := self.extract_claims_from_jwt(token)) is None:
             return None
 
-        user = await self.__users.get_by_id(user_id)
-        return user
+        user_id = int(claims.get("sub"))
+
+        if user_id is None:
+            return None
+
+        return await self.__users.get_by_id(user_id)

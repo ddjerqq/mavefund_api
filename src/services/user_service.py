@@ -14,6 +14,9 @@ class UserService(ServiceBase):
     async def get_by_username(self, username: str) -> User | None:
         return await self.__users.get_by_username(username)
 
+    async def get_by_email(self, email: str) -> User | None:
+        return await self.__users.get_by_email(email)
+
     async def get_all(self) -> list[User]:
         return await self.__users.get_all()
 
