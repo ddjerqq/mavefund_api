@@ -14,54 +14,59 @@ class UserRouter:
         self.db = db
         self.auth = auth_service
 
-        self.router = APIRouter(prefix="/users")
+        self.router = APIRouter(prefix="/users", dependencies=[Depends(self.verify_jwt)])
 
         self.router.add_api_route(
-            "/me",
+            "/@me",
             self.me,
             methods=["GET"],
+            description="get the current user",
             response_model=Optional[User],
-            dependencies=[Depends(self.verify_jwt)]
         )
 
         self.router.add_api_route(
             "/get/all",
             self.get_all,
             methods=["GET"],
+            description="get all users",
+            dependencies=[Depends(self.admin_only)],
             response_model=list[User],
-            dependencies=[Depends(self.verify_jwt)]
         )
 
         self.router.add_api_route(
             "/get/{id}",
             self.get_by_id,
             methods=["GET"],
-            response_model=User,
-            dependencies=[Depends(self.verify_jwt)]
+            description="get a user",
+            dependencies=[Depends(self.admin_only)],
+            response_model=Optional[User],
         )
 
         self.router.add_api_route(
             "/add",
             self.add,
             methods=["POST"],
+            description="add a user, admin only.",
+            dependencies=[Depends(self.admin_only)],
             response_model=None,
-            dependencies=[Depends(self.verify_jwt), Depends(self.admin_only)]
         )
 
         self.router.add_api_route(
             "/update",
             self.update,
             methods=["POST"],
+            description="update a user, admin only.",
+            dependencies=[Depends(self.admin_only)],
             response_model=None,
-            dependencies=[Depends(self.verify_jwt)]
         )
 
         self.router.add_api_route(
             "/delete",
             self.delete,
             methods=["POST"],
+            description="delete a user, admin only.",
+            dependencies=[Depends(self.admin_only)],
             response_model=None,
-            dependencies=[Depends(self.verify_jwt), Depends(self.admin_only)]
         )
 
     def verify_jwt(self, x_authorization: str = Header()):
@@ -74,18 +79,13 @@ class UserRouter:
         if "sub" not in claims or "exp" not in claims:
             raise self.unauthorized
 
-    async def ctx_user(self, x_authorization: str | None = Header(default=None)) -> User | None:
-        if x_authorization is None:
-            return None
-
-        return await self.auth.get_user_from_token(x_authorization)
-
-    async def admin_only(self, user: User | None = Depends(ctx_user)) -> None:
+    async def admin_only(self, x_authorization: str = Header()) -> None:
+        user = await self.auth.get_user_from_token(x_authorization)
         if user is None or user.rank < 3:
             raise HTTPException(status_code=403, detail="admin only")
 
-    async def me(self, user: User | None = Depends(ctx_user)) -> User | None:
-        return user
+    async def me(self, x_authorization: str = Header()) -> User | None:
+        return await self.auth.get_user_from_token(x_authorization)
 
     async def get_all(self) -> list[User]:
         return await self.db.users.get_all()
@@ -103,7 +103,7 @@ class UserRouter:
         print(user)
         await self.db.users.add(user)
 
-    # potential risk, users can update other users by simply entering a different ID
+    # RISK: potential risk, users can update other users by simply entering a different ID
     async def update(self, user: User) -> None:
         # TODO error handling, and make code robust
         await self.db.users.update(user)
