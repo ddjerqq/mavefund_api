@@ -4,7 +4,7 @@ CREATE TABLE stock_record
         PRIMARY KEY
         UNIQUE,
     company_name                      VARCHAR(32)    NOT NULL,
-    symbol                            VARCHAR(64)    NOT NULL,
+    symbol                            VARCHAR(16)    NOT NULL,
     symbol_date                       DATE           NOT NULL,
 
     -- growth profitability
