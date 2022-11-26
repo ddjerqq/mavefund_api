@@ -13,7 +13,7 @@ class UserRepository(RepositoryBase):
     async def get_by_username(self, username: str) -> User | None:
         await self.__curs.execute("""
         SELECT *
-        FROM "user"
+        FROM app_user
         WHERE
             username = :username
         """, {"username": username})
@@ -24,7 +24,7 @@ class UserRepository(RepositoryBase):
     async def get_by_email(self, email):
         await self.__curs.execute("""
         SELECT *
-        FROM "user"
+        FROM app_user
         WHERE
             email = :email
         """, {"email": email})
@@ -38,7 +38,7 @@ class UserRepository(RepositoryBase):
     async def get_all(self) -> list[User]:
         await self.__curs.execute("""
         SELECT *
-        FROM "user"
+        FROM app_user
         """)
 
         rows = await self.__curs.fetchall()
@@ -47,7 +47,7 @@ class UserRepository(RepositoryBase):
     async def get_by_id(self, id: int) -> User | None:
         await self.__curs.execute("""
         SELECT *
-        FROM "user"
+        FROM app_user
         WHERE
             id = :id
         """, {"id": id})
@@ -57,7 +57,7 @@ class UserRepository(RepositoryBase):
 
     async def add(self, entity: User) -> None:
         await self.__curs.execute("""
-        INSERT INTO "user"
+        INSERT INTO app_user
         (id, username, email, password_hash, rank)
         VALUES 
         (
@@ -71,7 +71,7 @@ class UserRepository(RepositoryBase):
 
     async def update(self, entity: User) -> None:
         await self.__curs.execute("""
-        UPDATE "user"
+        UPDATE app_user
         SET
             username = :username,
             email = :email,
@@ -83,7 +83,7 @@ class UserRepository(RepositoryBase):
 
     async def delete(self, id: int) -> None:
         await self.__curs.execute("""
-        DELETE FROM "user"
+        DELETE FROM app_user
         WHERE
             id = :id
         """, {"id": id})
