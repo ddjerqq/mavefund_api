@@ -85,7 +85,6 @@ class UserRouter:
         return user
 
     async def add(self, user: User) -> None:
-        print(user)
         await self.db.users.add(user)
 
     # RISK: potential risk, users can update other users by simply entering a different ID
@@ -97,5 +96,5 @@ class UserRouter:
         await self.db.users.update(user)
 
     async def delete(self, id: int) -> None:
-        # TORO return 404 if not found
+        # TODO return 404 if not found
         await self.db.users.delete(id)

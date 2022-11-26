@@ -109,6 +109,10 @@ from src.utilities import Snowflake
 #     }
 # }
 
+__all__ = {
+    "CsvDataParser"
+}
+
 class CsvDataParser:
     @classmethod
     def _parse_chunk(
