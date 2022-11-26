@@ -96,20 +96,20 @@ CREATE TABLE stock_record
     fh_total_liabilities_and_equity                REAL,
 
     -- liquidity
-    lqd_urrent_ratio                               REAL,
-    lqd_uick_ratio                                 REAL,
-    lqd_inancial_leverage                          REAL,
-    lqd_ebt_over_equity                            REAL,
+    lqd_current_ratio                              REAL,
+    lqd_quick_ratio                                REAL,
+    lqd_financial_leverage                         REAL,
+    lqd_debt_over_equity                            REAL,
 
     -- efficiency
-    efc_days_sales_outstanding                      REAL,
-    efc_days_inventory                              REAL,
-    efc_payable_period                              REAL,
-    efc_cash_conversion_cycle                       REAL,
-    efc_receivable_turnover                         REAL,
-    efc_inventory_turnover                          REAL,
-    efc_fixed_asset_turnover                        REAL,
-    efc_asset_turnover                              REAL
+    efc_days_sales_outstanding                     REAL,
+    efc_days_inventory                             REAL,
+    efc_payable_period                             REAL,
+    efc_cash_conversion_cycle                      REAL,
+    efc_receivable_turnover                        REAL,
+    efc_inventory_turnover                         REAL,
+    efc_fixed_asset_turnover                       REAL,
+    efc_asset_turnover                             REAL
 );
 
 CREATE UNIQUE INDEX stock_record_id_uindex
