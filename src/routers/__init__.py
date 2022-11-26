@@ -1,2 +1,2 @@
-from .users import UserRouter
+from .user_router import UserRouter
 from .auth import AuthRouter

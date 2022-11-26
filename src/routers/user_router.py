@@ -2,19 +2,19 @@ from __future__ import annotations
 
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Header, Depends
+
+from dependencies import admin_only, verify_jwt
 from src.data import ApplicationDbContext
 from src.models.user import User
 from src.services import UserAuthService
 
 
 class UserRouter:
-    unauthorized = HTTPException(status_code=401, detail="invalid authorization header")
-
     def __init__(self, db: ApplicationDbContext, auth_service: UserAuthService):
         self.db = db
         self.auth = auth_service
 
-        self.router = APIRouter(prefix="/users", dependencies=[Depends(self.verify_jwt)])
+        self.router = APIRouter(prefix="/users", dependencies=[Depends(verify_jwt)])
 
         self.router.add_api_route(
             "/@me",
@@ -29,7 +29,7 @@ class UserRouter:
             self.get_all,
             methods=["GET"],
             description="get all users",
-            dependencies=[Depends(self.admin_only)],
+            dependencies=[Depends(admin_only)],
             response_model=list[User],
         )
 
@@ -38,7 +38,7 @@ class UserRouter:
             self.get_by_id,
             methods=["GET"],
             description="get a user",
-            dependencies=[Depends(self.admin_only)],
+            dependencies=[Depends(admin_only)],
             response_model=Optional[User],
         )
 
@@ -47,7 +47,7 @@ class UserRouter:
             self.add,
             methods=["POST"],
             description="add a user, admin only.",
-            dependencies=[Depends(self.admin_only)],
+            dependencies=[Depends(admin_only)],
             response_model=None,
         )
 
@@ -56,7 +56,7 @@ class UserRouter:
             self.update,
             methods=["POST"],
             description="update a user, admin only.",
-            dependencies=[Depends(self.admin_only)],
+            dependencies=[Depends(admin_only)],
             response_model=None,
         )
 
@@ -65,24 +65,9 @@ class UserRouter:
             self.delete,
             methods=["POST"],
             description="delete a user, admin only.",
-            dependencies=[Depends(self.admin_only)],
+            dependencies=[Depends(admin_only)],
             response_model=None,
         )
-
-    def verify_jwt(self, x_authorization: str = Header()):
-        if x_authorization is None:
-            raise self.unauthorized
-
-        if (claims := self.auth.extract_claims_from_jwt(x_authorization)) is None:
-            raise self.unauthorized
-
-        if "sub" not in claims or "exp" not in claims:
-            raise self.unauthorized
-
-    async def admin_only(self, x_authorization: str = Header()) -> None:
-        user = await self.auth.get_user_from_token(x_authorization)
-        if user is None or user.rank < 3:
-            raise HTTPException(status_code=403, detail="admin only")
 
     async def me(self, x_authorization: str = Header()) -> User | None:
         return await self.auth.get_user_from_token(x_authorization)
@@ -104,6 +89,9 @@ class UserRouter:
         await self.db.users.add(user)
 
     # RISK: potential risk, users can update other users by simply entering a different ID
+    # TODO add a way for users to be able to update themselves
+    #  but filter for security, limit that they can only update their own data
+    #  and not other users data, neither their own role.
     async def update(self, user: User) -> None:
         # TODO error handling, and make code robust
         await self.db.users.update(user)
