@@ -4,9 +4,9 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Header, Depends
 
 from dependencies import admin_only, verify_jwt
-from src.data import ApplicationDbContext
-from src.models.user import User
-from src.services import UserAuthService
+from data import ApplicationDbContext
+from models import User
+from services import UserAuthService
 
 
 class UserRouter:
