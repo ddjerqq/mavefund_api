@@ -10,6 +10,9 @@ from jose import jwt
 from src.utilities import Password, Snowflake
 
 
+ROLES = ["basic", "premium", "super", "admin"]
+
+
 class User(BaseModel):
     id: int
     username: str
@@ -39,6 +42,7 @@ class User(BaseModel):
         claims = {
             "sub": str(self.id),
             "exp": int(expires.timestamp()),
+            "role": ROLES[self.rank],
         }
         return jwt.encode(claims, key=os.getenv("JWT_SECRET"))
 
