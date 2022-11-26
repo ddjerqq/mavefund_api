@@ -145,6 +145,8 @@ class Efficiency(BaseModel):
 
 
 class Record(BaseModel):
+    id: int
+
     company_name: str  # use this like an ID
     symbol: str  # APL and so on
     date: str

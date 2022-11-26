@@ -5,6 +5,7 @@ import os
 from typing import Callable
 
 from src.models.record import *
+from src.utilities import Snowflake
 
 
 # record = {
@@ -314,6 +315,7 @@ class CsvDataParser:
         records = []
         for gp, pm, p, g, cf, fh, lqd, efc in zip(*chunk_records):
             record = Record(
+                id=Snowflake(),
                 company_name=name,
                 symbol=symbol,
                 date=gp["date"],
