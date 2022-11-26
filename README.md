@@ -1,10 +1,11 @@
 # MaveFund API
 
 # TODO
-* [ ] Migrate to postgres
-* [ ] Add the actual data
-* [ ] Add CI
-* [ ] Add docker
+* [ ] Add routes
 * [ ] Add tests
+* [ ] Add docker
+* [ ] Deploy
+* [x] Add the actual data
 * [x] Add a README.md
 * [x] Add a .gitignore
+* [x] ~~Migrate to postgres~~
