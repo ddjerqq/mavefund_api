@@ -113,6 +113,7 @@ __all__ = {
     "CsvDataParser"
 }
 
+
 class CsvDataParser:
     @classmethod
     def _parse_chunk(

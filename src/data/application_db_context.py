@@ -18,6 +18,5 @@ class ApplicationDbContext:
     @classmethod
     async def connect(cls, db_path: str, *, loop: aio.AbstractEventLoop = None) -> ApplicationDbContext:
         conn = await aiosqlite.connect(db_path, loop=loop)
-        conn = await conn.__aenter__()
         cursor = await conn.cursor()
         return cls(conn, cursor)
