@@ -5,13 +5,18 @@ from src.repositories.record_repository import RecordRepository
 import os
 import asyncio as aio
 
+
 paths = [
     file
-    for file in os.listdir()
-    if not file.startswith("_")
+    for file in os.listdir("")
+    if file.endswith(".csv")
 ]
 
-recordss = map(CsvDataParser.parse, filter(lambda f: "_" not in f, os.listdir()))
+records = (
+    record
+    for records in map(CsvDataParser.parse, paths)
+    for record in records
+)
 
 
 async def main():
@@ -21,15 +26,9 @@ async def main():
     curs = await conn.cursor()
 
     repo = RecordRepository(conn, curs)
-
-    futures = [
-        repo.add(record)
-        for records in recordss
-        for record in records
-    ]
+    futures = map(repo.add, records)
 
     await aio.gather(*futures)
-
     await repo.save_changes()
 
 
