@@ -27,7 +27,7 @@ auth_service = UserAuthService(db)
 user_router = UserRouter(db, auth_service)
 record_router = RecordRouter(db, auth_service)
 auth_router = AuthRouter(db)
-index_router = IndexRouter()
+index_router = IndexRouter(db, auth_service)
 
 # add routers
 app = FastAPI()

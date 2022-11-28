@@ -1,0 +1,49 @@
+{% include "header.html" %}
+
+<div class="content">
+  <form
+      id="register"
+      action="/auth/register"
+      method="POST"
+      type="application/json">
+    <label for="email">email</label>
+    <input id="email" type="email" name="email" placeholder="Email">
+
+    <label for="username">Username</label>
+    <input id="username" type="text" name="username" placeholder="Username">
+
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" placeholder="Password">
+
+    <input type="submit" value="Login">
+
+    <p id="login-error"></p>
+  </form>
+</div>
+
+<script>
+    document.getElementById("register").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const form = this;
+        const data = new FormData(form);
+        const xhr = new XMLHttpRequest();
+        xhr.open(form.method, form.action);
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== XMLHttpRequest.DONE) {
+                return
+            }
+
+            if (xhr.status === 200) {
+                window.location.href = "/dashboard";
+                const token = xhr.responseText;
+                document.cookie = "token=" + token;
+            } else {
+                document.getElementById("login-error").innerHTML = "Invalid username or password";
+            }
+          };
+          xhr.send(data);
+    });
+</script>
+
+{% include "footer.html" %}
