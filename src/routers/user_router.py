@@ -54,7 +54,7 @@ class UserRouter:
         self.router.add_api_route(
             "/update",
             self.update,
-            methods=["POST"],
+            methods=["PUT"],
             description="update a user, admin only.",
             dependencies=[Depends(admin_only)],
             response_model=None,
@@ -63,7 +63,7 @@ class UserRouter:
         self.router.add_api_route(
             "/delete",
             self.delete,
-            methods=["POST"],
+            methods=["DELETE"],
             description="delete a user, admin only.",
             dependencies=[Depends(admin_only)],
             response_model=None,

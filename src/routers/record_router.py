@@ -46,7 +46,7 @@ class RecordRouter:
         self.router.add_api_route(
             "/update",
             self.update,
-            methods=["POST"],
+            methods=["PUT"],
             description="update a record, admin only.",
             dependencies=[Depends(admin_only)],
             response_model=None,
@@ -55,7 +55,7 @@ class RecordRouter:
         self.router.add_api_route(
             "/delete",
             self.delete,
-            methods=["POST"],
+            methods=["DELETE"],
             description="delete a record, admin only.",
             dependencies=[Depends(admin_only)],
             response_model=None,
