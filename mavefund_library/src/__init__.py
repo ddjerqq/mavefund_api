@@ -5,7 +5,7 @@ Examples:
     >>> client = Client(api_key="YOUR_API_KEY")
     >>> records = client.get_records(
     >>>     "AAPL",
-    >>>     data_type=DataType.GrowthProfitability,
+    >>>     data_type=DataType.GROWTH_PROFITABILITY,
     >>>     start_date="2020-01-01",
     >>>     end_date="2020-01-31",
     >>> )
@@ -20,4 +20,5 @@ __all__ = [
     "Record",
     "Client",
     "DataType",
+    "AsyncClient",
 ]
