@@ -1,46 +1,158 @@
-{% include "header.html" %}
+<html>
 
-<div class="content">
-  <form
-      id="login"
-      action="/auth/login"
-      method="POST"
-      type="application/json">
-    <label for="username">Username</label>
-    <input id="username" type="text" name="username" placeholder="Username">
+<head>
+  <meta charset="utf-8">
+  <title>Sign in</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/login.css">
+</head>
 
-    <label for="password">Password</label>
-    <input id="password" type="password" name="password" placeholder="Password">
-
-    <input type="submit" value="Login">
-
-    <p id="login-error"></p>
-  </form>
-</div>
-
+<body>
+  <div class="login-root">
+    <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
+      <div class="loginbackground box-background--white padding-top--64">
+        <div class="loginbackground-gridContainer">
+        </div>
+      </div>
+      <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
+        <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
+          <h1><a href="" rel="dofollow">Company Name</a></h1>
+        </div>
+        <div class="formbg-outer">
+          <div class="formbg">
+            <div class="formbg-inner padding-horizontal--48">
+              <div id="error"></div>
+              <span class="padding-bottom--15">Sign in to your account</span>
+              <form id="stripe-login">
+                <div class="field padding-bottom--24">
+                  <label for="username">Username</label>
+                  <input name="username" id="username">
+                </div>
+                <div class="field padding-bottom--24">
+                  <div class="grid--50-50">
+                    <label for="password">Password</label>
+                    <!-- <div class="reset-pass">
+                      <a href="#">Forgot your password?</a>
+                    </div> -->
+                  </div>
+                  <input type="password" id="password" name="password">
+                </div>
+                <!-- <div class="field field-checkbox padding-bottom--24 flex-flex align-center">
+                  <label for="checkbox">
+                    <input type="checkbox" name="checkbox"> Stay signed in for a week
+                  </label>
+                </div> -->
+                <div class="field padding-bottom--24 margin-top--24">
+                  <input type="submit" name="submit" value="Sign In" onclick="login(event)">
+                </div>
+                <div class="field">
+                  <!-- <a class="ssolink" href="#">Use single sign-on (Google) instead</a> -->
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="footer-link padding-top--24">
+            <span>Don't have an account? <a href="">Sign up</a></span>
+            <div class="listing padding-top--24 padding-bottom--24 flex-flex center-center">
+              <span><a href="#">© MaveFund</a></span>
+              <!-- <span><a href="#">Contact</a></span>
+              <span><a href="#">Privacy & terms</a></span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
 <script>
-    document.getElementById("login").addEventListener("submit", function(event) {
-        event.preventDefault();
-        const form = this;
-        const data = new FormData(form);
-        const xhr = new XMLHttpRequest();
-        xhr.open(form.method, form.action);
-        xhr.setRequestHeader("Accept", "application/json");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState !== XMLHttpRequest.DONE) {
-                return
-            }
-
-            if (xhr.status === 200) {
-                window.location.href = "/dashboard";
-                const token = xhr.responseText;
-                document.cookie = "token=" + token;
-            } else {
-                document.getElementById("login-error").innerHTML = "Invalid username or password";
-            }
-          };
-          xhr.send(data);
+  function setError(error_text) {
+    var s = document.getElementById("error");
+    s.innerHTML = "Error: " + error_text;
+  }
+  try {
+    const jwt_expire = parseJwt(getStoredValue("token"))
+    const dateObject = new Date(jwt_expire.exp * 1000)
+    if (dateObject > new Date()) {
+      window.location.replace("index.html");
+    }
+    else {
+      removeStoredValue("token")
+    }
+  }
+  catch {
+    // window.location.replace("login.html");
+  }
+  async function login(e) {
+    e.preventDefault();
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    username = document.getElementById("username").value
+    password = document.getElementById("password").value
+    var raw = JSON.stringify({
+      "username": username,
+      "password": password
     });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    const response = await fetch("http://127.0.0.1:8000/auth/login", requestOptions)
+    const data = await response.json()
+    if (data.detail) {
+      setError(data.detail)
+      // alert(data.detail)
+    }
+    else if (response.status === 200) {
+      storeValue("token", data)
+      storeValue("username", username)
+      window.location.replace("index.html");
+    }
+    else {
+      alert("Error")
+    }
+  }
+
+  function storeValue(key, value) {
+    if (localStorage) {
+      localStorage.setItem(key, value);
+    } else {
+      $.cookies.set(key, value);
+    }
+  }
+
+  function getStoredValue(key) {
+    if (localStorage) {
+      return localStorage.getItem(key);
+    } else {
+      return $.cookies.get(key);
+    }
+  }
+
+  function removeStoredValue(key) {
+    if (localStorage) {
+      return localStorage.removeItem(key);
+    } else {
+      return $.cookies.remove(key);
+    }
+  }
+
+
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  }
+
+
+
+
 </script>
 
-{% include "footer.html" %}
+</html>
