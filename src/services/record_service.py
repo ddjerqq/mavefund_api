@@ -26,5 +26,5 @@ class RecordService(ServiceBase):
     async def update(self, entity: Record) -> None:
         return await self.__records.update(entity)
 
-    async def delete(self, entity: Record) -> None:
-        return await self.__records.delete(entity)
+    async def delete(self, id: int) -> None:
+        return await self.__records.delete(id)

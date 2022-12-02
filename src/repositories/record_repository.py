@@ -331,7 +331,7 @@ class RecordRepository(RepositoryBase):
             id = :id
         """, entity.flat_dict())
 
-    async def delete(self, entity: Record) -> None:
+    async def delete(self, id: int) -> None:
         await self.__curs.execute("""
         DELETE FROM stock_record
         WHERE

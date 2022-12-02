@@ -283,7 +283,7 @@ class Record(BaseModel):
             ),
         )
 
-    def flat_dict(self) -> dict[str, ...]:
+    def flat_dict(self) -> dict[str, str | int | float | None]:
         return {
             'id': self.id,
             'company_name': self.company_name,
