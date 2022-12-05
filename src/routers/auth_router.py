@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from fastapi import APIRouter
-from fastapi import Form
-from fastapi import HTTPException
+from fastapi import APIRouter, HTTPException
 
-from src.data import ApplicationDbContext
-from src.models.user import User
-from src.models.dto import UserRegister, UserLogin
-from src.utilities import Password
+from data import ApplicationDbContext
+from models.user import User
+from models.dto import UserRegister, UserLogin
+from utilities import Password
 
 
 class AuthRouter:
@@ -19,27 +17,27 @@ class AuthRouter:
         self.router.add_api_route("/register", self.register, methods=["POST"])
         self.router.add_api_route("/login", self.login, methods=["POST"])
 
-    async def register(self, email: str = Form(), username: str = Form(), password: str = Form()) -> str:
-        if await self.db.users.get_by_email(email):
+    async def register(self, register: UserRegister) -> str:
+        if await self.db.users.get_by_email(register.email):
             raise HTTPException(status_code=400, detail="email are already registered")
 
-        if await self.db.users.get_by_username(username):
+        if await self.db.users.get_by_username(register.username):
             raise HTTPException(status_code=400, detail="username are already registered")
 
         # TODO: change the rank depending on the payment later, we will also need to verify captcha and
         #  email address
-        user = User.new(username, email, password, 0)
+        user = User.new(register.username.lower(), register.email.lower(), register.password, 0)
         await self.db.users.add(user)
 
         return user.jwt_token
 
-    async def login(self, username: str = Form(), password: str = Form()) -> str:
-        user = await self.db.users.get_by_username(username)
+    async def login(self, login: UserLogin) -> str:
+        user = await self.db.users.get_by_username(login.username)
 
         if not user:
             raise HTTPException(status_code=404, detail="username not registered")
 
-        if not Password.compare(user.password_hash, password):
-            raise HTTPException(status_code=400, detail="password are incorrect")
+        if not Password.compare(user.password_hash, login.password):
+            raise HTTPException(status_code=400, detail="password is incorrect")
 
         return user.jwt_token

@@ -4,27 +4,34 @@ async function login(e) {
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
 
-    const response = await fetch("https://127.0.0.1:443/auth/login", {
-        method: 'POST',
-        headers: new Headers({
-            "Content-Type": "application/json"
-        }),
-        body: JSON.stringify({
-            "username": username,
-            "password": password
-        }),
-        redirect: 'follow'
-    });
+    try {
+        const response = await fetch("https://127.0.0.1:443/auth/login", {
+            method: "POST",
+            headers: new Headers({
+                "Content-Type": "application/json"
+            }),
+            redirect: "follow",
+            body: JSON.stringify({
+                "username": username,
+                "password": password
+            }),
+        });
 
-    const data = await response.json();
+        if (response.status === 200) {
+            const token = await response.json();
+            localStorage.setItem("token", token);
+            localStorage.setItem("username", username);
 
-    if (response.status === 200) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("username", username);
-        window.location.replace("index.html");
+            document.cookie = `token=${token}`;
+
+            window.location.replace("/");
+        }
+        else {
+            alert(`Error ${data.status}`);
+        }
     }
-    else {
-        alert(`Error ${data.status}`);
+    catch (error) {
+        console.log(error);
     }
 }
 
@@ -36,27 +43,40 @@ async function register(e) {
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
 
-    const response = await fetch("https://127.0.0.1:443/auth/register", {
-        method: "POST",
-        headers: new Headers({
-            "Content-Type": "application/json"
-        }),
-        body: JSON.stringify({
-            "username": username,
-            "email": email,
-            "password": password
-        }),
-        redirect: "follow"
-    });
-
-    const data = await response.json();
-
-    if (response.status === 200) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("username", username);
-        window.location.replace("index.html");
+    if (username === "" || email === "" || password === "") {
+        alert("Please fill in all fields");
+        return;
     }
-    else {
-        alert(`Error ${data.status}`);
+
+    try {
+        const response = await fetch("https://127.0.0.1:443/auth/register", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json"
+            },
+            redirect: "follow",
+            body: JSON.stringify({
+                "username": username,
+                "email": email,
+                "password": password,
+            }),
+        });
+
+        if (response.status === 200) {
+            const token = await response.json();
+            localStorage.setItem("token", token);
+            localStorage.setItem("username", username);
+
+            document.cookie = `token=${token}`;
+
+            // redirect to index.
+            window.location.replace("/");
+        }
+        else {
+            alert(`Error ${data.status}`);
+        }
+
+    } catch (error) {
+        console.log(error);
     }
 }

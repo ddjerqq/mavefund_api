@@ -32,16 +32,16 @@
       <div class="u-custom-menu u-nav-container">
         <ul class="u-nav u-unstyled">
           <li class="u-nav-item">
-            <a class="u-button-style u-nav-link" href="plans.html" style="padding: 20px;">Plans</a>
+            <a class="u-button-style u-nav-link" href="/plans" style="padding: 20px;">Plans</a>
           </li>
           <li class="u-nav-item">
-            <a class="u-button-style u-nav-link" href="index.html" style="padding: 20px;">Home</a>
+            <a class="u-button-style u-nav-link" href="/" style="padding: 20px;">Home</a>
           </li>
           <li class="u-nav-item">
-            <a class="u-button-style u-nav-link" href="login.html" style="padding: 20px;">Login</a>
+            <a class="u-button-style u-nav-link" href="/login" style="padding: 20px;">Login</a>
           </li>
           <li class="u-nav-item">
-            <a class="u-button-style u-nav-link" href="register.html" style="padding: 20px;">Register</a>
+            <a class="u-button-style u-nav-link" href="/register" style="padding: 20px;">Register</a>
           </li>
         </ul>
       </div>
@@ -50,13 +50,13 @@
           <div class="u-inner-container-layout u-sidenav-overflow">
             <div class="u-menu-close"></div>
             <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2">
-              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="plans.html">Plans</a>
+              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/plans">Plans</a>
               </li>
-              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="index.html">Home</a>
+              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/">Home</a>
               </li>
-              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="login.html">Login</a>
+              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/login">Login</a>
               </li>
-              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="register.html">Register</a>
+              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/register">Register</a>
               </li>
             </ul>
           </div>
@@ -67,24 +67,24 @@
   </div>
 </header>
 <section class="u-clearfix u-section-1" id="sec-8ff2">
-  <div class="u-clearfix u-sheet u-sheet-1">
-    <div class="u-form u-form-1">
-      <form class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" source="email" name="form" style="padding: 10px;">
+  <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+    <div class="u-align-center u-form u-login-control u-form-1">
+      <form class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" name="form" style="padding: 10px;">
         <div class="u-form-group u-form-name u-label-none">
-          <label for="username" class="u-custom-font u-form-control-hidden u-label u-text-font u-label-1"></label>
-          <input type="text" placeholder="Enter your Username" id="username" name="name" class="u-border-grey-30 u-input u-input-rectangle u-input-1" required="" maxlength="32">
+          <label for="username" class="u-custom-font u-label u-text-font u-label-1">Username *</label>
+          <input type="text" placeholder="Enter your Username" id="username" name="username" class="u-border-grey-30 u-input u-input-rectangle u-input-1" required="">
         </div>
-        <div class="u-form-email u-form-group u-label-none">
-          <label for="email" class="u-custom-font u-label u-text-font u-label-2">Email *</label>
-          <input type="email" placeholder="Enter a valid Email address" id="email" name="email" class="u-border-grey-30 u-input u-input-rectangle u-input-2" required="" maxlength="64">
+        <div class="u-form-group u-form-name u-label-none">
+          <label for="email" class="u-custom-font u-label u-text-font u-label-1">Email *</label>
+          <input type="text" placeholder="Enter your Email" id="email" name="email" class="u-border-grey-30 u-input u-input-rectangle u-input-1" required="">
         </div>
-        <div class="u-form-group u-label-none u-form-group-3">
-          <label for="password" class="u-custom-font u-label u-text-font u-label-3">Password *</label>
-          <input type="password" placeholder="Enter your password. At least 8 characters" id="password" name="password" class="u-border-grey-30 u-input u-input-rectangle u-input-3" required="required">
+        <div class="u-form-group u-label-none">
+          <label for="password" class="u-custom-font u-label u-text-font u-label-2">Password *</label>
+          <input type="password" placeholder="Enter your Password" id="password" name="password" class="u-border-grey-30 u-input u-input-rectangle u-input-2" required="">
         </div>
         <div class="u-align-center u-form-group u-form-submit u-label-none">
           <input type="submit" value="submit" class="u-form-control-hidden" onclick="register(event)">
-          <a class="custom-page-typo-item u-btn u-btn-submit u-button-style" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Register<br></a>
+          <a class="custom-page-typo-item u-btn u-btn-submit u-button-style u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Register</a>
         </div>
       </form>
     </div>

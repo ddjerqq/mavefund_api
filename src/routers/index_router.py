@@ -41,16 +41,19 @@ class IndexRouter:
             response_class=HTMLResponse
         )
 
-        self.router.add_api_route(
-            "/dashboard",
-            self.dashboard,
-            methods=["GET"],
-            description="get the dashboard page",
-            response_class=HTMLResponse
-        )
+        # self.router.add_api_route(
+        #     "/dashboard",
+        #     self.dashboard,
+        #     methods=["GET"],
+        #     description="get the dashboard page",
+        #     response_class=HTMLResponse
+        # )
 
     async def index(self, req: Request) -> "_TemplateResponse":
-        return render_template("index.html", {"request": req})
+        if req.cookies.get("token"):
+            return render_template("index.html", {"request": req})
+        else:
+            return RedirectResponse(url="/login")
 
     async def login(self, req: Request) -> "_TemplateResponse":
         return render_template("login.html", {"request": req})
@@ -58,10 +61,10 @@ class IndexRouter:
     async def register(self, req: Request) -> "_TemplateResponse":
         return render_template("register.html", {"request": req})
 
-    async def dashboard(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
-        if req.cookies.get("token"):
-            user = await self.auth.get_user_from_token(req.cookies.get("token"))
-            return render_template("dashboard.html", {"request": req, "user": user})
-        else:
-            return RedirectResponse(url="/login")
+    # async def dashboard(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+    #     if req.cookies.get("token"):
+    #         user = await self.auth.get_user_from_token(req.cookies.get("token"))
+    #         return render_template("dashboard.html", {"request": req, "user": user})
+    #     else:
+    #         return RedirectResponse(url="/login")
 
