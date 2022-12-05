@@ -1,158 +1,97 @@
-<html lang="en">
-
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
-  <title>Sign in</title>
-  <link rel="stylesheet" type="text/css" href="../static/css/login.css">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <title>Login</title>
+  <link rel="stylesheet" href="../static/css/nicepage.css" media="screen">
+  <link rel="stylesheet" href="../static/css/login.css" media="screen">
+  <script class="u-script" type="text/javascript" src="../static/js/jquery.js" defer=""></script>
+  <script class="u-script" type="text/javascript" src="../static/js/nicepage.js" defer=""></script>
+  <script class="u-script" type="text/javascript" src="../static/js/script.js" defer=""></script>
+  <meta name="generator" content="Nicepage 5.0.7, nicepage.com">
+  <link id="u-theme-google-font" rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i|Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i">
+  <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i">
+  <meta name="theme-color" content="#0d0d0d">
+  <meta property="og:title" content="Login">
+  <meta property="og:type" content="website">
 </head>
-
-<body>
-  <div class="login-root">
-    <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
-      <div class="loginbackground box-background--white padding-top--64">
-        <div class="loginbackground-gridContainer">
-        </div>
+<body class="u-body u-stick-footer u-xl-mode" data-lang="en">
+<header class="u-clearfix u-header u-sticky u-header" id="sec-ca57">
+  <div class="u-clearfix u-sheet u-sheet-1">
+    <a href="#" class="u-image u-logo u-image-1" data-image-width="200" data-image-height="200">
+      <img src="../static/images/mavefund.png" class="u-logo-image u-logo-image-1" alt="mavefund logo">
+    </a>
+    <nav class="u-menu u-menu-one-level u-offcanvas u-menu-1">
+      <div class="menu-collapse">
+        <a class="u-button-style u-nav-link" href="#"></a>
       </div>
-      <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
-        <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
-          <h1><a href="" rel="dofollow">Company Name</a></h1>
-        </div>
-        <div class="formbg-outer">
-          <div class="formbg">
-            <div class="formbg-inner padding-horizontal--48">
-              <div id="error"></div>
-              <span class="padding-bottom--15">Sign in to your account</span>
-              <form id="stripe-login">
-                <div class="field padding-bottom--24">
-                  <label for="username">Username</label>
-                  <input name="username" id="username">
-                </div>
-                <div class="field padding-bottom--24">
-                  <div class="grid--50-50">
-                    <label for="password">Password</label>
-                    <!-- <div class="reset-pass">
-                      <a href="#">Forgot your password?</a>
-                    </div> -->
-                  </div>
-                  <input type="password" id="password" name="password">
-                </div>
-                <!-- <div class="field field-checkbox padding-bottom--24 flex-flex align-center">
-                  <label for="checkbox">
-                    <input type="checkbox" name="checkbox"> Stay signed in for a week
-                  </label>
-                </div> -->
-                <div class="field padding-bottom--24 margin-top--24">
-                  <input type="submit" name="submit" value="Sign In" onclick="login(event)">
-                </div>
-                <div class="field">
-                  <!-- <a class="ssolink" href="#">Use single sign-on (Google) instead</a> -->
-                </div>
-              </form>
-            </div>
-          </div>
-          <div class="footer-link padding-top--24">
-            <span>Don't have an account? <a href="">Sign up</a></span>
-            <div class="listing padding-top--24 padding-bottom--24 flex-flex center-center">
-              <span><a href="#">© MaveFund</a></span>
-              <!-- <span><a href="#">Contact</a></span>
-              <span><a href="#">Privacy & terms</a></span> -->
-            </div>
+      <div class="u-custom-menu u-nav-container">
+        <ul class="u-nav u-unstyled">
+          <li class="u-nav-item">
+            <a class="u-button-style u-nav-link" href="plans.html" style="padding: 20px;">Plans</a>
+          </li>
+          <li class="u-nav-item">
+            <a class="u-button-style u-nav-link" href="index.html" style="padding: 20px;">Home</a>
+          </li>
+          <li class="u-nav-item">
+            <a class="u-button-style u-nav-link" href="login.html" style="padding: 20px;">Login</a>
+          </li>
+          <li class="u-nav-item">
+            <a class="u-button-style u-nav-link" href="register.html" style="padding: 20px;">Register</a>
+          </li>
+        </ul>
+      </div>
+      <div class="u-custom-menu u-nav-container-collapse">
+        <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
+          <div class="u-inner-container-layout u-sidenav-overflow">
+            <div class="u-menu-close"></div>
+            <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2">
+              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="plans.html">Plans</a>
+              </li>
+              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="index.html">Home</a>
+              </li>
+              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="login.html">Login</a>
+              </li>
+              <li class="u-nav-item"><a class="u-button-style u-nav-link" href="register.html">Register</a>
+              </li>
+            </ul>
           </div>
         </div>
+        <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
       </div>
+    </nav>
+  </div>
+</header>
+<section class="u-clearfix u-section-1" id="sec-8ff2">
+  <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+    <div class="u-align-center u-form u-login-control u-form-1">
+      <form class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" name="form" style="padding: 10px;">
+        <div class="u-form-group u-form-name u-label-none">
+          <label for="username" class="u-custom-font u-label u-text-font u-label-1">Username *</label>
+          <input type="text" placeholder="Enter your Username" id="username" name="username" class="u-border-grey-30 u-input u-input-rectangle u-input-1" required="">
+        </div>
+        <div class="u-form-group u-label-none">
+          <label for="password" class="u-custom-font u-label u-text-font u-label-2">Password *</label>
+          <input type="password" placeholder="Enter your Password" id="password" name="password" class="u-border-grey-30 u-input u-input-rectangle u-input-2" required="">
+        </div>
+        <div class="u-align-center u-form-group u-form-submit u-label-none">
+          <input type="submit" value="submit" class="u-form-control-hidden" onclick="login(event)">
+          <a class="custom-page-typo-item u-btn u-btn-submit u-button-style u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Login</a>
+        </div>
+      </form>
     </div>
   </div>
+</section>
+
+
+<footer class="u-align-center-md u-align-center-sm u-align-center-xs u-clearfix u-footer u-grey-80" id="sec-1e0e">
+  <div class="u-clearfix u-sheet u-sheet-1">
+    <p class="u-align-center-lg u-align-center-md u-align-center-xl u-custom-font u-font-lato u-text u-text-1">MaveFund © All rights reserved</p>
+  </div>
+</footer>
 </body>
-<script>
-  function setError(error_text) {
-    var s = document.getElementById("error");
-    s.innerHTML = "Error: " + error_text;
-  }
-  try {
-    const jwt_expire = parseJwt(getStoredValue("token"))
-    const dateObject = new Date(jwt_expire.exp * 1000)
-    if (dateObject > new Date()) {
-      window.location.replace("index.html");
-    }
-    else {
-      removeStoredValue("token")
-    }
-  }
-  catch {
-    // window.location.replace("login.html");
-  }
-  async function login(e) {
-    e.preventDefault();
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    username = document.getElementById("username").value
-    password = document.getElementById("password").value
-    var raw = JSON.stringify({
-      "username": username,
-      "password": password
-    });
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
-    };
-
-    const response = await fetch("http://127.0.0.1:8000/auth/login", requestOptions)
-    const data = await response.json()
-    if (data.detail) {
-      setError(data.detail)
-      // alert(data.detail)
-    }
-    else if (response.status === 200) {
-      storeValue("token", data)
-      storeValue("username", username)
-      window.location.replace("index.html");
-    }
-    else {
-      alert("Error")
-    }
-  }
-
-  function storeValue(key, value) {
-    if (localStorage) {
-      localStorage.setItem(key, value);
-    } else {
-      $.cookies.set(key, value);
-    }
-  }
-
-  function getStoredValue(key) {
-    if (localStorage) {
-      return localStorage.getItem(key);
-    } else {
-      return $.cookies.get(key);
-    }
-  }
-
-  function removeStoredValue(key) {
-    if (localStorage) {
-      return localStorage.removeItem(key);
-    } else {
-      return $.cookies.remove(key);
-    }
-  }
-
-
-  function parseJwt(token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-  }
-
-
-
-
-</script>
-
 </html>
