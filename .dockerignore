@@ -1,4 +1,6 @@
 ./git/*
+./.postgres/
+./.postgres/*
 ./idea/*
 ./github/*
 ./pytest_cache/*

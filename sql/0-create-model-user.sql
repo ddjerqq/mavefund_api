@@ -7,7 +7,7 @@ CREATE TABLE app_user
         UNIQUE,
     email         VARCHAR(64)    NOT NULL
         UNIQUE,
-    password_hash CHAR(64)       NOT NULL,
+    password_hash CHAR(66)       NOT NULL,
     rank          INTEGER        NOT NULL
         DEFAULT 0
 );
