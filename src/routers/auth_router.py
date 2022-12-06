@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
 
-from data import ApplicationDbContext
-from models.user import User
-from models.dto import UserRegister, UserLogin
-from utilities import Password
+from ..data import ApplicationDbContext
+from ..models.user import User
+from ..models.dto import UserRegister, UserLogin
+from ..utilities import Password
 
 
 class AuthRouter:

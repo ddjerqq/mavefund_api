@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import logging
-import os
 import typing
-from jose import JWTError, jwt
 
-from dependencies import extract_claims_from_jwt
-from src.models.user import User
+from ..dependencies import extract_claims_from_jwt
+from ..models.user import User
 if typing.TYPE_CHECKING:
-    from src.data import ApplicationDbContext
+    from ..data import ApplicationDbContext
 
 
 class UserAuthService:

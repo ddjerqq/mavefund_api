@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import os
-
+from os.path import dirname, realpath
+from fastapi.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse
 
-from src import PATH
 
-from fastapi.templating import Jinja2Templates
+PATH = dirname(dirname(dirname(realpath(__file__))))
 
 TEMPLATES = Jinja2Templates(
     directory=os.path.join(PATH, "templates")

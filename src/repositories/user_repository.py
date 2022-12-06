@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import aiosqlite
-from src.models.user import User
-from src.repositories.repository_base import RepositoryBase
+from ..models.user import User
+from ..repositories.repository_base import RepositoryBase
 
 
 class UserRepository(RepositoryBase):

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import aiosqlite
 
-from src.models.user import User
-from src.repositories.user_repository import UserRepository
-from src.services.service_base import ServiceBase
+from ..models.user import User
+from ..repositories.user_repository import UserRepository
+from ..services.service_base import ServiceBase
 
 
 class UserService(ServiceBase):

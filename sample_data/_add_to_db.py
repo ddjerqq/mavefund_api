@@ -1,7 +1,7 @@
 import aiosqlite
 
-from src.utilities.csv_parser import CsvDataParser
-from src.repositories.record_repository import RecordRepository
+from utilities.csv_parser import CsvDataParser
+from repositories.record_repository import RecordRepository
 import os
 import asyncio as aio
 

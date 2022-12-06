@@ -5,10 +5,14 @@ import bcrypt
 import secrets
 import random
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class Password:
-    __salt = os.getenv("salt")
-    __pepper = os.getenv("pepper")
+    __salt = os.getenv("SALT")
+    __pepper = os.getenv("PEPPER")
     __sprinkles = string.ascii_letters + string.digits
 
     @staticmethod

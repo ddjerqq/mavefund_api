@@ -4,8 +4,8 @@ import csv
 import os
 from typing import Callable
 
-from src.models.record import *
-from src.utilities import Snowflake
+from models.record import *
+from utilities import Snowflake
 
 
 # record = {
