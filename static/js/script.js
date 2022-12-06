@@ -5,7 +5,7 @@ async function login(e) {
     let password = document.getElementById("password").value;
 
     try {
-        const response = await fetch("https://127.0.0.1:443/auth/login", {
+        const response = await fetch("/auth/login", {
             method: "POST",
             headers: new Headers({
                 "Content-Type": "application/json"
@@ -27,7 +27,7 @@ async function login(e) {
             window.location.replace("/");
         }
         else {
-            alert(`Error ${data.status}`);
+            alert(`Error`);
         }
     }
     catch (error) {
@@ -49,7 +49,7 @@ async function register(e) {
     }
 
     try {
-        const response = await fetch("https://127.0.0.1:443/auth/register", {
+        const response = await fetch("/auth/register", {
             method: "POST",
             headers: {
                "Content-Type": "application/json"
@@ -73,7 +73,7 @@ async function register(e) {
             window.location.replace("/");
         }
         else {
-            alert(`Error ${data.status}`);
+            alert(`Error`);
         }
 
     } catch (error) {

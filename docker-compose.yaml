@@ -17,7 +17,6 @@ services:
     container_name: postgres
     ports:
       - "5432:5432"
-      - "5555:5555"
     environment:
       POSTGRES_PASSWORD: password
     volumes:
