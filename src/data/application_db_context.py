@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio as aio
 import aiosqlite
 
-from ..services import UserAuthService, UserService, RecordService
+from ..services import UserService, RecordService
 
 
 class ApplicationDbContext:
@@ -13,7 +13,6 @@ class ApplicationDbContext:
 
         self.users = UserService(connection, cursor)
         self.records = RecordService(connection, cursor)
-        self.auth = UserAuthService(self)
 
     @classmethod
     async def connect(cls, db_path: str, *, loop: aio.AbstractEventLoop = None) -> ApplicationDbContext:

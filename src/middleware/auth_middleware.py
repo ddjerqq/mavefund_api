@@ -3,7 +3,7 @@ from asgiref.typing import ASGI3Application
 from asgiref.typing import Scope, ASGIReceiveCallable, ASGISendCallable
 
 from ..data import ApplicationDbContext
-from ..dependencies import extract_claims_from_jwt
+from ..utilities import extract_claims_from_jwt
 
 
 class AuthMiddleware:
@@ -16,8 +16,8 @@ class AuthMiddleware:
 
         scope["user"] = None
 
-        if (token := request.cookies.get("token")) is not None:
-            if (claims := extract_claims_from_jwt(token)) is not None:
+        if token := request.cookies.get("token"):
+            if claims := extract_claims_from_jwt(token):
                 user_id = claims["sub"]
                 user = await self.db.users.get_by_id(user_id)
                 scope["user"] = user

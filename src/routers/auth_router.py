@@ -19,10 +19,10 @@ class AuthRouter:
 
     async def register(self, register: UserRegister) -> str:
         if await self.db.users.get_by_email(register.email):
-            raise HTTPException(status_code=400, detail="email are already registered")
+            raise HTTPException(status_code=409, detail="email is already registered")
 
         if await self.db.users.get_by_username(register.username):
-            raise HTTPException(status_code=400, detail="username are already registered")
+            raise HTTPException(status_code=409, detail="username is already registered")
 
         # TODO: change the rank depending on the payment later, we will also need to verify captcha and
         #  email address
