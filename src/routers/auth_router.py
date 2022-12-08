@@ -26,6 +26,7 @@ class AuthRouter:
 
         # TODO: change the rank depending on the payment later, we will also need to verify captcha and
         #  email address
+        # TODO dont trust the client, make sure the input is valid.
         user = User.new(register.username.lower(), register.email.lower(), register.password, 0)
         await self.db.users.add(user)
 

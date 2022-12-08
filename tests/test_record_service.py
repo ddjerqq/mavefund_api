@@ -5,8 +5,8 @@ from services import RecordService
 
 
 async def get_record_service() -> RecordService:
-    conn = await asyncpg.connect(user='postgres', password='password', database='mavefund_test', host='localhost')
-    return RecordService(conn)
+    pool = await asyncpg.create_pool(user='postgres', password='password', database='mavefund_test', host='localhost')
+    return RecordService(pool)
 
 
 @pytest.mark.asyncio

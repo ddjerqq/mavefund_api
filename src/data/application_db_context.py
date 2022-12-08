@@ -7,11 +7,11 @@ from src.services import UserService, RecordService
 
 
 class ApplicationDbContext:
-    def __init__(self, connection: asyncpg.Connection) -> None:
-        self.__connection = connection
+    def __init__(self, pool: asyncpg.Pool) -> None:
+        self.__connection = pool
 
-        self.users = UserService(connection)
-        self.records = RecordService(connection)
+        self.users = UserService(pool)
+        self.records = RecordService(pool)
 
     @classmethod
     async def connect(
@@ -24,12 +24,10 @@ class ApplicationDbContext:
             port: int = 5432,
             loop: aio.AbstractEventLoop = None
     ) -> ApplicationDbContext:
-        conn = await asyncpg.connect(
-            host=host,
-            port=port,
-            user=user,
-            password=password,
-            database=database,
-            loop=loop or aio.get_event_loop()
+        pool = await asyncpg.create_pool(
+            f"postgresql://{user}:{password}@{host}:{port}/{database}",
+            min_size=10,
+            max_size=30,
+            loop=loop
         )
-        return cls(conn)
+        return cls(pool)

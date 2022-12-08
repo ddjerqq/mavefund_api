@@ -8,8 +8,8 @@ from src.services.service_base import ServiceBase
 
 
 class UserService(ServiceBase):
-    def __init__(self, connection: asyncpg.Connection):
-        self.__users = UserRepository(connection)
+    def __init__(self, pool: asyncpg.Pool):
+        self.__users = UserRepository(pool)
 
     async def get_by_username(self, username: str) -> User | None:
         return await self.__users.get_by_username(username)

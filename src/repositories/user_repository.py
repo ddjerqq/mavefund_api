@@ -6,52 +6,57 @@ from src.repositories.repository_base import RepositoryBase
 
 
 class UserRepository(RepositoryBase):
-    def __init__(self, connection: asyncpg.Connection):
-        self.__conn = connection
+    def __init__(self, pool: asyncpg.Pool):
+        self.__pool = pool
 
     async def get_by_username(self, username: str) -> User | None:
-        row = await self.__conn.fetchrow("""
-        SELECT *
-        FROM app_user
-        WHERE
-            username = $1
-        """, username)
+        async with self.__pool.acquire(timeout=60) as conn:
+            row = await conn.fetchrow("""
+            SELECT *
+            FROM app_user
+            WHERE
+                username = $1
+            """, username)
 
-        if row is not None:
-            return User.from_db(row)
+            if row is not None:
+                return User.from_db(row)
 
     async def get_by_email(self, email):
-        row = await self.__conn.fetchrow("""
-        SELECT *
-        FROM app_user
-        WHERE
-            email = $1
-        """, email)
+        async with self.__pool.acquire(timeout=60) as conn:
+            row = await conn.fetchrow("""
+                SELECT *
+                FROM app_user
+                WHERE
+                    email = $1
+                """, email)
 
-        if row is not None:
-            return User.from_db(row)
+            if row is not None:
+                return User.from_db(row)
 
     async def get_all(self) -> list[User]:
-        rows = await self.__conn.fetch("""
+        async with self.__pool.acquire(timeout=60) as conn:
+            rows = await conn.fetch("""
         SELECT *
         FROM app_user
-        """)
+            """)
 
-        return list(map(User.from_db, rows))
+            return list(map(User.from_db, rows))
 
     async def get_by_id(self, id: int) -> User | None:
-        row = await self.__conn.fetchrow("""
-        SELECT *
-        FROM app_user
-        WHERE
-            id = $1
-        """, id)
+        async with self.__pool.acquire(timeout=60) as conn:
+            row = await conn.fetchrow("""
+            SELECT *
+            FROM app_user
+            WHERE
+                id = $1
+            """, id)
 
-        if row is not None:
-            return User.from_db(row)
+            if row is not None:
+                return User.from_db(row)
 
     async def add(self, entity: User) -> None:
-        await self.__conn.execute("""
+        async with self.__pool.acquire(timeout=60) as conn:
+            await conn.execute("""
         INSERT INTO app_user
         (id, username, email, password_hash, rank)
         VALUES 
@@ -65,7 +70,8 @@ class UserRepository(RepositoryBase):
         """, *entity.dict().values())
 
     async def update(self, entity: User) -> None:
-        await self.__conn.execute("""
+        async with self.__pool.acquire(timeout=60) as conn:
+            await conn.execute("""
         UPDATE app_user
         SET
             username = $2,
@@ -77,7 +83,8 @@ class UserRepository(RepositoryBase):
         """, *entity.dict().values())
 
     async def delete(self, id: int) -> None:
-        await self.__conn.execute("""
+        async with self.__pool.acquire(timeout=60) as conn:
+            await conn.execute("""
         DELETE FROM app_user
         WHERE
             id = $1

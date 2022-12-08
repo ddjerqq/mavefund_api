@@ -1,9 +1,15 @@
+import logging
+
 from fastapi import Request
+from fastapi.logger import logger
 from asgiref.typing import ASGI3Application
 from asgiref.typing import Scope, ASGIReceiveCallable, ASGISendCallable
 
 from src.data import ApplicationDbContext
 from src.utilities import extract_claims_from_jwt
+
+logger.handlers = logging.getLogger("uvicorn.error").handlers
+logger.setLevel(logging.DEBUG)
 
 
 class AuthMiddleware:
@@ -16,10 +22,11 @@ class AuthMiddleware:
 
         scope["user"] = None
 
-        if token := request.cookies.get("token"):
-            if claims := extract_claims_from_jwt(token):
-                user_id = claims["sub"]
-                user = await self.db.users.get_by_id(user_id)
-                scope["user"] = user
+        if "static" not in request.url:
+            if token := request.cookies.get("token"):
+                if claims := extract_claims_from_jwt(token):
+                    user_id = int(claims["sub"])
+                    user = await self.db.users.get_by_id(user_id)
+                    scope["user"] = user
 
         return await self.app(scope, receive, send)

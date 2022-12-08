@@ -8,8 +8,8 @@ from src.services.service_base import ServiceBase
 
 
 class RecordService(ServiceBase):
-    def __init__(self, connection: asyncpg.Connection):
-        self.__records = RecordRepository(connection)
+    def __init__(self, pool: asyncpg.Pool):
+        self.__records = RecordRepository(pool)
 
     async def get_all_by_symbol(self, username: str) -> list[Record]:
         return await self.__records.get_all_by_symbol(username)
