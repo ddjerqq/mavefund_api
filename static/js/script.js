@@ -23,6 +23,7 @@ async function login(_) {
             headers: new Headers({
                 "content-type": "application/json"
             }),
+            redirect: "follow",
             body: JSON.stringify({
                 "username": username,
                 "password": password
@@ -98,6 +99,7 @@ async function register(_) {
             headers: {
                "content-type": "application/json"
             },
+            redirect: "follow",
             body: JSON.stringify({
                 "username": username,
                 "email": email,
@@ -105,7 +107,7 @@ async function register(_) {
             }),
         });
 
-        const detail = await response.json();
+        let detail = null;
 
         switch (response.status) {
             case 200:
@@ -120,6 +122,7 @@ async function register(_) {
                 break;
 
             case 409:
+                detail = await response.json();
                 if (detail.includes("username")) {
                     error_el.textContent = "Username is already registered";
                 }
@@ -132,12 +135,14 @@ async function register(_) {
                 break;
 
             default:
+                detail = await response.json();
                 error_el.textContent = `Something went wrong. ${detail}`;
                 break;
         }
 
     } catch (error) {
         console.log(error);
+        error_el.textContent = `Something went wrong.`;
     }
 }
 

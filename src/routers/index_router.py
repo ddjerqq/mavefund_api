@@ -18,7 +18,7 @@ class IndexRouter:
         self.router.add_api_route(
             "/",
             self.index,
-            methods=["GET"],
+            methods=["GET", "POST"],
             description="get the index page",
             response_class=HTMLResponse
         )
@@ -26,7 +26,7 @@ class IndexRouter:
         self.router.add_api_route(
             "/login",
             self.login,
-            methods=["GET"],
+            methods=["GET", "POST"],
             description="get the login page",
             response_class=HTMLResponse
         )
@@ -34,7 +34,7 @@ class IndexRouter:
         self.router.add_api_route(
             "/register",
             self.register,
-            methods=["GET"],
+            methods=["GET", "POST"],
             description="get the register page",
             response_class=HTMLResponse
         )

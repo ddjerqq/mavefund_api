@@ -1,14 +1,17 @@
-import asyncio as aio
+import os
+import time
 from os.path import join, dirname, realpath
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.logger import logger
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from dotenv import load_dotenv
 
+from .utilities import render_template
 from .middleware import AuthMiddleware
 from .data import ApplicationDbContext
 from .routers import UserRouter, AuthRouter, RecordRouter, IndexRouter
@@ -21,10 +24,26 @@ PATH = dirname(dirname(realpath(__file__)))
 app = FastAPI()
 
 
-async def main():
-    # initialize the database in singleton manner
-    # TODO rework to PostgresSQL
-    db = await ApplicationDbContext.connect(join(PATH, "app.db"))
+@app.exception_handler(500)
+async def internal_server_error_handler(req: Request, exc: Exception):
+    logger.exception("500 internal server error", exc_info=exc)
+    return render_template("error.html", {"request": req}, status_code=500)
+
+
+@app.exception_handler(404)
+async def not_found_error_handler(req: Request, _exc: Exception):
+    logger.info(f"404: {req}")
+    return render_template("not_found.html", {"request": req}, status_code=404)
+
+
+@app.on_event("startup")
+async def startup():
+    db = await ApplicationDbContext.connect(
+        "postgres",
+        os.getenv("POSTGRES_USER"),
+        os.getenv("POSTGRES_PASSWORD"),
+        "mavefund",
+    )
 
     # initialize routers
     user_router = UserRouter(db)
@@ -61,13 +80,15 @@ async def main():
 
     # add HTTP*S*
     app.add_middleware(HTTPSRedirectMiddleware)
+
+
     # mount static files
     app.mount("/static", StaticFiles(directory=join(PATH, "static")), name="static")
 
 
 # make https redirect work
 if __name__ == "__main__":
-    aio.run(main())
+    time.sleep(5)
     uvicorn.run(
         app,
         ssl_certfile=join(PATH, "cert", "server.crt"),
