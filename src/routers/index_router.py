@@ -5,16 +5,13 @@ from fastapi.responses import HTMLResponse
 from starlette.responses import RedirectResponse
 from starlette.templating import _TemplateResponse
 
-from ..dependencies import verify_jwt
 from ..data import ApplicationDbContext
-from ..services import UserAuthService
 from ..utilities import render_template
 
 
 class IndexRouter:
-    def __init__(self, db: ApplicationDbContext, auth: UserAuthService):
+    def __init__(self, db: ApplicationDbContext):
         self.db = db
-        self.auth = auth
 
         self.router = APIRouter(prefix="")
 
@@ -50,8 +47,8 @@ class IndexRouter:
         #     response_class=HTMLResponse
         # )
 
-    async def index(self, req: Request) -> "_TemplateResponse":
-        if (token := req.cookies.get("token")) and verify_jwt(token):
+    async def index(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+        if req.user:
             return render_template("index.html", {"request": req})
         else:
             return RedirectResponse(url="/login")
@@ -68,4 +65,3 @@ class IndexRouter:
     #         return render_template("dashboard.html", {"request": req, "user": user})
     #     else:
     #         return RedirectResponse(url="/login")
-
