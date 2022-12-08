@@ -26,14 +26,14 @@ class Password:
     def new(cls, plain_text_password: str) -> str:
         sprinkle = secrets.choice(cls.__sprinkles)
         payload = f"{cls.__salt}{plain_text_password}{cls.__pepper}{sprinkle}"
-        return cls.__hash(payload.encode("ascii")).decode("ascii")
+        return cls.__hash(payload.encode()).decode()
 
     @classmethod
     def compare(cls, hashed_password: str, plain_text_password: str) -> bool:
         for sprinkle in cls.__sprinkles:
             payload = f"{cls.__salt}{plain_text_password}{cls.__pepper}{sprinkle}"
 
-            if bcrypt.checkpw(payload.encode("ascii"), hashed_password.encode("ascii")):
+            if bcrypt.checkpw(payload.encode(), hashed_password.encode()):
                 return True
 
         return False
