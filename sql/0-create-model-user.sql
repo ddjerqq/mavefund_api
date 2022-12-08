@@ -1,6 +1,6 @@
 CREATE TABLE app_user
 (
-    id            INTEGER        NOT NULL
+    id            BIGINT         NOT NULL
         PRIMARY KEY
         UNIQUE,
     username      VARCHAR(32)    NOT NULL
@@ -8,7 +8,7 @@ CREATE TABLE app_user
     email         VARCHAR(64)    NOT NULL
         UNIQUE,
     password_hash CHAR(66)       NOT NULL,
-    rank          INTEGER        NOT NULL
+    rank          SMALLINT       NOT NULL
         DEFAULT 0
 );
 

@@ -1,6 +1,6 @@
 CREATE TABLE stock_record
 (
-    id                                INTEGER        NOT NULL
+    id                                BIGINT         NOT NULL
         PRIMARY KEY
         UNIQUE,
     company_name                      VARCHAR(32)    NOT NULL,
