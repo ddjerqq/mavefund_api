@@ -1,20 +1,19 @@
 from __future__ import annotations
 
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Header, Depends
+from fastapi import APIRouter, HTTPException, Header, Request
 
-from ..dependencies import admin_only, verify_jwt
 from ..data import ApplicationDbContext
 from ..models import User
-from ..services import UserAuthService
 
 
 class UserRouter:
-    def __init__(self, db: ApplicationDbContext, auth_service: UserAuthService):
-        self.db = db
-        self.auth = auth_service
+    FORBIDDEN = HTTPException(status_code=403, detail=f"you do not have access to this data.")
 
-        self.router = APIRouter(prefix="/users", dependencies=[Depends(verify_jwt)])
+    def __init__(self, db: ApplicationDbContext):
+        self.db = db
+
+        self.router = APIRouter(prefix="/users")
 
         self.router.add_api_route(
             "/@me",
@@ -29,7 +28,6 @@ class UserRouter:
             self.get_all,
             methods=["GET"],
             description="get all users",
-            dependencies=[Depends(admin_only)],
             response_model=list[User],
         )
 
@@ -38,7 +36,6 @@ class UserRouter:
             self.get_by_id,
             methods=["GET"],
             description="get a user",
-            dependencies=[Depends(admin_only)],
             response_model=Optional[User],
         )
 
@@ -47,7 +44,6 @@ class UserRouter:
             self.add,
             methods=["POST"],
             description="add a user, admin only.",
-            dependencies=[Depends(admin_only)],
             response_model=None,
         )
 
@@ -56,7 +52,6 @@ class UserRouter:
             self.update,
             methods=["PUT"],
             description="update a user, admin only.",
-            dependencies=[Depends(admin_only)],
             response_model=None,
         )
 
@@ -65,17 +60,22 @@ class UserRouter:
             self.delete,
             methods=["DELETE"],
             description="delete a user, admin only.",
-            dependencies=[Depends(admin_only)],
             response_model=None,
         )
 
-    async def me(self, x_authorization: str = Header()) -> User | None:
-        return await self.auth.get_user_from_token(x_authorization)
+    async def me(self, req: Request) -> User | None:
+        return req.user
 
-    async def get_all(self) -> list[User]:
+    async def get_all(self, req: Request) -> list[User]:
+        if req.user.rank != 3:
+            raise self.FORBIDDEN
+
         return await self.db.users.get_all()
 
-    async def get_by_id(self, id: int) -> User | None:
+    async def get_by_id(self, req: Request, id: int) -> User | None:
+        if req.user.rank != 3:
+            raise self.FORBIDDEN
+
         if (user := await self.db.users.get_by_id(id)) is None:
             raise HTTPException(
                 status_code=404,
@@ -84,17 +84,26 @@ class UserRouter:
 
         return user
 
-    async def add(self, user: User) -> None:
+    async def add(self, req: Request, user: User) -> None:
+        if req.user.rank != 3:
+            raise self.FORBIDDEN
+
         await self.db.users.add(user)
 
     # RISK: potential risk, users can update other users by simply entering a different ID
     # TODO add a way for users to be able to update themselves
     #  but filter for security, limit that they can only update their own data
     #  and not other users data, neither their own role.
-    async def update(self, user: User) -> None:
+    async def update(self, req: Request, user: User) -> None:
+        if req.user.rank != 3:
+            raise self.FORBIDDEN
+
         # TODO error handling, and make code robust
         await self.db.users.update(user)
 
-    async def delete(self, id: int) -> None:
+    async def delete(self, req: Request, id: int) -> None:
+        if req.user.rank != 3:
+            raise self.FORBIDDEN
+
         # TODO return 404 if not found
         await self.db.users.delete(id)
