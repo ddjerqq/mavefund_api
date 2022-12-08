@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 from .middleware import AuthMiddleware
 from .data import ApplicationDbContext
 from .routers import UserRouter, AuthRouter, RecordRouter, IndexRouter
-from .services import UserAuthService
 
 load_dotenv()
 
@@ -27,14 +26,11 @@ async def main():
     # TODO rework to PostgresSQL
     db = await ApplicationDbContext.connect(join(PATH, "app.db"))
 
-    # initialize services
-    auth_service = UserAuthService(db)
-
     # initialize routers
-    user_router = UserRouter(db, auth_service)
-    record_router = RecordRouter(db, auth_service)
+    user_router = UserRouter(db)
+    record_router = RecordRouter(db)
     auth_router = AuthRouter(db)
-    index_router = IndexRouter(db, auth_service)
+    index_router = IndexRouter(db)
 
     ##########################
     # add routers            #
