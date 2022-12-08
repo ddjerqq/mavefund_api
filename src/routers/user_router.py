@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Header, Request
 
-from ..data import ApplicationDbContext
-from ..models import User
+from src.data import ApplicationDbContext
+from src.models import User
 
 
 class UserRouter:

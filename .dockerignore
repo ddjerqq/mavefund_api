@@ -6,7 +6,5 @@
 ./pytest_cache/*
 ./mavefund_library/*
 ./sample_data/*
-./sql/*
-./tests/*
 .gitignore
 README.md

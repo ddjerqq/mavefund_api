@@ -2,8 +2,8 @@ from fastapi import Request
 from asgiref.typing import ASGI3Application
 from asgiref.typing import Scope, ASGIReceiveCallable, ASGISendCallable
 
-from ..data import ApplicationDbContext
-from ..utilities import extract_claims_from_jwt
+from src.data import ApplicationDbContext
+from src.utilities import extract_claims_from_jwt
 
 
 class AuthMiddleware:

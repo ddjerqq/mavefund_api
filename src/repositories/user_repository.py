@@ -1,89 +1,84 @@
 from __future__ import annotations
 
-import aiosqlite
-from ..models.user import User
-from ..repositories.repository_base import RepositoryBase
+import asyncpg
+from src.models.user import User
+from src.repositories.repository_base import RepositoryBase
 
 
 class UserRepository(RepositoryBase):
-    def __init__(self, connection: aiosqlite.Connection, cursor: aiosqlite.Cursor):
+    def __init__(self, connection: asyncpg.Connection):
         self.__conn = connection
-        self.__curs = cursor
 
     async def get_by_username(self, username: str) -> User | None:
-        await self.__curs.execute("""
+        row = await self.__conn.fetchrow("""
         SELECT *
         FROM app_user
         WHERE
-            username = :username
-        """, {"username": username})
+            username = $1
+        """, username)
 
-        if (row := await self.__curs.fetchone()) is not None:
+        if row is not None:
             return User.from_db(row)
 
     async def get_by_email(self, email):
-        await self.__curs.execute("""
+        row = await self.__conn.fetchrow("""
         SELECT *
         FROM app_user
         WHERE
-            email = :email
-        """, {"email": email})
+            email = $1
+        """, email)
 
-        if (row := await self.__curs.fetchone()) is not None:
+        if row is not None:
             return User.from_db(row)
 
-    async def save_changes(self) -> None:
-        await self.__conn.commit()
-
     async def get_all(self) -> list[User]:
-        await self.__curs.execute("""
+        rows = await self.__conn.fetch("""
         SELECT *
         FROM app_user
         """)
 
-        rows = await self.__curs.fetchall()
         return list(map(User.from_db, rows))
 
     async def get_by_id(self, id: int) -> User | None:
-        await self.__curs.execute("""
+        row = await self.__conn.fetchrow("""
         SELECT *
         FROM app_user
         WHERE
-            id = :id
-        """, {"id": id})
+            id = $1
+        """, id)
 
-        if (row := await self.__curs.fetchone()) is not None:
+        if row is not None:
             return User.from_db(row)
 
     async def add(self, entity: User) -> None:
-        await self.__curs.execute("""
+        await self.__conn.execute("""
         INSERT INTO app_user
         (id, username, email, password_hash, rank)
         VALUES 
         (
-            :id,
-            :username,
-            :email,
-            :password_hash,
-            :rank
+            $1,
+            $2,
+            $3,
+            $4,
+            $5
         )
-        """, entity.dict())
+        """, *entity.dict().values())
 
     async def update(self, entity: User) -> None:
-        await self.__curs.execute("""
+        await self.__conn.execute("""
         UPDATE app_user
         SET
-            username = :username,
-            email = :email,
-            password_hash = :password_hash,
-            rank = :rank
+            username = $2,
+            email = $3,
+            password_hash = $4,
+            rank = $5
         WHERE
-            id = :id
-        """, entity.dict())
+            id = $1
+        """, *entity.dict().values())
 
     async def delete(self, id: int) -> None:
-        await self.__curs.execute("""
+        await self.__conn.execute("""
         DELETE FROM app_user
         WHERE
-            id = :id
-        """, {"id": id})
+            id = $1
+        """, id)

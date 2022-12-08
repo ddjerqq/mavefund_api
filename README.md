@@ -30,9 +30,10 @@ df = client.get_records_as_df(
 ```
 
 # TODO
-> * [ ] Add tests
-> * [ ] Deploy
-> * [ ] Migrate to postgres
+> * [ ] Add payment
+> * [x] Deploy
+> * [x] Migrate to postgres
+> * [x] Add tests
 > * [x] Add routes
 > * [x] Add docker
 > * [x] Add the actual data

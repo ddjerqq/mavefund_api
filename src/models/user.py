@@ -3,11 +3,11 @@ from __future__ import annotations
 import os
 from datetime import datetime, timedelta
 
-import aiosqlite
+import asyncpg
 from pydantic import BaseModel
 from jose import jwt
 
-from ..utilities import Password, Snowflake
+from src.utilities import Password, Snowflake
 
 
 ROLES = ["basic", "premium", "super", "admin"]
@@ -23,13 +23,13 @@ class User(BaseModel):
     """int: basic user = 0, premium = 1, super_user = 2, admin = 3"""
 
     @classmethod
-    def from_db(cls, row: aiosqlite.Row) -> User:
+    def from_db(cls, row: asyncpg.Record) -> User:
         return cls(
-            id=row[0],
-            username=row[1],
-            email=row[2],
-            password_hash=row[3],
-            rank=row[4],
+            id=row["id"],
+            username=row["username"],
+            email=row["email"].strip(),
+            password_hash=row["password_hash"],
+            rank=row["rank"],
         )
 
     @property

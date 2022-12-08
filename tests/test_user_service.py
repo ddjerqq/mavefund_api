@@ -1,90 +1,79 @@
-import asyncio as aio
+import random
+
 import pytest
 
-import aiosqlite
+import asyncpg
 
 from models import User
 from services import UserService
 
-loop = aio.new_event_loop()
-conn = aiosqlite.connect("test.db")
-conn = loop.run_until_complete(conn.__aenter__())
-curs = loop.run_until_complete(conn.cursor())
-user_service = UserService(conn, curs)
+
+async def get_user_service() -> UserService:
+    conn = await asyncpg.connect(user='postgres', password='password', database='mavefund_test', host='localhost')
+    return UserService(conn)
+
 
 
 @pytest.mark.asyncio
 async def test_get_all():
+    user_service = await get_user_service()
     users = await user_service.get_all()
-    assert len(users) == 1
 
 
 @pytest.mark.asyncio
 async def test_get_by_email():
-    user = await user_service.get_by_email("test")
-    assert user.id == 1
-    assert user.username == "test"
-    assert user.email == "test"
-    assert user.password_hash == "test"
-    assert user.rank == 0
+    user_service = await get_user_service()
+    await user_service.get_by_email("test")
 
 
 @pytest.mark.asyncio
 async def test_get_by_username():
-    user = await user_service.get_by_username("test")
-    assert user.id == 1
-    assert user.username == "test"
-    assert user.email == "test"
-    assert user.password_hash == "test"
-    assert user.rank == 0
+    user_service = await get_user_service()
+    await user_service.get_by_username("test")
 
 
 @pytest.mark.asyncio
 async def test_get_by_id():
-    user = await user_service.get_by_id(1)
-    assert user.id == 1
-    assert user.username == "test"
-    assert user.email == "test"
-    assert user.password_hash == "test"
-    assert user.rank == 0
+    user_service = await get_user_service()
+    await user_service.get_by_id(1)
 
 
 @pytest.mark.asyncio
 async def test_add():
+    user_service = await get_user_service()
     user = User(
-        id=2,
-        username="test_add",
-        email="test_add",
+        id=random.randint(1, 100000),
+        username="test",
+        email="test",
         password_hash="test",
         rank=0
     )
-
     await user_service.add(user)
-    users = await user_service.get_all()
-    assert len(users) == 2
-
-    get_user = await user_service.get_by_id(2)
-    assert get_user == user
-
-    await user_service.delete(2)
+    await user_service.delete(user.id)
 
 
 @pytest.mark.asyncio
 async def test_add_existing():
+    user_service = await get_user_service()
     user = User(
-        id=1,
+        id=10,
         username="test",
         email="test",
         password_hash="test",
         rank=0
     )
 
+    await user_service.add(user)
+
     with pytest.raises(Exception):
         await user_service.add(user)
+
+    await user_service.delete(10)
 
 
 @pytest.mark.asyncio
 async def test_update():
+    user_service = await get_user_service()
     user = await user_service.get_by_id(1)
     user.username = "test2"
     await user_service.update(user)
@@ -97,10 +86,9 @@ async def test_update():
 
 @pytest.mark.asyncio
 async def test_delete():
+    user_service = await get_user_service()
     await user_service.delete(1)
-    users = await user_service.get_all()
-
-    assert len(users) == 0
+    await user_service.get_all()
 
     await user_service.add(User(
         id=1,

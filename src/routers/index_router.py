@@ -5,8 +5,8 @@ from fastapi.responses import HTMLResponse
 from starlette.responses import RedirectResponse
 from starlette.templating import _TemplateResponse
 
-from ..data import ApplicationDbContext
-from ..utilities import render_template
+from src.data import ApplicationDbContext
+from src.utilities import render_template
 
 
 class IndexRouter:

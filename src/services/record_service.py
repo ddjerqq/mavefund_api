@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-import aiosqlite
+import asyncpg
 
-from ..models import Record
-from ..repositories.record_repository import RecordRepository
-from ..services.service_base import ServiceBase
+from src.models import Record
+from src.repositories.record_repository import RecordRepository
+from src.services.service_base import ServiceBase
 
 
 class RecordService(ServiceBase):
-    def __init__(self, connection: aiosqlite.Connection, cursor: aiosqlite.Cursor) -> None:
-        self.__records = RecordRepository(connection, cursor)
+    def __init__(self, connection: asyncpg.Connection):
+        self.__records = RecordRepository(connection)
 
     async def get_all_by_symbol(self, username: str) -> list[Record]:
         return await self.__records.get_all_by_symbol(username)

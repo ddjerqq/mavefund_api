@@ -9,10 +9,6 @@ T = TypeVar("T")
 
 class RepositoryBase(ABC, Generic[T]):
     @abstractmethod
-    async def save_changes(self) -> None:
-        pass
-
-    @abstractmethod
     async def get_all(self) -> list[T]:
         pass
 
