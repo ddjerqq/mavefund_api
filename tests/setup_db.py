@@ -1,7 +1,10 @@
 import asyncio as aio
+import os
+
 import asyncpg
 
-
+print(os.getcwd())
+print(os.listdir(os.getcwd()))
 with open("../sql/0-create-model-user.sql") as user, open("../sql/0-create-model-record.sql") as record:
     user = user.read()
     record = record.read()
