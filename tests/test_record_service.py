@@ -14,7 +14,9 @@ async def get_record_service() -> RecordService:
         user='postgres',
         password=os.getenv("POSTGRES_PASSWORD"),
         database='postgres',
-        host=os.getenv("HOST")
+        host=os.getenv("HOST"),
+        min_size=1,
+        max_size=2,
     )
     return RecordService(pool)
 

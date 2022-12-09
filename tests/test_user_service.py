@@ -16,7 +16,9 @@ async def get_user_service() -> UserService:
         user='postgres',
         password=os.getenv("POSTGRES_PASSWORD"),
         database='postgres',
-        host=os.getenv("HOST")
+        host=os.getenv("HOST"),
+        min_size=1,
+        max_size=2,
     )
     return UserService(pool)
 
