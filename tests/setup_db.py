@@ -14,14 +14,9 @@ with (
 
 
 async def main():
-    async with asyncpg.connect(
-            user='postgres',
-            password='password',
-            database='postgres',
-            host='localhost'
-    ) as conn:
-        await conn.execute(user_query)
-        await conn.execute(record_query)
+    conn = await asyncpg.connect(user='postgres', password='password', database='postgres', host='localhost')
+    await conn.execute(user_query)
+    await conn.execute(record_query)
 
 
 if __name__ == "__main__":
