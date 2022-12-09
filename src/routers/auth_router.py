@@ -18,6 +18,8 @@ class AuthRouter:
         self.router.add_api_route("/login", self.login, methods=["POST"])
 
     async def register(self, register: UserRegister) -> str:
+        print(register)
+
         if await self.db.users.get_by_email(register.email):
             raise HTTPException(status_code=409, detail="email is already registered")
 
@@ -30,6 +32,8 @@ class AuthRouter:
         user = User.new(register.username.lower(), register.email.lower(), register.password, 0)
         await self.db.users.add(user)
 
+        print(user.password_hash)
+
         return user.jwt_token
 
     async def login(self, login: UserLogin) -> str:
@@ -37,6 +41,10 @@ class AuthRouter:
 
         if not user:
             raise HTTPException(status_code=404, detail="username not registered")
+
+        print(user)
+        print(login)
+        print(Password.compare(user.password_hash, login.password))
 
         if not Password.compare(user.password_hash, login.password):
             raise HTTPException(status_code=400, detail="password is incorrect")

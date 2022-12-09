@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   server:
-    image: server:latest
+    image: ddjerqq/private:latest
     build: .
     container_name: server
     depends_on:
@@ -15,7 +15,6 @@ services:
 
   postgres:
     image: postgres:latest
-    build: .
     container_name: postgres
     ports:
       - "5432:5432"

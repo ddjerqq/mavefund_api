@@ -13,7 +13,6 @@ load_dotenv()
 class Password:
     __salt = os.getenv("SALT")
     __pepper = os.getenv("PEPPER")
-    __sprinkles = string.ascii_letters + string.digits
 
     @staticmethod
     def __hash(payload: bytes) -> bytes:
@@ -24,23 +23,19 @@ class Password:
 
     @classmethod
     def new(cls, plain_text_password: str) -> str:
-        sprinkle = secrets.choice(cls.__sprinkles)
-        payload = f"{cls.__salt}{plain_text_password}{cls.__pepper}{sprinkle}"
+        payload = f"{cls.__salt}{plain_text_password}{cls.__pepper}"
         return cls.__hash(payload.encode()).decode()
 
     @classmethod
     def compare(cls, hashed_password: str, plain_text_password: str) -> bool:
-        for sprinkle in cls.__sprinkles:
-            payload = f"{cls.__salt}{plain_text_password}{cls.__pepper}{sprinkle}"
+        payload = f"{cls.__salt}{plain_text_password}{cls.__pepper}"
 
-            if bcrypt.checkpw(payload.encode(), hashed_password.encode()):
-                return True
-
-        return False
+        return bcrypt.checkpw(payload.encode(), hashed_password.encode())
 
 
 # unittest
 def test_password_compare():
     password = ''.join(random.choices(string.printable[:-5], k=random.randint(8, 64)))
     password_hash = Password.new(password)
-    assert Password.compare(password_hash, password), "passwords do not match"
+
+    assert Password.compare(password_hash, password) is True, "passwords do not match"

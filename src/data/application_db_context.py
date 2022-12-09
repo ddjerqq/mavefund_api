@@ -24,8 +24,14 @@ class ApplicationDbContext:
             port: int = 5432,
             loop: aio.AbstractEventLoop = None
     ) -> ApplicationDbContext:
+        # f"postgresql://{user}:{password}@{host}:{port}/{database}",
         pool = await asyncpg.create_pool(
-            f"postgresql://{user}:{password}@{host}:{port}/{database}",
+            user=user,
+            password=password,
+            host=host,
+            port=port,
+            database=database,
+
             min_size=10,
             max_size=30,
             loop=loop

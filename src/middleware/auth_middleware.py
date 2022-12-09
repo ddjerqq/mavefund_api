@@ -22,7 +22,7 @@ class AuthMiddleware:
 
         scope["user"] = None
 
-        if "static" not in request.url:
+        if "static" not in str(request.url):
             if token := request.cookies.get("token"):
                 if claims := extract_claims_from_jwt(token):
                     user_id = int(claims["sub"])
