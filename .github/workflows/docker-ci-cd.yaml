@@ -15,6 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    # CI
     - name: Docker login
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -29,3 +30,16 @@ jobs:
     - name: Docker push
       run: |
         docker push ddjerqq/private:latest
+        
+    # CD
+    - name: Restart docker-compose on the VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: |
+          cd work
+          docker-compose down
+          docker pull ddjerqq/private:latest
+          docker-compose up -d
