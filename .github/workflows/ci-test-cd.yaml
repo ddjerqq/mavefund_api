@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
     - uses: actions/checkout@v3
 
     - name: Docker login
@@ -30,32 +31,44 @@ jobs:
 
 
   test:
-    - name: Setup Database
-      run: |
-        pip install -r requirements.txt
-        docker pull postgres:latest
-        docker run --name postgres-test -e POSTGRES_PASSWORD=password -p5432:5432 -d postgres:latest
-        docker exec -it postgres-test bash
-        psql -U root
-        create database test;
-        exit
-        exit
-        python ./tests/setup_db.py
+    runs-on: ubuntu-latest
 
-    - name: Run PyTests
-      run: |
-        pytest
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Setup Database
+        run: |
+          pip install -r requirements.txt
+          docker pull postgres:latest
+          docker run --name postgres-test -e POSTGRES_PASSWORD=password -p5432:5432 -d postgres:latest
+          docker exec -it postgres-test bash
+          psql -U root
+          create database test;
+          exit
+          exit
+          python ./tests/setup_db.py
+
+      - name: Run PyTests
+        run: |
+          pytest
 
 
   deploy:
-    - name: Restart docker-compose on the VPS
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        script: |
-          cd work
-          docker-compose down
-          docker pull ddjerqq/private:latest
-          docker-compose up -d
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Restart docker-compose on the VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd work
+            docker-compose down
+            docker pull ddjerqq/private:latest
+            docker-compose up -d
