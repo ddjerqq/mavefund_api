@@ -15,7 +15,7 @@ with (
 
 
 async def main():
-    conn = await asyncpg.connect(user='postgres', password='password', database='postgres', host='localhost')
+    conn = await asyncpg.connect(user='postgres', password='password', database='postgres', host='postgres')
     await conn.execute(user_query)
     await conn.execute(record_query)
     print("created test tables!")
