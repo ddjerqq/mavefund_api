@@ -33,6 +33,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    needs: build
+
     steps:
 
       - uses: actions/checkout@v3
@@ -42,7 +44,7 @@ jobs:
           pip install -r requirements.txt
           docker pull postgres:latest
           docker run --name postgres-test -e POSTGRES_PASSWORD=password -p5432:5432 -d postgres:latest
-          docker exec -it postgres-test bash
+          docker exec -t postgres-test bash
           psql -U root
           create database test;
           exit
@@ -56,6 +58,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+
+    needs: test
 
     steps:
 
