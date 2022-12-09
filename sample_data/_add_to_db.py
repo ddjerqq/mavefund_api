@@ -30,6 +30,7 @@ async def main():
 
     await aio.gather(*futures)
     await repo.save_changes()
+    # TODO rewrite to postgres
 
 
 aio.run(main())

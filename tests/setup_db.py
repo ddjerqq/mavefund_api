@@ -1,9 +1,10 @@
 import asyncio as aio
 import os
+from os.path import join, realpath, dirname
 import asyncpg
 
 
-PATH = os.path.join(os.getcwd(), "sql")
+PATH = join(dirname(dirname(realpath(__file__))), "sql")
 
 with (
     open(os.path.join(PATH, "0-create-model-user.sql")) as user,
@@ -17,6 +18,7 @@ async def main():
     conn = await asyncpg.connect(user='postgres', password='password', database='postgres', host='localhost')
     await conn.execute(user_query)
     await conn.execute(record_query)
+    print("created test tables!")
 
 
 if __name__ == "__main__":
