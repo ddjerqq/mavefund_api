@@ -11,7 +11,7 @@ async def main():
     async with asyncpg.connect(
             user='postgres',
             password='password',
-            database='test',
+            database='postgres',
             host='localhost'
     ) as conn:
         await conn.execute(user)
