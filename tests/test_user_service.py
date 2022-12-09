@@ -4,12 +4,12 @@ import pytest
 
 import asyncpg
 
-from models import User
-from services import UserService
+from src.models import User
+from src.services import UserService
 
 
 async def get_user_service() -> UserService:
-    pool = await asyncpg.create_pool(user='postgres', password='password', database='mavefund_test', host='localhost')
+    pool = await asyncpg.create_pool(user='postgres', password='password', database='test', host='localhost')
     return UserService(pool)
 
 

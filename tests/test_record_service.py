@@ -1,11 +1,11 @@
 import pytest
 
 import asyncpg
-from services import RecordService
+from src.services import RecordService
 
 
 async def get_record_service() -> RecordService:
-    pool = await asyncpg.create_pool(user='postgres', password='password', database='mavefund_test', host='localhost')
+    pool = await asyncpg.create_pool(user='postgres', password='password', database='test', host='localhost')
     return RecordService(pool)
 
 

@@ -7,15 +7,12 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
 
-    # CI
     - name: Docker login
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -30,8 +27,27 @@ jobs:
     - name: Docker push
       run: |
         docker push ddjerqq/private:latest
-        
-    # CD
+
+
+  test:
+    - name: Setup Database
+      run: |
+        pip install -r requirements.txt
+        docker pull postgres:latest
+        docker run --name postgres-test -e POSTGRES_PASSWORD=password -p5432:5432 -d postgres:latest
+        docker exec -it postgres-test bash
+        psql -U root
+        create database test;
+        exit
+        exit
+        python ./tests/setup_db.py
+
+    - name: Run PyTests
+      run: |
+        pytest
+
+
+  deploy:
     - name: Restart docker-compose on the VPS
       uses: appleboy/ssh-action@master
       with:
