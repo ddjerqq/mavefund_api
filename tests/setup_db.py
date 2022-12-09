@@ -1,13 +1,16 @@
 import asyncio as aio
 import os
-
 import asyncpg
 
-print(os.getcwd())
-print(os.listdir(os.getcwd()))
-with open("../sql/0-create-model-user.sql") as user, open("../sql/0-create-model-record.sql") as record:
-    user = user.read()
-    record = record.read()
+
+PATH = os.path.join(os.getcwd(), "sql")
+
+with (
+    open(os.path.join(PATH, "0-create-model-user.sql")) as user,
+    open(os.path.join(PATH, "0-create-model-record.sql")) as record,
+):
+    user_query = user.read()
+    record_query = record.read()
 
 
 async def main():
@@ -17,8 +20,8 @@ async def main():
             database='postgres',
             host='localhost'
     ) as conn:
-        await conn.execute(user)
-        await conn.execute(record)
+        await conn.execute(user_query)
+        await conn.execute(record_query)
 
 
 if __name__ == "__main__":
