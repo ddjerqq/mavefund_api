@@ -39,13 +39,21 @@ class IndexRouter:
             response_class=HTMLResponse
         )
 
-        # self.router.add_api_route(
-        #     "/dashboard",
-        #     self.dashboard,
-        #     methods=["GET"],
-        #     description="get the dashboard page",
-        #     response_class=HTMLResponse
-        # )
+        self.router.add_api_route(
+            "/plans",
+            self.plans,
+            methods=["GET"],
+            description="get the plans page",
+            response_class=HTMLResponse
+        )
+
+        self.router.add_api_route(
+            "/chart",
+            self.chart_view,
+            methods=["GET"],
+            description="get the about page",
+            response_class=HTMLResponse
+        )
 
     async def index(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
         if req.user:
@@ -59,9 +67,10 @@ class IndexRouter:
     async def register(self, req: Request) -> "_TemplateResponse":
         return render_template("register.html", {"request": req})
 
-    # async def dashboard(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
-    #     if req.cookies.get("token"):
-    #         user = await self.auth.get_user_from_token(req.cookies.get("token"))
-    #         return render_template("dashboard.html", {"request": req, "user": user})
-    #     else:
-    #         return RedirectResponse(url="/login")
+    async def plans(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+        return render_template("plans.html", {"request": req})
+
+    async def chart_view(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+        if req.user:
+            return render_template("chart.html", {"request": req})
+        return RedirectResponse("/login")

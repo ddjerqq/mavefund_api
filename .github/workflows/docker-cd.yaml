@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Refresh Docker on SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: root
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: |
+          cd work
+          docker-compose down
+          docker pull ddjerqq/private:latest
+          docker-compose up -d

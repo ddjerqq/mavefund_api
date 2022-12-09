@@ -21,18 +21,23 @@ load_dotenv()
 PATH = dirname(dirname(realpath(__file__)))
 
 # create the app
-app = FastAPI()
+app = FastAPI(
+    docs_url=None,
+    redoc_url=None,
+)
 
 
 @app.exception_handler(500)
-async def internal_server_error_handler(req: Request, exc: Exception):
-    logger.exception("500 internal server error", exc_info=exc)
-    return render_template("error.html", {"request": req}, status_code=500)
+async def internal_server_error_handler(req: Request, _exc: Exception):
+    return render_template(
+        "error.html",
+        {"request": req, "error_message": None},
+        status_code=500
+    )
 
 
 @app.exception_handler(404)
 async def not_found_error_handler(req: Request, _exc: Exception):
-    logger.info(f"404: {req}")
     return render_template("not_found.html", {"request": req}, status_code=404)
 
 
@@ -88,7 +93,7 @@ async def startup():
 
 # make https redirect work
 if __name__ == "__main__":
-    time.sleep(5)
+    time.sleep(3)
     uvicorn.run(
         app,
         ssl_certfile=join(PATH, "cert", "server.crt"),
