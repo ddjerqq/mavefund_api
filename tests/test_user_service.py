@@ -1,40 +1,52 @@
+import os
 import random
-
 import pytest
-
 import asyncpg
+from dotenv import load_dotenv
 
 from src.models import User
 from src.services import UserService
 
 
+load_dotenv()
+
+
 async def get_user_service() -> UserService:
-    pool = await asyncpg.create_pool(user='postgres', password='password', database='test', host='localhost')
+    pool = await asyncpg.create_pool(
+        user='postgres',
+        password=os.getenv("POSTGRES_PASSWORD"),
+        database='postgres',
+        host=os.getenv("HOST")
+    )
     return UserService(pool)
 
 
 @pytest.mark.asyncio
 async def test_get_all():
     user_service = await get_user_service()
-    await user_service.get_all()
+    users = await user_service.get_all()
+    assert len(users) > 0
 
 
 @pytest.mark.asyncio
 async def test_get_by_email():
     user_service = await get_user_service()
-    await user_service.get_by_email("test")
+    user = await user_service.get_by_email("test")
+    assert user is not None
 
 
 @pytest.mark.asyncio
 async def test_get_by_username():
     user_service = await get_user_service()
-    await user_service.get_by_username("test")
+    user = await user_service.get_by_username("test")
+    assert user is not None
 
 
 @pytest.mark.asyncio
 async def test_get_by_id():
     user_service = await get_user_service()
-    await user_service.get_by_id(1)
+    user = await user_service.get_by_id(1)
+    assert user is not None
 
 
 @pytest.mark.asyncio
@@ -48,6 +60,10 @@ async def test_add():
         rank=0
     )
     await user_service.add(user)
+
+    get = await user_service.get_by_id(user.id)
+    assert get is not None
+
     await user_service.delete(user.id)
 
 
@@ -69,6 +85,7 @@ async def test_update():
 
     get_user = await user_service.get_by_id(1)
     assert get_user.username == "test2"
+
     get_user.username = "test"
     await user_service.update(get_user)
 
@@ -76,13 +93,11 @@ async def test_update():
 @pytest.mark.asyncio
 async def test_delete():
     user_service = await get_user_service()
-    await user_service.delete(1)
-    await user_service.get_all()
+    user = await user_service.get_by_id(1)
 
-    await user_service.add(User(
-        id=1,
-        username="test",
-        email="test",
-        password_hash="test",
-        rank=0
-    ))
+    await user_service.delete(user.id)
+
+    get_user = await user_service.get_by_id(1)
+    assert get_user is None
+
+    await user_service.add(user)

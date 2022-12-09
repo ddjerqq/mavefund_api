@@ -1,39 +1,56 @@
+import os
 import pytest
-
 import asyncpg
+from dotenv import load_dotenv
+
 from src.services import RecordService
 
 
+load_dotenv()
+
+
 async def get_record_service() -> RecordService:
-    pool = await asyncpg.create_pool(user='postgres', password='password', database='test', host='localhost')
+    pool = await asyncpg.create_pool(
+        user='postgres',
+        password=os.getenv("POSTGRES_PASSWORD"),
+        database='postgres',
+        host=os.getenv("HOST")
+    )
     return RecordService(pool)
 
 
 @pytest.mark.asyncio
 async def test_get_all():
     record_service = await get_record_service()
-    await record_service.get_all()
+    records = await record_service.get_all()
+    assert len(records) > 0
 
 
 @pytest.mark.asyncio
 async def test_get_all_by_symbol():
     record_service = await get_record_service()
-    await record_service.get_all_by_symbol("test")
+    records = await record_service.get_all_by_symbol("test")
+    assert len(records) > 0
 
 
 @pytest.mark.asyncio
 async def test_get_by_id():
     record_service = await get_record_service()
-    await record_service.get_by_id(1)
+    rec = await record_service.get_by_id(1)
+    assert rec is not None
 
 
 @pytest.mark.asyncio
 async def test_add():
     record_service = await get_record_service()
+
     record = await record_service.get_by_id(1)
     record.id = 2
 
     await record_service.add(record)
+
+    record = await record_service.get_by_id(2)
+    assert record is not None
 
     await record_service.delete(2)
 
@@ -51,10 +68,11 @@ async def test_add_existing():
 async def test_update():
     record_service = await get_record_service()
     record = await record_service.get_by_id(1)
-    record.symbol = "test"
+    record.symbol = "test2"
     await record_service.update(record)
 
     get_record = await record_service.get_by_id(1)
+    assert get_record.symbol == "test2"
 
     # reset
     get_record.symbol = "test"
@@ -67,6 +85,7 @@ async def test_delete():
     record = await record_service.get_by_id(1)
 
     await record_service.delete(1)
+
     rec = await record_service.get_by_id(1)
     assert rec is None
 

@@ -39,15 +39,9 @@ jobs:
 
       - uses: actions/checkout@v3
 
-      - name: Setup Database
-        run: |
-          pip install -r requirements.txt
-          docker pull postgres:latest
-          docker run --name postgres-test -e POSTGRES_PASSWORD=password -p5432:5432 -d postgres:latest
-          python ./tests/setup_db.py
-
       - name: Run PyTests
         run: |
+          pip install -r requirements.txt
           pytest
 
 
