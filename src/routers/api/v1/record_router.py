@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 
 from src.data import ApplicationDbContext
 from src.models import Record
+from src.dependencies.auth import admin_only
 
 
 class RecordRouter:
@@ -13,7 +14,10 @@ class RecordRouter:
     def __init__(self, db: ApplicationDbContext):
         self.db = db
 
-        self.router = APIRouter(prefix="/records")
+        self.router = APIRouter(
+            prefix="/records",
+            dependencies=[Depends(admin_only)],
+        )
 
         self.router.add_api_route(
             "/get/all",

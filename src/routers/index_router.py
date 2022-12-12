@@ -57,7 +57,7 @@ class IndexRouter:
 
     async def index(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
         if req.user:
-            return render_template("index.html", {"request": req})
+            return render_template("index.html", {"request": req, "tickers": {"AAPL": "Apple Inc.", "MSFT": "Microsoft Corporation"}})
         else:
             return RedirectResponse(url="/login")
 
@@ -67,8 +67,21 @@ class IndexRouter:
     async def register(self, req: Request) -> "_TemplateResponse":
         return render_template("register.html", {"request": req})
 
+
+    async def logout(self, req: Request) -> RedirectResponse:
+        req.cookies.pop("user_id")
+        return RedirectResponse(url="/login")
+
+
+    async def manage_subscription(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+        if req.user:
+            return render_template("manage_subscription.html", {"request": req})
+        return RedirectResponse("/login")
+
+
     async def plans(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
         return render_template("plans.html", {"request": req})
+
 
     async def chart_view(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
         if req.user:

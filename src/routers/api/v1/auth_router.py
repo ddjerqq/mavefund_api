@@ -32,8 +32,6 @@ class AuthRouter:
         user = User.new(register.username.lower(), register.email.lower(), register.password, 0)
         await self.db.users.add(user)
 
-        print(user.password_hash)
-
         return user.jwt_token
 
     async def login(self, login: UserLogin) -> str:
