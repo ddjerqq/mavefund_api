@@ -1,151 +1,98 @@
-<!DOCTYPE html>
-<html style="font-size: 16px;" lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8">
-    <meta name="keywords" content="Premium Plans, $0, $29, $59, $139, INTUITIVE">
-    <meta name="description" content="">
-    <title>Premium Plans - MaveFund</title>
-    <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
-    <link rel="stylesheet" href="../static/css/nicepage.css" media="screen">
-    <link rel="stylesheet" href="../static/css/plans.css" media="screen">
-    <script class="u-script" type="text/javascript" src="../static/js/jquery.js" defer=""></script>
-    <script class="u-script" type="text/javascript" src="../static/js/nicepage.js" defer=""></script>
-    <link id="u-theme-google-font" rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i|Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i">
-    <link id="u-page-google-font" rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i">
-    <meta name="theme-color" content="#0d0d0d">
-    <meta property="og:title" content="plans">
-    <meta property="og:description" content="">
-    <meta property="og:type" content="website">
-</head>
-<body class="u-body u-stick-footer u-xl-mode" data-lang="en">
-<header class="u-clearfix u-header u-sticky u-header" id="sec-ca57">
-    <div class="u-clearfix u-sheet u-sheet-1">
-        <nav class="u-menu u-menu-one-level u-offcanvas u-menu-1">
-            <div class="menu-collapse">
-                <a class="u-button-style u-nav-link" href="#" style="padding: 10px 14px; font-size: calc(1em + 20px);">
-                    <svg class="u-svg-link" viewBox="0 0 24 24">
-                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-7fd6"></use>
-                    </svg>
-                    <svg class="u-svg-content" version="1.1" id="svg-7fd6" viewBox="0 0 16 16" x="0px" y="0px"
-                         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-                        <g>
-                            <rect y="1" width="16" height="2"></rect>
-                            <rect y="7" width="16" height="2"></rect>
-                            <rect y="13" width="16" height="2"></rect>
-                        </g>
-                    </svg>
-                </a>
-            </div>
-            <div class="u-custom-menu u-nav-container">
-                <ul class="u-nav u-unstyled">
-                    <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/plans" style="padding: 20px;">Premium
-                        Plans</a>
-                    </li>
-                    <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/" style="padding: 20px;">Home</a>
-                    </li>
-                    <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/login" style="padding: 20px;">login</a>
-                    </li>
-                    <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/register"
-                                              style="padding: 20px 1px 20px 20px;">register</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="u-custom-menu u-nav-container-collapse">
-                <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
-                    <div class="u-inner-container-layout u-sidenav-overflow">
-                        <div class="u-menu-close"></div>
-                        <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2">
-                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/plans">Premium Plans</a>
-                            </li>
-                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/">Home</a>
-                            </li>
-                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/login">login</a>
-                            </li>
-                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/register">register</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
-            </div>
-        </nav>
-        <a href="/" class="u-image u-logo u-image-1" data-image-width="172" data-image-height="106"
-           title="Home">
-            <img src="../static/images/mavefund.png" class="u-logo-image u-logo-image-1" alt="mavefund logo">
-        </a>
-    </div>
-</header>
-<section class="u-align-center u-clearfix u-section-1" id="carousel_1012">
+{% extends "base.html" %}
+
+{% block title %}Plans{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="../static/css/plans.css">
+    <script src="https://js.stripe.com/v3"></script>
+    <script src="../static/js/stripe.js"></script>
+{% endblock %}
+
+{% block body %}
+
+<section class="u-align-center u-clearfix u-section-1" id="carousel_cb5a">
     <div class="u-clearfix u-sheet u-sheet-1">
         <h1 class="u-text u-text-body-alt-color u-text-1">Premium Plans</h1>
-        <div class="u-clearfix u-expanded-width u-gutter-16 u-layout-wrap u-layout-wrap-1">
-            <div class="u-gutter-0 u-layout">
-                <div class="u-layout-row">
-                    <div class="u-container-style u-gradient u-layout-cell u-left-cell u-radius-30 u-shape-round u-size-20 u-layout-cell-1">
-                        <div class="u-container-layout u-container-layout-1">
-                            <h5 class="u-align-center u-text u-text-default u-text-2">basic</h5>
-                            <h2 class="u-align-center u-text u-text-default u-text-3">$0.99</h2>
-                            <p class="u-align-center u-text u-text-4">per mounth</p>
-                            <div class="u-border-2 u-border-black u-line u-line-horizontal u-line-1"></div>
-                            <ul class="u-align-left u-text u-text-5">
-                                <li>Download all 10,000 CSV K files.</li>
-                                <li>Dashboard displays all companies.</li>
-                            </ul>
-                            <a href="https://nicepage.best"
-                               class="u-border-none u-border-radius-50 u-btn u-btn-round u-button-style u-text-palette-1-base u-white u-btn-1">get
-                                plan</a>
-                        </div>
-                    </div>
-                    <div class="cell-temp-clone u-container-style u-gradient u-layout-cell u-left-cell u-radius-30 u-shape-round u-size-20 u-layout-cell-2">
-                        <div class="u-container-layout u-container-layout-2">
-                            <h5 class="u-align-center u-text u-text-default u-text-6">Premium</h5>
-                            <h2 class="u-align-center u-text u-text-default u-text-7">$1.99</h2>
-                            <p class="u-align-center u-custom-font u-font-lato u-text u-text-8">per mounth</p>
-                            <div class="u-border-2 u-border-black u-line u-line-horizontal u-line-2"></div>
-                            <ul class="u-align-left u-custom-font u-font-lato u-text u-text-9">
-                                <li>Download all 10,000 CSV K files.</li>
-                                <li>Get quarterly data.</li>
-                                <li>Dashboard displays all companies.</li>
-                                <li>API key for the Python library, with access to K database.</li>
-                            </ul>
-                            <a href="https://nicepage.best"
-                               class="u-border-radius-50 u-btn u-btn-round u-button-style u-text-palette-1-base u-white u-btn-2">get
-                                plan</a>
-                        </div>
-                    </div>
-                    <div class="cell-temp-clone u-container-style u-gradient u-layout-cell u-left-cell u-radius-30 u-shape-round u-size-20 u-layout-cell-3">
-                        <div class="u-container-layout u-container-layout-3">
-                            <h5 class="u-align-center u-text u-text-default u-text-10">SUPER</h5>
-                            <h2 class="u-align-center u-text u-text-default u-text-11">$2.99</h2>
-                            <p class="u-align-center u-text u-text-12">per mounth</p>
-                            <div class="u-border-2 u-border-black u-line u-line-horizontal u-line-3"></div>
-                            <ul class="u-align-left u-text u-text-13">
-                                <li>Download all 10,000 CSV files</li>
-                                <li>Get quarterly data.</li>
-                                <li>Dashboard displays all companies.</li>
-                                <li>API key for the Python library, with access to both K and Q databases.</li>
-                            </ul>
-                            <a href="https://nicepage.best"
-                               class="u-border-radius-50 u-btn u-btn-round u-button-style u-text-palette-1-base u-white u-btn-3">get
-                                plan</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="u-expanded-width u-table u-table-responsive u-table-1">
+            <table class="u-table-entity">
+                <colgroup>
+                    <col width="36.2%">
+                    <col width="17%">
+                    <col width="27.9%">
+                    <col width="18.9%">
+                </colgroup>
+                <thead class="u-align-center u-custom-font u-grey-90 u-heading-font u-table-header u-table-header-1">
+                <tr style="height: 52px;">
+                    <th class="u-align-left u-table-cell u-table-cell-1">Compare all plans</th>
+                    <th class="u-gradient u-table-cell u-table-cell-2"><b>BASIC</b>
+                    </th>
+                    <th class="u-gradient u-table-cell u-table-cell-3"><b>PREMIUM</b>
+                    </th>
+                    <th class="u-gradient u-table-cell u-table-cell-4"><b>SUPER</b>
+                        <br>
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="u-align-center u-custom-font u-font-lato u-grey-90 u-table-body u-table-body-1">
+                <tr style="height: 78px;">
+                    <td class="u-align-left u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-5">Price / month</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-text-palette-3-base u-table-cell-6">$0.99</td>
+                    <td class="u-border-2 u-border-no-left u-border-no-right u-border-palette-5-dark-2 u-table-cell u-text-palette-2-base u-table-cell-7">$1.99</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-text-palette-4-base u-table-cell-8">$2.99</td>
+                </tr>
+                <tr style="height: 87px;">
+                    <td class="u-align-left u-border-2 u-border-palette-5-dark-2 u-custom-font u-first-column u-font-lato u-table-cell u-table-cell-9">Access to all 10,000 CSV file</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-10">✔</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-11">✓</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-12">✓</td>
+                </tr>
+                <tr style="height: 87px;">
+                    <td class="u-align-left u-border-2 u-border-palette-5-dark-2 u-first-column u-table-cell u-table-cell-13">Dashboard display for all companies</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-14">✓</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-15">✓</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-16">✓</td>
+                </tr>
+                <tr style="height: 53px;">
+                    <td class="u-align-left u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-17">Get quarterly data</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-18">✕</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-19">✓</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-20">✓</td>
+                </tr>
+                <tr style="height: 87px;">
+                    <td class="u-align-left u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-21">API key with access to Yearly data</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-22">✕</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-23">✓</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-24">✓</td>
+                </tr>
+                <tr style="height: 87px;">
+                    <td class="u-align-left u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-25">API key with access to Quarterly data</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-26">✕</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-27">✕</td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-28">✓</td>
+                </tr>
+                <tr style="height: 63px;">
+                    <td class="u-align-left u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-29"></td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-30">
+                        <a id="checkout-basic"
+                           class="u-btn u-button-style u-palette-2-base u-radius-10 u-text-body-alt-color u-btn-1">get
+                        </a>
+                    </td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-31">
+                        <a id="checkout-premium"
+                           class="u-btn u-button-style u-palette-2-base u-radius-10 u-text-body-alt-color u-btn-2">get
+                        </a>
+                    </td>
+                    <td class="u-border-2 u-border-palette-5-dark-2 u-table-cell u-table-cell-32">
+                        <a id="checkout-super"
+                           class="u-btn u-button-style u-palette-2-base u-radius-10 u-text-body-alt-color u-btn-3">get
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </section>
 
-
-<footer class="u-align-center-md u-align-center-sm u-align-center-xs u-clearfix u-footer u-grey-80" id="sec-1e0e">
-    <div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
-        <p class="u-align-center-lg u-align-center-md u-align-center-xl u-custom-font u-font-lato u-text u-text-1">
-            MaveFund © All rights reserved</p>
-    </div>
-</footer>
-
-</body>
-</html>
+{% endblock %}

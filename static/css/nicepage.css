@@ -1,8 +1,6 @@
-/*begin-commonstyles library*//*!
- * froala_editor v4.0.6 (https://www.froala.com/wysiwyg-editor)
- * License https://froala.com/wysiwyg-editor/terms/
- * Copyright 2014-2021 Froala Labs
- */
+::-webkit-scrollbar {
+    display: none;
+}
 
 .fr-clearfix::after {
   clear: both;
@@ -29,9 +27,9 @@
   background-clip: padding-box; }
 
 .fr-view img.fr-shadow, .fr-view .fr-img-caption.fr-shadow img {
-  -webkit-box-shadow: 10px 10px 5px 0px #cccccc;
-  -moz-box-shadow: 10px 10px 5px 0px #cccccc;
-  box-shadow: 10px 10px 5px 0px #cccccc; }
+  -webkit-box-shadow: 10px 10px 5px 0 #cccccc;
+  -moz-box-shadow: 10px 10px 5px 0 #cccccc;
+  box-shadow: 10px 10px 5px 0 #cccccc; }
 
 .fr-view img.fr-bordered, .fr-view .fr-img-caption.fr-bordered img {
   border: solid 5px #CCC; }
@@ -19776,30 +19774,6 @@ a.pswp__share--download:hover {
   }
   to {
     opacity: 1;
-  }
-}
-@keyframes customAnimationIn {
-  from {
-    transform-origin: center center;
-    transform: translate3d(var(--animation-custom_in-translate_x), var(--animation-custom_in-translate_y), 0) scale3d(var(--animation-custom_in-scale), var(--animation-custom_in-scale), var(--animation-custom_in-scale)) rotate3d(0, 0, 1, var(--animation-custom_in-rotate));
-    opacity: var(--animation-custom_in-opacity);
-  }
-  to {
-    transform-origin: center center;
-    transform: translate3d(-50% !important, -50% !important, 0);
-    opacity: 1;
-  }
-}
-@keyframes customAnimationOut {
-  from {
-    transform-origin: center center;
-    transform: translate3d(-50% !important, -50% !important, 0);
-    opacity: 1;
-  }
-  to {
-    transform-origin: center center;
-    transform: translate3d(var(--animation-custom_in-translate_x), var(--animation-custom_in-translate_y), 0) scale3d(var(--animation-custom_in-scale), var(--animation-custom_in-scale), var(--animation-custom_in-scale)) rotate3d(0, 0, 1, var(--animation-custom_in-rotate));
-    opacity: var(--animation-custom_in-opacity);
   }
 }
 .customAnimationIn {
