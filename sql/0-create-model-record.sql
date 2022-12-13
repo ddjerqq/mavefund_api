@@ -5,7 +5,7 @@ CREATE TABLE stock_record
         UNIQUE,
     company_name                      VARCHAR(32)    NOT NULL,
     symbol                            VARCHAR(16)    NOT NULL,
-    symbol_date                       DATE           NOT NULL,
+    symbol_date                       VARCHAR(16)    NOT NULL,
 
     -- growth profitability
     gp_revenue_usd_mil                INTEGER,
