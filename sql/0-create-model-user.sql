@@ -9,7 +9,7 @@ CREATE TABLE app_user
         UNIQUE,
     password_hash VARCHAR(128)   NOT NULL,
     rank          SMALLINT       NOT NULL
-        DEFAULT 0
+        DEFAULT -1
 );
 
 CREATE UNIQUE INDEX app_user_id_uindex
