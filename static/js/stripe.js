@@ -1,9 +1,6 @@
-const BASIC_PRICE_ID = "price_1MDUQrLGZqgNQZ5xlffZbFP8";
-const PREMIUM_PRICE_ID = "price_1MDUQ6LGZqgNQZ5xVSB30Byw";
-const SUPER_PRICE_ID = "price_1MDUOMLGZqgNQZ5xnDIliHKM";
-
-
-const stripe = Stripe("pk_test_51MClgyLGZqgNQZ5xQeSSLOkrHtrhYRDQTe7jCyx9ZeVdCVPOb75mQ79SBeKA1GCjCI9Ip9HLbw6Q6OR5TQfNmNUK00J9Kz4qAu");
+const BASIC_PRICE_ID = "price_1MErGvEjj2jVldrPKEwsnn5D";
+const PREMIUM_PRICE_ID = "price_1MErHjEjj2jVldrPdHTAFxmZ";
+const SUPER_PRICE_ID = "price_1MErIWEjj2jVldrPberJPlDD";
 
 
 async function createCheckoutSession(priceId) {
@@ -26,21 +23,33 @@ document
         document
             .getElementById("checkout-basic")
             .addEventListener("click", async () => {
-                let session = createCheckoutSession(BASIC_PRICE_ID);
-                stripe.redirectToCheckout({ sessionId: session.id });
+                let session = await createCheckoutSession(BASIC_PRICE_ID);
+                if (session.success === true) {
+                    // window.location.href = session.url;
+                } else {
+                    alert(session.message);
+                }
             });
 
         document
             .getElementById("checkout-premium")
             .addEventListener("click", async () => {
-                let session = createCheckoutSession(PREMIUM_PRICE_ID);
-                stripe.redirectToCheckout({ sessionId: session.id });
+                let session = await createCheckoutSession(PREMIUM_PRICE_ID);
+                if (session.success === true) {
+                    window.location.href = session.url;
+                } else {
+                    alert(session.message);
+                }
             });
 
         document
             .getElementById("checkout-super")
             .addEventListener("click", async () => {
-                let session = createCheckoutSession(SUPER_PRICE_ID);
-                stripe.redirectToCheckout({ sessionId: session.id });
+                let session = await createCheckoutSession(SUPER_PRICE_ID);
+                if (session.success === true) {
+                    window.location.href = session.url;
+                } else {
+                    alert(session.message);
+                }
             });
     })

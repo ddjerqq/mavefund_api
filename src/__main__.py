@@ -47,7 +47,8 @@ async def not_found_error_handler(req: Request, _exc: Exception):
 async def forbidden_error_handler(req: Request, _exc: Exception):
     return render_template(
         "error.html",
-        {"request": req, "error_message": "You do not have access to this resource."},
+        {"request": req,
+         "error_message": "You do not have access to this resource."},
         status_code=403
     )
 
@@ -55,10 +56,10 @@ async def forbidden_error_handler(req: Request, _exc: Exception):
 @app.on_event("startup")
 async def startup():
     db = await ApplicationDbContext.connect(
-        host="postgres",
-        user="postgres",
-        password="password",
-        database="mavefund"
+        host=os.getenv('POSTGRES_HOST', "postgres"),
+        user=os.getenv('POSTGRES_USER', "postgres"),
+        password=os.getenv('POSTGRES_PASSWORD', "postgres"),
+        database=os.getenv('POSTGRES_DB', "postgres")
     )
 
     # initialize routers

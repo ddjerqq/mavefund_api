@@ -3,6 +3,8 @@
 ./.postgres/
 ./.postgres/*
 .env
+stripe
+__pycache__/
 /.postgres/
 /.postgres/base/
 /.postgres/global/
