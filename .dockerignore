@@ -1,9 +1,8 @@
-./git/*
-./.postgres/
-./.postgres/*
-./idea/*
-./github/*
-./pytest_cache/*
-./mavefund_library/*
-./sample_data/*
+/git/
+/.postgres/
+/idea/
+/github/
+/pytest_cache/
+/sample_data/
+/mavefund_library/
 README.md
