@@ -69,25 +69,25 @@ class Profitability(BaseModel):
 class Growth(BaseModel):
     symbol_date: date | str
 
-    p_revenue_perc_over_1_year_average: float | None
-    p_revenue_perc_over_3_years_average: float | None
-    p_revenue_perc_over_5_years_average: float | None
-    p_revenue_perc_over_10_years_average: float | None
+    g_revenue_perc_over_1_year_average: float | None
+    g_revenue_perc_over_3_years_average: float | None
+    g_revenue_perc_over_5_years_average: float | None
+    g_revenue_perc_over_10_years_average: float | None
 
-    p_operating_income_perc_over_1_year_average: float | None
-    p_operating_income_perc_over_3_years_average: float | None
-    p_operating_income_perc_over_5_years_average: float | None
-    p_operating_income_perc_over_10_years_average: float | None
+    g_operating_income_perc_over_1_year_average: float | None
+    g_operating_income_perc_over_3_years_average: float | None
+    g_operating_income_perc_over_5_years_average: float | None
+    g_operating_income_perc_over_10_years_average: float | None
 
-    p_net_income_perc_over_1_year_average: float | None
-    p_net_income_perc_over_3_years_average: float | None
-    p_net_income_perc_over_5_years_average: float | None
-    p_net_income_perc_over_10_years_average: float | None
+    g_net_income_perc_over_1_year_average: float | None
+    g_net_income_perc_over_3_years_average: float | None
+    g_net_income_perc_over_5_years_average: float | None
+    g_net_income_perc_over_10_years_average: float | None
 
-    p_eps_perc_over_1_year_average: float | None
-    p_eps_perc_over_3_years_average: float | None
-    p_eps_perc_over_5_years_average: float | None
-    p_eps_perc_over_10_years_average: float | None
+    g_eps_perc_over_1_year_average: float | None
+    g_eps_perc_over_3_years_average: float | None
+    g_eps_perc_over_5_years_average: float | None
+    g_eps_perc_over_10_years_average: float | None
 
 
 class CashFlow(BaseModel):
