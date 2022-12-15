@@ -62,7 +62,7 @@ class StripeRouter:
 
     async def create_checkout_session(self, req: Request) -> dict:
         if req.user is None:
-            return {"status": "fail", "message": "user not found"}
+            return {"status": "fail", "message": "Please log in or register before subscribing."}
 
         data = await req.json()
         price_id = data["priceId"]
@@ -74,8 +74,8 @@ class StripeRouter:
         checkout_session = stripe.checkout.Session.create(
             client_reference_id=req.user.id,
             metadata={"rank": self.PRICE_ID_TO_RANK[price_id]},
-            success_url=f"{os.getenv('DOMAIN_URL')}/api/v1/stripe/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{os.getenv('DOMAIN_URL')}/api/v1/stripe/cancel",
+            success_url="https://mavefund.com/api/v1/stripe/success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url="https://mavefund.com/api/v1/stripe/cancel",
             payment_method_types=["card"],
             mode="subscription",
             line_items=[{
@@ -99,10 +99,10 @@ class StripeRouter:
         }
 
     async def success(self) -> RedirectResponse:
-        return RedirectResponse(url=f"{os.getenv('DOMAIN_URL')}/")  # TODO redirect to dashboard
+        return RedirectResponse(url="/")  # TODO redirect to dashboard
 
-    async def cancel(self, req: Request) -> _TemplateResponse:
-        return render_template("cancel.html", {"request": req, "title": "Cancel"})
+    async def cancel(self, req: Request) -> RedirectResponse:
+        return RedirectResponse(url="/")  # TODO redirect to dashboard
 
     async def webhook(
             self,
@@ -119,9 +119,11 @@ class StripeRouter:
                 secret=webhook_secret
             )
             event_data = event["data"]
+            print(event)
         except Exception as e:
             print(e)
             return {"error": str(e)}
+
 
         if event["type"] == "checkout.session.completed":
             session = event_data["object"]

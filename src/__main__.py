@@ -9,14 +9,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from dotenv import load_dotenv
+from src.utilities import render_template
+from src.middleware import AuthMiddleware
+from src.data import ApplicationDbContext
+from src.routers import IndexRouter, ApiRouter
 
-from .utilities import render_template
-from .middleware import AuthMiddleware
-from .data import ApplicationDbContext
-from .routers import UserRouter, RecordRouter, IndexRouter, ApiRouter
-
-load_dotenv()
 
 PATH = dirname(dirname(realpath(__file__)))
 
