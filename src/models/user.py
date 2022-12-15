@@ -19,8 +19,7 @@ class User(BaseModel):
     email: str
     password_hash: str
     rank: int
-    #       $0.99           $1.99        $2.99
-    """int: basic user = 0, premium = 1, super_user = 2, admin = 3"""
+    """int: no sub = -1, basic user = 0, premium = 1, super_user = 2, admin = 3"""
 
     @classmethod
     def from_db(cls, row: asyncpg.Record) -> User:
