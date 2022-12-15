@@ -24,9 +24,10 @@ document
             .getElementById("checkout-basic")
             .addEventListener("click", async () => {
                 let session = await createCheckoutSession(BASIC_PRICE_ID);
-                if (session.success === true) {
-                    // window.location.href = session.url;
+                if (session.status === "success") {
+                    window.location.href = session.url;
                 } else {
+                    console.log(session.error);
                     alert(session.message);
                 }
             });
@@ -35,9 +36,10 @@ document
             .getElementById("checkout-premium")
             .addEventListener("click", async () => {
                 let session = await createCheckoutSession(PREMIUM_PRICE_ID);
-                if (session.success === true) {
+                if (session.status === "success") {
                     window.location.href = session.url;
                 } else {
+                    console.log(session.error);
                     alert(session.message);
                 }
             });
@@ -46,9 +48,10 @@ document
             .getElementById("checkout-super")
             .addEventListener("click", async () => {
                 let session = await createCheckoutSession(SUPER_PRICE_ID);
-                if (session.success === true) {
+                if (session.status === "success") {
                     window.location.href = session.url;
                 } else {
+                    console.log(session.error);
                     alert(session.message);
                 }
             });

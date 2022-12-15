@@ -2,102 +2,116 @@ import os
 import stripe
 from fastapi import APIRouter, Request, Header, Depends
 
+from starlette.responses import RedirectResponse
+from starlette.templating import _TemplateResponse
+
 from src.dependencies.auth import authenticated_only
 from src.data import ApplicationDbContext
-
-SUPER_SUBSCRIPTION_ID = os.getenv('SUPER_SUBSCRIPTION_ID')
-PREMIUM_SUBSCRIPTION_ID = os.getenv('PREMIUM_SUBSCRIPTION_ID')
-BASIC_SUBSCRIPTION_ID = os.getenv('BASIC_SUBSCRIPTION_ID')
-DOMAIN_URL = os.getenv('DOMAIN_URL')
-PRICE_TO_RANK = {
-    SUPER_SUBSCRIPTION_ID: 2,
-    PREMIUM_SUBSCRIPTION_ID: 1,
-    BASIC_SUBSCRIPTION_ID: 0,
-}
+from src.utilities import render_template
 
 
 class StripeRouter:
+    PRICE_ID_TO_RANK = {
+        os.getenv("BASIC_SUBSCRIPTION_ID"): 0,
+        os.getenv("PREMIUM_SUBSCRIPTION_ID"): 1,
+        os.getenv("SUPER_SUBSCRIPTION_ID"): 2,
+    }
+
     def __init__(self, db: ApplicationDbContext):
         self.db = db
 
         self.router = APIRouter(
             prefix="/stripe",
-            dependencies=[Depends(authenticated_only)],
         )
 
         self.router.add_api_route(
             "/create_checkout_session",
             self.create_checkout_session,
             methods=["POST"],
-            description="create a checkout session"
+            description="create a checkout session",
         )
 
         self.router.add_api_route(
             "/create_portal_session",
             self.create_portal_session,
             methods=["POST"],
-            description="create a portal session"
+            description="create a portal session",
+            dependencies=[Depends(authenticated_only)],
         )
 
-    async def create_checkout_session(self, req: Request):
-        if req.user.rank in [0, 1, 2, 3]:
-            return {'message': "User is already subscribed!", 'success': False}
+        self.router.add_api_route(
+            "/success",
+            self.success,
+            methods=["GET"],
+            description="success page",
+        )
+
+        self.router.add_api_route(
+            "/cancel",
+            self.cancel,
+            methods=["GET"],
+            description="cancel page",
+        )
+
+        self.router.add_api_route(
+            "/webhook",
+            self.webhook,
+            methods=["POST"],
+            description="Stripe Webhook",
+        )
+
+    async def create_checkout_session(self, req: Request) -> dict:
+        if req.user is None:
+            return {"status": "fail", "message": "user not found"}
+
         data = await req.json()
-        price = data["priceId"]
-        rank = PRICE_TO_RANK[price]
-        metadata = {'rank': rank}
+        price_id = data["priceId"]
+
+        # 0 - basic, 1 - premium, 2 - super
+        if req.user.rank >= self.PRICE_ID_TO_RANK[price_id]:
+            return {"status": "fail", "message": "User is already subscribed!"}
 
         checkout_session = stripe.checkout.Session.create(
             client_reference_id=req.user.id,
-            metadata=metadata,
-            success_url=f"{DOMAIN_URL}/api/v1/stripe/success?session_id={{CHECKOUT_SESSION_ID}}&user_id={req.user.id}",
-            cancel_url=f"{DOMAIN_URL}/api/v1/stripe/cancel",
+            metadata={"rank": self.PRICE_ID_TO_RANK[price_id]},
+            success_url=f"{os.getenv('DOMAIN_URL')}/api/v1/stripe/success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{os.getenv('DOMAIN_URL')}/api/v1/stripe/cancel",
             payment_method_types=["card"],
             mode="subscription",
             line_items=[{
-                "price": price,
+                "price": price_id,
                 "quantity": 1,
             }]
         )
-        return {'success': True, "id": checkout_session["id"],
-                'url': checkout_session['url']}
+        return {
+            "status": "success",
+            "id": checkout_session["id"],
+            "url": checkout_session["url"]
+        }
 
     async def create_portal_session(self, req: Request):
         session = stripe.billing_portal.Session.create(
             customer=req.user.id,
             return_url="/"
         )
-        return {"url": session.url}
+        return {
+            "url": session.url
+        }
 
-    async def success(self, req: Request, session_id: str, user_id: str):
-        print(f"success called with session_id: {session_id}")
-        print(f"success called with user_id: {user_id}")
-        return {"message": "success called"}
+    async def success(self) -> RedirectResponse:
+        return RedirectResponse(url=f"{os.getenv('DOMAIN_URL')}/")  # TODO redirect to dashboard
 
-    async def cancel(self, req: Request):
-        print("cancel called")
-        return {"message": "cancel called"}
+    async def cancel(self, req: Request) -> _TemplateResponse:
+        return render_template("cancel.html", {"request": req, "title": "Cancel"})
 
-
-class StripeWebhookRouter:
-    def __init__(self, db: ApplicationDbContext):
-        self.db = db
-
-        self.router = APIRouter(
-            prefix="/stripe",
-        )
-
-        self.router.add_api_route(
-            "/webhook",
-            self.webhook_received,
-            methods=["POST"],
-            description="Stripe Webhook"
-        )
-
-    async def webhook_received(self, req: Request,
-                               stripe_signature: str = Header(str)):
+    async def webhook(
+            self,
+            req: Request,
+            stripe_signature: str = Header(str)
+    ) -> dict:
         webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
         data = await req.body()
+
         try:
             event = stripe.Webhook.construct_event(
                 payload=data,
@@ -110,15 +124,18 @@ class StripeWebhookRouter:
             return {"error": str(e)}
 
         if event["type"] == "checkout.session.completed":
-            session = event_data['object']
-            metadata = session.get('metadata')
-            if metadata and 'rank' in metadata:
-                rank = int(metadata['rank'])
+            session = event_data["object"]
+            metadata = session.get("metadata")
+            if metadata is not None and "rank" in metadata:
+                rank = int(metadata["rank"])
                 client_reference_id = session.get(
-                    'client_reference_id')  # user id
+                    "client_reference_id"  # user id
+                )
                 user = await self.db.users.get_by_id(int(client_reference_id))
                 user.rank = rank
                 await self.db.users.update(user)
+            return {"status": "success"}
+
         elif event["type"] == "invoice.paid":
             print("invoice.paid")
             # print(event_data)
@@ -126,6 +143,8 @@ class StripeWebhookRouter:
         elif event["type"] == "invoice.payment_failed":
             print("invoice.payment_failed")
             # print(event_data)
+            return {"status": "fail", "message": "payment failed"}
+
         else:
             print("Unhandled event type")
             # print(event_data)

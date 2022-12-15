@@ -29,12 +29,39 @@ app = FastAPI(
 )
 
 
-@app.exception_handler(500)
+@app.exception_handler(Exception)
 async def internal_server_error_handler(req: Request, _exc: Exception):
     return render_template(
         "error.html",
-        {"request": req, "error_message": None},
+        {
+            "request": req,
+            "error_message": None
+        },
         status_code=500
+    )
+
+
+@app.exception_handler(403)
+async def forbidden_error_handler(req: Request, _exc: Exception):
+    return render_template(
+        "error.html",
+        {
+            "request": req,
+            "error_message": "You do not have access to this resource."
+        },
+        status_code=403
+    )
+
+
+@app.exception_handler(401)
+async def unauthorized_error_handler(req: Request, _exc: Exception):
+    return render_template(
+        "error.html",
+        {
+            "request": req,
+            "error_message": "You must login to access this resource."
+        },
+        status_code=401
     )
 
 
@@ -43,23 +70,15 @@ async def not_found_error_handler(req: Request, _exc: Exception):
     return render_template("not_found.html", {"request": req}, status_code=404)
 
 
-@app.exception_handler(403)
-async def forbidden_error_handler(req: Request, _exc: Exception):
-    return render_template(
-        "error.html",
-        {"request": req,
-         "error_message": "You do not have access to this resource."},
-        status_code=403
-    )
 
 
 @app.on_event("startup")
 async def startup():
     db = await ApplicationDbContext.connect(
-        host=os.getenv('POSTGRES_HOST', "postgres"),
-        user=os.getenv('POSTGRES_USER', "postgres"),
-        password=os.getenv('POSTGRES_PASSWORD', "postgres"),
-        database=os.getenv('POSTGRES_DB', "postgres")
+        host="postgres",
+        user="postgres",
+        password=os.getenv("POSTGRES_PASSWORD"),
+        database="mavefund"
     )
 
     # initialize routers
