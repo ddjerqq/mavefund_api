@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends
 
 from src.data import ApplicationDbContext
 from src.models import Record
-from src.dependencies.auth import admin_only
+from src.dependencies.auth import subscriber_only
 
 
 class RecordRouter:
@@ -16,7 +16,7 @@ class RecordRouter:
 
         self.router = APIRouter(
             prefix="/records",
-            dependencies=[Depends(admin_only)],
+            dependencies=[Depends(subscriber_only)],
         )
 
         self.router.add_api_route(
@@ -28,7 +28,7 @@ class RecordRouter:
         )
 
         self.router.add_api_route(
-            "/get/{id}",
+            "/get/{id:int}",
             self.get_by_id,
             methods=["GET"],
             description="get a record",
@@ -39,7 +39,7 @@ class RecordRouter:
             "/add",
             self.add,
             methods=["POST"],
-            description="add a record, admin only.",
+            description="add a record.",
             response_model=None,
         )
 
@@ -47,15 +47,15 @@ class RecordRouter:
             "/update",
             self.update,
             methods=["PUT"],
-            description="update a record, admin only.",
+            description="update a record.",
             response_model=None,
         )
 
         self.router.add_api_route(
-            "/delete",
+            "/delete/{id:int}",
             self.delete,
             methods=["DELETE"],
-            description="delete a record, admin only.",
+            description="delete a record.",
             response_model=None,
         )
 

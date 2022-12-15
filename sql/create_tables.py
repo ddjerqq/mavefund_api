@@ -16,7 +16,7 @@ async def main():
     print("opening sql files done")
 
     async with asyncpg.connect(
-        "postgres",
+        host=os.getenv("HOST"),
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD"),
         database="mavefund",

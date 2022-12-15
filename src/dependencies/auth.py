@@ -1,14 +1,26 @@
 from fastapi import Request, HTTPException
 
 
-async def authenticated_only(req: Request):
-    if req.user is None:
-        raise HTTPException(status_code=401, detail="you are not authorized")
+UNAUTHORIZED = HTTPException(status_code=401, detail="you are not authorized")
+FORBIDDEN = HTTPException(status_code=403, detail="you do not have access to this resource")
 
 
-async def admin_only(req: Request):
+def authenticated_only(req: Request):
     if req.user is None:
-        raise HTTPException(status_code=401, detail="you are not authorized")
+        raise UNAUTHORIZED
+
+
+def subscriber_only(req: Request):
+    if req.user is None:
+        raise UNAUTHORIZED
+
+    if req.user.rank == -1:
+        raise FORBIDDEN
+
+
+def admin_only(req: Request):
+    if req.user is None:
+        raise UNAUTHORIZED
 
     if req.user.rank < 3:
-        raise HTTPException(status_code=403, detail="you are not authorized")
+        raise FORBIDDEN

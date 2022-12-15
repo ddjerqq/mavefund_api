@@ -20,7 +20,7 @@ __all__ = [
 
 
 class GrowthProfitability(BaseModel):
-    symbol_date: date
+    symbol_date: date | str
 
     gp_revenue_usd_mil: int | None
     gp_gross_margin: float | None
@@ -40,7 +40,7 @@ class GrowthProfitability(BaseModel):
 
 
 class ProfitabilityMargin(BaseModel):
-    symbol_date: date
+    symbol_date: date | str
 
     pm_revenue: float | None
     pm_cogs: float | None
@@ -54,7 +54,7 @@ class ProfitabilityMargin(BaseModel):
 
 
 class Profitability(BaseModel):
-    symbol_date: date
+    symbol_date: date | str
 
     p_tax_rate_perc: float | None
     p_net_margin_perc: float | None
@@ -67,7 +67,7 @@ class Profitability(BaseModel):
 
 
 class Growth(BaseModel):
-    symbol_date: date
+    symbol_date: date | str
 
     p_revenue_perc_over_1_year_average: float | None
     p_revenue_perc_over_3_years_average: float | None
@@ -91,7 +91,7 @@ class Growth(BaseModel):
 
 
 class CashFlow(BaseModel):
-    symbol_date: date
+    symbol_date: date | str
 
     cf_operating_cash_flow_growth_perc_yoy: float | None
     cf_free_cash_flow_growth_perc_yoy: float | None
@@ -101,7 +101,7 @@ class CashFlow(BaseModel):
 
 
 class FinancialHealth(BaseModel):
-    symbol_date: date
+    symbol_date: date | str
 
     fh_cash_and_short_term_investments: float | None
     fh_accounts_receivable: float | None
@@ -126,7 +126,7 @@ class FinancialHealth(BaseModel):
 
 
 class Liquidity(BaseModel):
-    symbol_date: date
+    symbol_date: date | str
 
     lqd_current_ratio: float | None
     lqd_quick_ratio: float | None
@@ -135,7 +135,7 @@ class Liquidity(BaseModel):
 
 
 class Efficiency(BaseModel):
-    symbol_date: date
+    symbol_date: date | str
 
     efc_days_sales_outstanding: float | None
     efc_days_inventory: float | None
@@ -154,7 +154,7 @@ class Record(BaseModel):
     company_name: str  # use this like an ID
     # NOTE: stock ticker symbol
     symbol: str  # APL and so on
-    symbol_date: date
+    symbol_date: date | str
 
     growth_profitability: GrowthProfitability
     profitability_margin: ProfitabilityMargin

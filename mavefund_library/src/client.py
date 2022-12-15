@@ -32,8 +32,8 @@ class Client:
             symbol: str,
             *,
             data_type: DataType = DataType.ALL,
-            start_date: str,
-            end_date: str,
+            start_date: str = None,
+            end_date: str = None,
     ) -> list[Record]:
         """Get records for a given company.
 
@@ -44,17 +44,18 @@ class Client:
         :return: A list of records.
         """
         response = self.__session.get(
-            f"{self.__base_url}/api/v1/records/{symbol}",
-            params={
-                "data_type": data_type.value,
-                "start_date": start_date,
-                "end_date": end_date,
-            },
+            f"{self.__base_url}/api/v1/records/all",  # {symbol}
+            # params={
+            #     "data_type": data_type.value,
+            #     "start_date": start_date,
+            #     "end_date": end_date,
+            # },
         )
         response.raise_for_status()
         return [
-            Record.from_json(record)
-            for record in response.json()
+            record
+            for record in map(Record.from_json, response.json())
+            if record.symbol == symbol
         ]
 
     def get_records_as_df(
@@ -62,8 +63,8 @@ class Client:
             symbol: str,
             *,
             data_type: DataType = DataType.ALL,
-            start_date: str,
-            end_date: str,
+            start_date: str = None,
+            end_date: str = None,
     ) -> pd.DataFrame:
         """Get records for a given company as a pandas DataFrame.
 

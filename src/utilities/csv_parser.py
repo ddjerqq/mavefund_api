@@ -317,13 +317,17 @@ class CsvDataParser:
         for idx, method in enumerate(methods):
             chunk_records.append(method(chunks[idx]))
 
+        for records in chunk_records:
+            for record in records:
+                record["symbol_date"] = record["date"]
+
         records = []
         for gp, pm, p, g, cf, fh, lqd, efc in zip(*chunk_records):
             record = Record(
                 id=Snowflake(),
                 company_name=name,
                 symbol=symbol,
-                date=gp["date"],
+                symbol_date=gp["date"],
 
                 growth_profitability=GrowthProfitability(**gp),
                 profitability_margin=ProfitabilityMargin(**pm),

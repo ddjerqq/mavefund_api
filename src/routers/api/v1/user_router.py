@@ -36,7 +36,7 @@ class UserRouter:
         )
 
         self.router.add_api_route(
-            "/get/{id}",
+            "/get/{id:int}",
             self.get_by_id,
             methods=["GET"],
             description="get a user",
@@ -60,7 +60,7 @@ class UserRouter:
         )
 
         self.router.add_api_route(
-            "/delete",
+            "/delete/{id:int}",
             self.delete,
             methods=["DELETE"],
             description="delete a user, admin only.",

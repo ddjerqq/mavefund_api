@@ -16,6 +16,10 @@ from .client import Client
 from .async_client import AsyncClient
 from .data_type import DataType
 
+# test_python_api
+# 1Password
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDUyMjY3NDY5NDAyNzE2NzAiLCJleHAiOjE2NzA5NTQxMzZ9.Fc2kno3-y6ZDSOtITXtatz-RWFSQ8CRw1sbGTznBT70
+
 __all__ = [
     "Record",
     "Client",
