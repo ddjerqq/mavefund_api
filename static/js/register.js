@@ -68,7 +68,7 @@ document
                         error_el.textContent = "Email is already registered";
                     }
                     else {
-                        error_el.textContent = `Something went wrong. ${detail}`;
+                        error_el.textContent = "Email or username already taken.";
                     }
                     break;
 
