@@ -18,8 +18,6 @@ class AuthRouter:
         self.router.add_api_route("/login", self.login, methods=["POST"])
 
     async def register(self, register: UserRegister) -> str:
-        print(register)
-
         if await self.db.users.get_by_email(register.email):
             raise HTTPException(status_code=409,
                                 detail="email is already registered")
@@ -31,8 +29,12 @@ class AuthRouter:
         # TODO: change the rank depending on the payment later, we will also need to verify captcha and
         #  email address
         # TODO dont trust the client, make sure the input is valid.
-        user = User.new(register.username.lower(), register.email.lower(),
-                        register.password, -1)
+        user = User.new(
+            register.username.lower(),
+            register.email.lower(),
+            register.password,
+            -1
+        )
         await self.db.users.add(user)
 
         return user.jwt_token
@@ -41,15 +43,9 @@ class AuthRouter:
         user = await self.db.users.get_by_username(login.username)
 
         if not user:
-            raise HTTPException(status_code=404,
-                                detail="username not registered")
-
-        print(user)
-        print(login)
-        print(Password.compare(user.password_hash, login.password))
+            raise HTTPException(status_code=404, detail="username not registered")
 
         if not Password.compare(user.password_hash, login.password):
-            raise HTTPException(status_code=400,
-                                detail="password is incorrect")
+            raise HTTPException(status_code=400, detail="password is incorrect")
 
         return user.jwt_token

@@ -61,6 +61,8 @@ class StripeRouter:
         )
 
     async def create_checkout_session(self, req: Request) -> dict:
+        print(self.PRICE_ID_TO_RANK)
+
         if req.user is None:
             return {"status": "fail", "message": "Please log in or register before subscribing."}
 

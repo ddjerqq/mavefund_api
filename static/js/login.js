@@ -4,7 +4,7 @@ const password_regex = /^.{8,64}$/;
 
 
 document
-    .getElementById("register-form")
+    .getElementById("login-form")
     .addEventListener("submit", async (_) => {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;

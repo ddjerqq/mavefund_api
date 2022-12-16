@@ -44,6 +44,8 @@ document
                 }
             });
 
+        // TODO redirect to register or login page
+
         document
             .getElementById("checkout-super")
             .addEventListener("click", async () => {
