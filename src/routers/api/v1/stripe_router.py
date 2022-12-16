@@ -98,7 +98,17 @@ class StripeRouter:
             "url": session.url
         }
 
-    async def success(self) -> RedirectResponse:
+    async def success(self, req: Request, session_id: str) -> RedirectResponse:
+
+        session = stripe.checkout.Session.retrieve(session_id)
+
+        if session["payment_status"] == "paid":
+            rank = int(session["metadata"]["rank"])
+            user_id = int(session["client_reference_id"])
+            user = await self.db.users.get_by_id(user_id)
+            user.rank = rank
+            await self.db.users.update(user)
+
         return RedirectResponse(url="/")  # TODO redirect to dashboard
 
     async def cancel(self, req: Request) -> RedirectResponse:

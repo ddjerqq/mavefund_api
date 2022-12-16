@@ -1,5 +1,4 @@
 /.git/*
 /.idea/*
-stripe
 /.postgres/
 /.pytest_cache/
