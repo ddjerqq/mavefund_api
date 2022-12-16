@@ -12,9 +12,9 @@ from src.utilities import render_template
 
 class StripeRouter:
     PRICE_ID_TO_RANK = {
-        os.getenv("BASIC_SUBSCRIPTION_ID"): 0,
-        os.getenv("PREMIUM_SUBSCRIPTION_ID"): 1,
-        os.getenv("SUPER_SUBSCRIPTION_ID"): 2,
+        os.getenv("BASIC_SUBSCRIPTION_MONTHLY_PRICE_ID"): 0,
+        os.getenv("PREMIUM_SUBSCRIPTION_MONTHLY_PRICE_ID"): 1,
+        os.getenv("SUPER_SUBSCRIPTION_MONTHLY_PRICE_ID"): 2,
     }
 
     def __init__(self, db: ApplicationDbContext):
