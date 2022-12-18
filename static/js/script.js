@@ -1,14 +1,13 @@
-// todo make searchbar work
-async function submit(e) {
-    console.log(e);
-    e.preventDefault();
+const $close = document.querySelector(".close")
+const $search = document.querySelector(".search-icon")
+const $input = document.querySelector(".search-input")
+const $wrapper = document.querySelector(".search-wrapper")
 
-    let ticker = document.getElementById("ticker").value;
-
-    if (ticker === "") {
-        alert("Please fill in all fields");
-        return;
-    }
-
-    alert(`you are searching for ${ticker}`);
+const searchToggle = () => {
+	if ($wrapper.classList.contains("active")) $input.value = ''
+    
+    $wrapper.classList.toggle("active")
 }
+
+$search.addEventListener("click", searchToggle)
+$close.addEventListener("click", searchToggle)

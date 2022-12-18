@@ -1,47 +1,59 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - MaveFund</title>
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../static/image/default.jpg">
+</head>
+<body>
+  <main>
+    <div class="logo-nav"><img class="logo" src="../static/image/mavefund.png" alt="logo"></div>
+    <center>
+    <h1 class="heading">Home</h1>
+    <div ><button class="login"><a href="/login">LOGIN</a></button></div>
 
-{% block title %}Home{% endblock %}
+    <nav>
+      <ul>
+      <div >
+          <img src="../static/icon/homepagewhite.png" alt="">
+          <li>
+              <a class="active" href="/">Home</a>
+          </li>
+      </div><br>
+      <div >
+          <img src="../static/icon/dashboardwhite.png" alt="">
+          <li>
+              <a href="/dashboard">Dashboard</a>
+          </li>
+      </div><br>
+      <div >
+          <img src="../static/icon/box.png" alt="">
+          <li>
+              <a href="/packages">Packages</a>
+          </li>
+      </div> <br>
+      </ul>
+    </nav>
 
-{% block head %}
-    {{ super() }}
-    <link rel="stylesheet" href="../static/css/index.css">
-{% endblock %}
-
-{% block body %}
-
-<section class="u-align-center u-clearfix u-palette-1-base u-section-1" id="carousel_d41a">
-    <div class="u-clearfix u-sheet u-sheet-1">
-        <h1 class="u-text u-text-default u-text-1">MaveFund</h1>
-        <div class="u-form u-form-1">
-            <form class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" name="form" style="padding: 10px;">
-                <div class="u-form-group u-form-name u-label-none">
-                    <label for="ticker" class="u-form-control-hidden u-label"></label>
-                    <input type="text" placeholder="Enter ticker" id="ticker" name="name"
-                           class="u-border-4 u-border-palette-2-base u-input u-input-rectangle u-radius-10 u-white"
-                           required="">
-                </div>
-                <div class="u-align-center u-form-group u-form-submit u-label-none">
-                    <input type="submit" value="submit" class="u-form-control-hidden">
-                </div>
-            </form>
+      <div class="content">
+        <div class="search-bar">
+          <div class="search-wrapper">
+            <div class="input-holder">
+                <input type="text" class="search-input" placeholder="Type to search" />
+                <button class="search-icon"><span></span></button>
+            </div>
+            <span class="close"></span>
+          </div>
         </div>
-
-        {% if error %}
-            <p id="error"
-               class="u-align-center u-custom-font u-font-lato u-text u-text-custom-color-25 u-text-2">{{ error }}</p>
-        {% else %}
-            <p id="error"
-               class="u-align-center u-custom-font u-font-lato u-text u-text-custom-color-25 u-text-2"></p>
-        {% endif %}
-
-        {% if tickers %}
-            <ul class="u-align-justify u-text u-text-3">
-                {% for ticker, company in tickers.items() %}
-                    <li><a href="/chart?ticker={{ ticker }}">{{ ticker }} - {{ company }}</a></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-</section>
-
-{% endblock %}
+      </div> 
+  <footer>MaveFund™ All rights reserved</footer> 
+  </main>
+  <script src="../static/js/script.js"></script>
+</body>
+</html>

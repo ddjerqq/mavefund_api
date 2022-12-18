@@ -1,43 +1,60 @@
-{% extends "base.html" %}
-
-{% block title %}Login{% endblock %}
-
-{% block head %}
-    {{ super() }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MaveFund</title>
     <link rel="stylesheet" href="../static/css/login.css">
-    <script type="text/javascript" src="../static/js/login.js" defer=""></script>
-{% endblock %}
-
-{% block body %}
-
-<section class="u-clearfix u-section-1" id="sec-8ff2">
-    <div class="u-clearfix u-sheet u-sheet-1">
-        <div class="u-form u-form-1">
-            <form id="login-form"
-                  class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form"
-                  name="form"
-                  style="padding: 10px;">
-                <div class="u-form-group u-form-name u-label-none">
-                    <label for="username"
-                           class="u-custom-font u-form-control-hidden u-label u-text-font u-label-1"></label>
-                    <input id="username" type="text" placeholder="Enter your Username"
-                           name="name" class="u-border-grey-30 u-input u-input-rectangle u-input-1"
-                           required="" maxlength="32">
-                </div>
-                <div class="u-form-group u-label-none u-form-group-2">
-                    <label for="password" class="u-custom-font u-label u-text-font u-label-2">Password *</label>
-                    <input id="password" type="password" placeholder="Enter your password" name="password"
-                           class="u-border-grey-30 u-input u-input-rectangle u-input-2"
-                           required="required" maxlength="64">
-                </div>
-                <div class="u-align-center u-form-group u-form-submit u-label-none">
-                    <a class="custom-page-typo-item u-btn u-btn-submit u-button-style" >Login</a>
-                    <input id="submit" type="submit" value="submit" class="u-form-control-hidden">
-                </div>
-            </form>
-        </div>
-        <p id="error" class="u-align-center u-custom-font u-font-lato u-text u-text-custom-color-25 u-text-1"></p>
+    <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
+    <script src="../static/js/login.js" defer></script>
+</head>
+<body>
+<div class="container" id="container">
+    <div class="form-container sign-up-container">
+        <form onsubmit="register()" id="register">
+            <h1>Sign up</h1><br>
+            <input id="register-username"
+                   minlength="3"
+                   maxlength="32"
+                   type="text"
+                   placeholder="Username"/>
+            <input id="register-email"
+                   type="email" placeholder="Email"/>
+            <input id="register-password"
+                   type="password" placeholder="Password"/>
+            <button type="submit">Sign Up</button>
+        </form>
     </div>
-</section>
-
-{% endblock %}
+    <div class="form-container sign-in-container">
+        <form onsubmit="login()" id="login">
+            <h1>Sign in</h1><br>
+            <input id="login-username"
+                   minlength="3"
+                   maxlength="32"
+                   type="text"
+                   placeholder="Username"/>
+            <input id="login-password"
+                   type="password" placeholder="Password"/>
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Already have an account?</h1>
+                <p>Log in now!</p>
+                <button class="ghost" id="sign-in">Sign In</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Sign Up Now!</h1>
+                <p>If you don't already have an MaveFund account, create one here!</p>
+                <button class="ghost" id="sign-up">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<p id="error" style="color: #ee2121; font-size: 24px;"></p>
+</body>
+</html>
