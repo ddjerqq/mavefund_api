@@ -5,7 +5,8 @@ from fastapi import APIRouter, HTTPException, Request, Depends
 
 from src.data import ApplicationDbContext
 from src.models import Record
-from src.dependencies.auth import subscriber_only
+from src.models.dto import Symbol, MinimalRecord
+from src.dependencies.auth import subscriber_only, admin_only
 
 
 class RecordRouter:
@@ -23,16 +24,17 @@ class RecordRouter:
             "/get/all",
             self.get_all,
             methods=["GET"],
-            description="get all records",
-            response_model=list[Record],
+            description="get all symbols.",
+            response_model=list[Symbol],
+            dependencies=[Depends(admin_only)],
         )
 
         self.router.add_api_route(
-            "/get/{id:int}",
-            self.get_by_id,
+            "/get/{ticker:str}",
+            self.get_by_ticker,
             methods=["GET"],
-            description="get a record",
-            response_model=Optional[Record],
+            description="get a symbol by it's ticker.",
+            response_model=Optional[Symbol],
         )
 
         self.router.add_api_route(
@@ -41,6 +43,7 @@ class RecordRouter:
             methods=["POST"],
             description="add a record.",
             response_model=None,
+            dependencies=[Depends(admin_only)],
         )
 
         self.router.add_api_route(
@@ -49,6 +52,7 @@ class RecordRouter:
             methods=["PUT"],
             description="update a record.",
             response_model=None,
+            dependencies=[Depends(admin_only)],
         )
 
         self.router.add_api_route(
@@ -57,40 +61,49 @@ class RecordRouter:
             methods=["DELETE"],
             description="delete a record.",
             response_model=None,
+            dependencies=[Depends(admin_only)],
         )
 
-    async def get_all(self, req: Request) -> list[Record]:
-        if req.user.rank != 3:
-            raise self.FORBIDDEN
 
-        return await self.db.records.get_all()
+    async def get_all(self, req: Request) -> list[Symbol]:
+        records = await self.db.records.get_all()
+        ticker_records: dict[str, list[Record]] = {}
 
-    async def get_by_id(self, req: Request, id: int) -> Record | None:
-        if req.user.rank != 3:
-            raise self.FORBIDDEN
-
-        if (record := await self.db.records.get_by_id(id)) is None:
-            raise HTTPException(
-                status_code=404,
-                detail=f"record with id: {id} could not be found"
+        for record in records:
+            records_for_current_symbol = ticker_records.setdefault(
+                record.symbol,
+                [],
             )
+            records_for_current_symbol.append(record)
 
-        return record
+        # possible multiple iteration
+        minified_ticker_records = {
+            ticker: list(map(MinimalRecord.from_record, records))
+            for ticker, records in ticker_records.items()
+        }
 
-    async def add(self, req: Request, record: Record) -> None:
-        if req.user.rank != 3:
-            raise self.FORBIDDEN
+        symbols = [
+            Symbol.from_minimal_records(records)
+            for _, records in minified_ticker_records
+        ]
 
+        return symbols
+
+
+    async def get_by_ticker(self, req: Request, ticker: str) -> Symbol | None:
+        records = await self.db.records.get_all_by_symbol(ticker)
+        minimal_records = list(map(MinimalRecord.from_record, records))
+        symbol = Symbol.from_minimal_records(minimal_records)
+        return symbol
+
+
+    async def add(self, req: Request, record: Symbol) -> None:
         await self.db.records.add(record)
 
-    async def update(self, req: Request, record: Record) -> None:
-        if req.user.rank != 3:
-            raise self.FORBIDDEN
 
+    async def update(self, req: Request, record: Symbol) -> None:
         await self.db.users.update(record)
 
-    async def delete(self, req: Request, id: int) -> None:
-        if req.user.rank != 3:
-            raise self.FORBIDDEN
 
+    async def delete(self, req: Request, id: int) -> None:
         await self.db.users.delete(id)
