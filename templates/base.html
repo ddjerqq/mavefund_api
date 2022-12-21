@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title.capitalize() }} - MaveFund</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
+
+</head>
+
+
+<body>
+
+<main>
+    <div class="logo-nav">
+        <a href="/"><img class="logo" src="../static/image/mavefund.png" alt="logo">
+        </a>
+    </div>
+    <center>
+        <h1 class="heading">{{ title.upper() }}</h1>
+
+        <div>
+            {% if request.user %}
+                <button class="login">
+                    <a href="/logout">LOGOUT</a>
+                </button>
+            {% else %}
+                <button class="login">
+                    <a href="/login">LOGIN</a>
+                </button>
+            {% endif %}
+        </div>
+
+        <div class="nav">
+            <input type="checkbox" id="nav-check">
+            <div class="nav-btn">
+                <label for="nav-check">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
+            </div>
+
+            <nav>
+                <ul>
+                    <div><img src="../static/icon/homepagewhite.png" alt="">
+                        <li>
+                            <a {% if title.lower() == "home" %} class="active" {% endif %}
+                                    href="/">Home</a>
+                        </li>
+                    </div>
+                    <br>
+                    <div><img src="../static/icon/dashboardwhite.png" alt="">
+                        <li>
+                            <a {% if title.lower() == "dashboard" %} class="active" {% endif %}
+                                    href="/dashboard">Dashboard</a>
+                        </li>
+                    </div>
+                    <br>
+                    <div><img src="../static/icon/box.png" alt="">
+                        <li>
+                            <a {% if title.lower() == "premium" %} class="active" {% endif %}
+                                    href="/premium">Premium</a>
+                        </li>
+                    </div>
+                    <br>
+                </ul>
+            </nav>
+
+            {% block content %}
+            {% endblock %}
+
+            <footer>MaveFund™ All rights reserved</footer>
+        </div>
+    </center>
+</main>
+<script src="../static/js/script.js" defer></script>
+<script src="../static/js/stripe.js" defer></script>
+</body>
+</html>

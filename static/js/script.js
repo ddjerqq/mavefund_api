@@ -11,3 +11,9 @@ const searchToggle = () => {
 
 $search.addEventListener("click", searchToggle)
 $close.addEventListener("click", searchToggle)
+
+window.onload = function() {
+    setTimeout(function(){
+        $wrapper.classList.toggle("active")  //example function call.    
+    },250);
+  }

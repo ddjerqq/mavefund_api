@@ -25,7 +25,7 @@ async function register() {
     const username = document.getElementById("register-username").value;
     const email = document.getElementById("register-email").value;
     const password = document.getElementById("register-password").value;
-    const error_el = document.getElementById("error");
+    const error_el = document.getElementById("register-error");
 
     if (!username_regex.test(username)) {
         error_el.textContent = "Invalid username";
@@ -95,9 +95,9 @@ async function register() {
 }
 
 async function login() {
-    const username = document.getElementById("register-username").value;
-    const password = document.getElementById("register-password").value;
-    const error_el = document.getElementById("error");
+    const username = document.getElementById("login-username").value;
+    const password = document.getElementById("login-password").value;
+    const error_el = document.getElementById("login-error");
 
     if (!username_regex.test(username)) {
         error_el.textContent = "Invalid username";

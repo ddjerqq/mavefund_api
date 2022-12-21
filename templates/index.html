@@ -1,59 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - MaveFund</title>
-  <link rel="stylesheet" href="../static/css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/x-icon" href="../static/image/default.jpg">
-</head>
-<body>
-  <main>
-    <div class="logo-nav"><img class="logo" src="../static/image/mavefund.png" alt="logo"></div>
-    <center>
-    <h1 class="heading">Home</h1>
-    <div ><button class="login"><a href="/login">LOGIN</a></button></div>
+{% extends "base.html" %}
 
-    <nav>
-      <ul>
-      <div >
-          <img src="../static/icon/homepagewhite.png" alt="">
-          <li>
-              <a class="active" href="/">Home</a>
-          </li>
-      </div><br>
-      <div >
-          <img src="../static/icon/dashboardwhite.png" alt="">
-          <li>
-              <a href="/dashboard">Dashboard</a>
-          </li>
-      </div><br>
-      <div >
-          <img src="../static/icon/box.png" alt="">
-          <li>
-              <a href="/packages">Packages</a>
-          </li>
-      </div> <br>
-      </ul>
-    </nav>
+{% block content %}
 
-      <div class="content">
+    <div id="container" class="content">
         <div class="search-bar">
-          <div class="search-wrapper">
-            <div class="input-holder">
-                <input type="text" class="search-input" placeholder="Type to search" />
-                <button class="search-icon"><span></span></button>
+            <h1 class="heading">MaveFund</h1>
+            <div class="search-wrapper">
+                <div class="input-holder">
+                    <input type="text" class="search-input" placeholder="Type to search"/>
+                    <button class="search-icon"><span></span></button>
+                </div>
+                <span class="close"></span>
             </div>
-            <span class="close"></span>
-          </div>
         </div>
-      </div> 
-  <footer>MaveFund™ All rights reserved</footer> 
-  </main>
-  <script src="../static/js/script.js"></script>
-</body>
-</html>
+
+        {% if tickers %}
+
+            {% for ticker, company_name in tickers.items() %}
+
+                <li class="company">
+                    <a href="/dashboard?ticker={{ ticker.lower() }}">
+                        {{ ticker.upper() }} - {{ company_name }}
+                    </a>
+                </li>
+
+            {% endfor %}
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}

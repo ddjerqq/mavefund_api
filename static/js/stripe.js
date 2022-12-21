@@ -18,43 +18,32 @@ async function createCheckoutSession(priceId) {
 }
 
 
-document
-    .addEventListener("DOMContentLoaded", () => {
-        document
-            .getElementById("checkout-basic")
-            .addEventListener("click", async () => {
-                let session = await createCheckoutSession(BASIC_PRICE_ID);
-                if (session.status === "success") {
-                    window.location.href = session.url;
-                } else {
-                    console.log(session.error);
-                    alert(session.message);
-                }
-            });
+async function checkout(level) {
+    let session;
+    switch (level) {
+        case 0:
+            // basic
+            session = await createCheckoutSession(BASIC_PRICE_ID);
+            break;
 
-        document
-            .getElementById("checkout-premium")
-            .addEventListener("click", async () => {
-                let session = await createCheckoutSession(PREMIUM_PRICE_ID);
-                if (session.status === "success") {
-                    window.location.href = session.url;
-                } else {
-                    console.log(session.error);
-                    alert(session.message);
-                }
-            });
+        case 1:
+            // premium
+            session = await createCheckoutSession(PREMIUM_PRICE_ID);
+            break;
 
-        // TODO redirect to register or login page
+        case 2:
+            // super
+            session = await createCheckoutSession(SUPER_PRICE_ID);
+            break;
+        default:
+            alert("what are you trying to do exactly??? 🤨🤨🤨");
+            break;
+    }
 
-        document
-            .getElementById("checkout-super")
-            .addEventListener("click", async () => {
-                let session = await createCheckoutSession(SUPER_PRICE_ID);
-                if (session.status === "success") {
-                    window.location.href = session.url;
-                } else {
-                    console.log(session.error);
-                    alert(session.message);
-                }
-            });
-    })
+    if (session.status === "success") {
+        window.location.href = session.url;
+    } else {
+        console.log(session);
+        alert(session.message);
+    }
+}

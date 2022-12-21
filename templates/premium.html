@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="content">
+        <div class="packages">
+            <div class="information">
+                <table class="u-table-entity">
+                    <thead class="u-table-header-1">
+                    <th class="u-table-cell-1">Compare all plans</th>
+                    <th class="u-table-cell-2"><b>BASIC</b>
+                    </th>
+                    <th class="u-table-cell-3"><b>PREMIUM</b>
+                    </th>
+                    <th class="u-table-cell-4"><b>SUPER</b>
+                        <br>
+                    </th>
+                    </thead>
+                    <tbody class="u-table-body-1">
+                    <tr>
+                        <td class="u-table-cell-5">Price / month</td>
+                        <td class="u-table-cell-6">$0.99</td>
+                        <td class="u-table-cell-7">$1.99</td>
+                        <td class="u-table-cell-8">$2.99</td>
+                    </tr>
+                    <tr>
+                        <td class="u-table-cell-9">Access to all 10,000 CSV file</td>
+                        <td class="u-table-cell-10">✔</td>
+                        <td class="u-table-cell-11">✓</td>
+                        <td class="u-table-cell-12">✓</td>
+                    </tr>
+                    <tr>
+                        <td class="u-table-cell-13">Dashboard display for all companies</td>
+                        <td class="u-table-cell-14">✓</td>
+                        <td class="u-table-cell-15">✓</td>
+                        <td class="u-table-cell-16">✓</td>
+                    </tr>
+                    <tr>
+                        <td class="u-table-cell-17">Get quarterly data</td>
+                        <td class="u-table-cell-18">✕</td>
+                        <td class="u-table-cell-19">✓</td>
+                        <td class="u-table-cell-20">✓</td>
+                    </tr>
+                    <tr>
+                        <td class="u-table-cell-21">API key with access to Yearly data</td>
+                        <td class="u-table-cell-22">✕</td>
+                        <td class="u-table-cell-23">✓</td>
+                        <td class="u-table-cell-24">✓</td>
+                    </tr>
+                    <tr>
+                        <td class="u-table-cell-25">API key with access to Quarterly data</td>
+                        <td class="u-table-cell-26">✕</td>
+                        <td class="u-table-cell-27">✕</td>
+                        <td class="u-table-cell-28">✓</td>
+                    </tr>
+                    <tr>
+                        <td class="u-table-cell-29"></td>
+                        <td class="u-table-cell-30">
+                            <button onclick="checkout(0)" class="buy-button">GET</button>
+                        </td>
+                        <td class="u-table-cell-31">
+                            <button onclick="checkout(1)" class="buy-button">GET</button>
+                        </td>
+                        <td class="u-table-cell-32">
+                            <button onclick="checkout(2)" class="buy-button">GET</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
