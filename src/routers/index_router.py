@@ -26,57 +26,76 @@ class IndexRouter:
         self.router.add_api_route(
             "/login",
             self.login,
-            methods=["GET", "POST"],
+            methods=["GET"],
             description="get the login page",
             response_class=HTMLResponse
         )
 
         self.router.add_api_route(
-            "/register",
-            self.register,
-            methods=["GET", "POST"],
-            description="get the register page",
+            "/logout",
+            self.logout,
+            methods=["GET"],
+            description="log the user out",
             response_class=HTMLResponse
         )
 
         self.router.add_api_route(
-            "/plans",
-            self.plans,
+            "/premium",
+            self.premium,
             methods=["GET"],
             description="get the plans page",
             response_class=HTMLResponse
         )
 
         self.router.add_api_route(
-            "/chart",
-            self.chart_view,
+            "/dashboard",
+            self.dashboard,
             methods=["GET"],
             description="get the about page",
             response_class=HTMLResponse
         )
 
     async def index(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
-        return render_template("index.html", {"request": req})
+        return render_template(
+            "index.html",
+            {
+                "request": req,
+                "title": "home",
+            }
+        )
 
-    async def login(self, req: Request) -> "_TemplateResponse":
+    async def login(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+        if req.user:
+            return RedirectResponse(url="/")
+
         return render_template("login.html", {"request": req})
-
-    async def register(self, req: Request) -> "_TemplateResponse":
-        return render_template("register.html", {"request": req})
 
     async def logout(self, req: Request) -> RedirectResponse:
         req.cookies.pop("user_id")
-        return RedirectResponse(url="/login")
+        return RedirectResponse(url="/")
+
+    async def premium(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+        return render_template(
+            "premium.html",
+            {
+                "request": req,
+                "title": "premium",
+            }
+        )
+
+    async def dashboard(self, req: Request, ticker: int = "AAPL") -> "_TemplateResponse" | RedirectResponse:
+        return render_template(
+            "dashboard.html",
+            {
+                "request": req,
+                "title": "dashboard",
+                "ticker": ticker,
+            }
+        )
+
 
     async def manage_subscription(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
         if req.user:
             return render_template("manage_subscription.html", {"request": req})
         return RedirectResponse("/login")
 
-    async def plans(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
-        return render_template("plans.html", {"request": req})
-
-    async def chart_view(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
-        if req.user:
-            return render_template("chart.html", {"request": req})
-        return RedirectResponse("/login")
