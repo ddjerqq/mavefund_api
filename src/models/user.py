@@ -44,6 +44,15 @@ class User(BaseModel):
         }
         return jwt.encode(claims, key=os.getenv("JWT_SECRET"))
 
+    @property
+    def api_key(self):
+        expires = datetime.now() + timedelta(days=90)
+        claims = {
+            "sub": str(self.id),
+            "exp": int(expires.timestamp()),
+        }
+        return jwt.encode(claims, key=os.getenv("JWT_SECRET"))
+
     @classmethod
     def new(cls, username: str, email: str, password: str, rank: int) -> User:
         return cls(
