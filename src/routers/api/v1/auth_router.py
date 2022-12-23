@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Depends
 
 from src.data import ApplicationDbContext
 from src.models.user import User
 from src.models.dto import UserRegister, UserLogin
 from src.utilities import Password
+from src.dependencies.auth import subscriber_only
 
 
 class AuthRouter:
@@ -14,8 +15,26 @@ class AuthRouter:
 
         self.router = APIRouter(prefix="/auth")
 
-        self.router.add_api_route("/register", self.register, methods=["POST"])
-        self.router.add_api_route("/login", self.login, methods=["POST"])
+        self.router.add_api_route(
+            "/register",
+            self.register,
+            methods=["POST"]
+        )
+
+        self.router.add_api_route(
+            "/login",
+            self.login,
+            methods=["POST"]
+        )
+
+        self.router.add_api_route(
+            "/api-key",
+            self.api_key,
+            methods=["GET"],
+            dependencies=[Depends(subscriber_only)],
+            response_model=str
+        )
+
 
     async def register(self, register: UserRegister) -> str:
         if await self.db.users.get_by_email(register.email):
@@ -49,3 +68,6 @@ class AuthRouter:
             raise HTTPException(status_code=400, detail="password is incorrect")
 
         return user.jwt_token
+
+    async def api_key(self, req: Request) -> User:
+        return req.user.api_key
