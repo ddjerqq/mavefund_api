@@ -9,8 +9,6 @@ if typing.TYPE_CHECKING:
 
 
 class Symbol(BaseModel):
-    ids: list[int] = []
-
     cnm: str
     tck: str
 
