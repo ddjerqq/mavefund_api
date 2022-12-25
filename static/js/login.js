@@ -22,10 +22,12 @@ document
 
 
 async function register() {
+
     const username = document.getElementById("register-username").value;
     const email = document.getElementById("register-email").value;
     const password = document.getElementById("register-password").value;
     const error_el = document.getElementById("register-error");
+    const recaptcha_token = document.getElementById("register-captcha").value;
 
     if (!username_regex.test(username)) {
         error_el.textContent = "Invalid username";
@@ -55,6 +57,7 @@ async function register() {
                 "username": username,
                 "email": email,
                 "password": password,
+                "recaptcha_token": recaptcha_token
             }),
         });
     } catch (error) {
@@ -67,11 +70,8 @@ async function register() {
 
     switch (response.status) {
         case 200:
-            const token = await response.json();
-
-            document.cookie = `token=${token}`;
-
-            // redirect to index.
+            const message = await response.json();
+            alert(message)
             window.location.replace("/");
             break;
 
@@ -79,13 +79,15 @@ async function register() {
             detail = await response.json();
             if (detail.includes("username")) {
                 error_el.textContent = "Username is already registered";
-            }
-            else if (detail.includes("email")) {
+            } else if (detail.includes("email")) {
                 error_el.textContent = "Email is already registered";
-            }
-            else {
+            } else {
                 error_el.textContent = "Email or username already taken.";
             }
+            break;
+        case 400:
+            detail = await response.json();
+            error_el.textContent = detail;
             break;
 
         default:
@@ -98,6 +100,7 @@ async function login() {
     const username = document.getElementById("login-username").value;
     const password = document.getElementById("login-password").value;
     const error_el = document.getElementById("login-error");
+    const recaptcha_token = document.getElementById("login-captcha").value;
 
     if (!username_regex.test(username)) {
         error_el.textContent = "Invalid username";
@@ -118,7 +121,8 @@ async function login() {
             redirect: "follow",
             body: JSON.stringify({
                 "username": username,
-                "password": password
+                "password": password,
+                "recaptcha_token": recaptcha_token
             }),
         });
     } catch (error) {
@@ -140,9 +144,17 @@ async function login() {
         case 404:
             error_el.textContent = "Username is not registered, please register";
             break;
+        case 403:
+            error_el.textContent = "Please verify your email address!";
+            break;
 
         case 400:
-            error_el.textContent = "Password is incorrect";
+            const message = await response.json()
+            if (message.detail === 'unverified') {
+                error_el.textContent = "Please verify your email address!"
+            } else {
+                error_el.textContent = "Password is incorrect";
+            }
             break;
 
         default:
@@ -150,3 +162,36 @@ async function login() {
             break;
     }
 }
+
+function reg_call(token) {
+    document.getElementById('register-captcha').setAttribute('value', token)
+    document.getElementById('reg-btn').removeAttribute('disabled')
+}
+
+function log_call(token) {
+    document.getElementById('login-captcha').setAttribute('value', token)
+    document.getElementById('log-btn').removeAttribute('disabled')
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById("login-form").addEventListener("submit", function (e) {
+        e.preventDefault() // Cancel the default action
+        return login();
+    });
+
+    document.getElementById("register-form").addEventListener("submit", function (e) {
+        e.preventDefault() // Cancel the default action
+        return register();
+    });
+
+    let params = (new URL(document.location)).searchParams;
+    let message = params.get("m");
+    let login_info = document.getElementById('login-info')
+    if (message === 'password-reset') {
+        login_info.textContent = "your password has been changed successfully!"
+    } else if (message === 'email-verified') {
+        login_info.textContent = "your email has been verified successfully!"
+    }
+
+
+});

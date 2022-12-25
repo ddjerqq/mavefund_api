@@ -13,6 +13,8 @@ async def main():
 
     with open("0-create-model-record.sql", "r") as f:
         create_record = f.read()
+    with open("1-update-model-user.sql", "r") as f:
+        update_user = f.read()
     print("opening sql files done")
 
     async with asyncpg.connect(
@@ -24,6 +26,7 @@ async def main():
         print("creating tables")
         await conn.execute(create_user)
         await conn.execute(create_record)
+        await conn.execute(update_user)
         print("creating tables done")
 
     print("done")

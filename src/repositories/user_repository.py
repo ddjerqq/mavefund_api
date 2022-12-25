@@ -58,14 +58,15 @@ class UserRepository(RepositoryBase):
         async with self.__pool.acquire(timeout=60) as conn:
             await conn.execute("""
         INSERT INTO app_user
-        (id, username, email, password_hash, rank)
+        (id, username, email, password_hash, rank,verified)
         VALUES 
         (
             $1,
             $2,
             $3,
             $4,
-            $5
+            $5,
+            $6
         )
         """, *entity.dict().values())
 
@@ -77,7 +78,8 @@ class UserRepository(RepositoryBase):
             username = $2,
             email = $3,
             password_hash = $4,
-            rank = $5
+            rank = $5,
+            verified = $6
         WHERE
             id = $1
         """, *entity.dict().values())
