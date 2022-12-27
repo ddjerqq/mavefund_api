@@ -32,7 +32,8 @@ async def internal_server_error_handler(req: Request, _exc: Exception):
         "error.html",
         {
             "request": req,
-            "error_message": None
+            "error_message": None,
+            "title": "internal server error",
         },
         status_code=500
     )
@@ -44,7 +45,8 @@ async def forbidden_error_handler(req: Request, _exc: Exception):
         "error.html",
         {
             "request": req,
-            "error_message": "You do not have access to this resource."
+            "error_message": "You do not have access to this resource.",
+            "title": "forbidden",
         },
         status_code=403
     )
@@ -56,7 +58,8 @@ async def unauthorized_error_handler(req: Request, _exc: Exception):
         "error.html",
         {
             "request": req,
-            "error_message": "You must login to access this resource."
+            "error_message": "You must login to access this resource.",
+            "title": "unauthorized",
         },
         status_code=401
     )
@@ -64,7 +67,7 @@ async def unauthorized_error_handler(req: Request, _exc: Exception):
 
 @app.exception_handler(404)
 async def not_found_error_handler(req: Request, _exc: Exception):
-    return render_template("not_found.html", {"request": req}, status_code=404)
+    return render_template("not_found.html", {"request": req, "title": "not found"}, status_code=404)
 
 
 
@@ -72,7 +75,7 @@ async def not_found_error_handler(req: Request, _exc: Exception):
 @app.on_event("startup")
 async def startup():
     db = await ApplicationDbContext.connect(
-        host="postgres",
+        host="127.0.0.1",
         user="postgres",
         password=os.getenv("POSTGRES_PASSWORD"),
         database="mavefund"
