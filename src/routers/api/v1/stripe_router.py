@@ -3,11 +3,9 @@ import stripe
 from fastapi import APIRouter, Request, Header, Depends
 
 from starlette.responses import RedirectResponse
-from starlette.templating import _TemplateResponse
 
 from src.dependencies.auth import authenticated_only
 from src.data import ApplicationDbContext
-from src.utilities import render_template
 
 
 class StripeRouter:
