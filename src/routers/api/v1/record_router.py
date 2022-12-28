@@ -65,7 +65,7 @@ class RecordRouter:
         )
 
 
-    async def get_all(self, req: Request) -> list[Symbol]:
+    async def get_all(self) -> list[Symbol]:
         records = await self.db.records.get_all()
         ticker_records: dict[str, list[Record]] = {}
 
@@ -90,20 +90,20 @@ class RecordRouter:
         return symbols
 
 
-    async def get_by_ticker(self, req: Request, ticker: str) -> Symbol | None:
+    async def get_by_ticker(self, ticker: str) -> Symbol | None:
         records = await self.db.records.get_all_by_symbol(ticker)
         minimal_records = list(map(MinimalRecord.from_record, records))
         symbol = Symbol.from_minimal_records(minimal_records)
         return symbol
 
 
-    async def add(self, req: Request, record: Symbol) -> None:
+    async def add(self, record: Record) -> None:
         await self.db.records.add(record)
 
 
-    async def update(self, req: Request, record: Symbol) -> None:
+    async def update(self, record: Record) -> None:
         await self.db.users.update(record)
 
 
-    async def delete(self, req: Request, id: int) -> None:
+    async def delete(self, id: int) -> None:
         await self.db.users.delete(id)
