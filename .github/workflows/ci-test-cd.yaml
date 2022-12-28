@@ -28,19 +28,19 @@ jobs:
         docker push ddjerqq/private:latest
 
 
-  test:
-    runs-on: ubuntu-latest
-
-    needs: build
-
-    steps:
-
-      - uses: actions/checkout@v3
-
-      - name: Run PyTests
-        run: |
-          pip install -r requirements.txt
-          pytest
+#  test:
+#    runs-on: ubuntu-latest
+#
+#    needs: build
+#
+#    steps:
+#
+#      - uses: actions/checkout@v3
+#
+#      - name: Run PyTests
+#        run: |
+#          pip install -r requirements.txt
+#          pytest
 
 
   deploy:
