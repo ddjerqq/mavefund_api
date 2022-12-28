@@ -75,7 +75,7 @@ async def not_found_error_handler(req: Request, _exc: Exception):
 @app.on_event("startup")
 async def startup():
     db = await ApplicationDbContext.connect(
-        host="postgres",
+        host=os.getenv("POSTGRES_HOST"),
         user="postgres",
         password=os.getenv("POSTGRES_PASSWORD"),
         database="mavefund"
@@ -122,7 +122,6 @@ async def startup():
 
 # make https redirect work
 if __name__ == "__main__":
-    time.sleep(3)
     uvicorn.run(
         app,
         ssl_certfile=join(PATH, "cert", "server.crt"),

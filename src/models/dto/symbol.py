@@ -121,8 +121,6 @@ class Symbol(BaseModel):
         keys = list(vars(first).keys())
         keys.remove("cnm")
         keys.remove("tck")
-        keys.remove("ids")
-        keys.insert(0, "ids")
 
         data = {
             key: [
