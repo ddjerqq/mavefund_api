@@ -16,4 +16,16 @@ window.onload = function() {
     setTimeout(function(){
         $wrapper.classList.toggle("active")  //example function call.    
     },250);
+};
+
+function get_cookie(name){
+    return document.cookie.split(';').some(c => {
+        return c.trim().startsWith(name + '=');
+    });
+}
+
+function logout() {
+  if( get_cookie( "token" ) ) {
+    document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT";
   }
+}
