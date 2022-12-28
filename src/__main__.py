@@ -75,7 +75,7 @@ async def not_found_error_handler(req: Request, _exc: Exception):
 @app.on_event("startup")
 async def startup():
     db = await ApplicationDbContext.connect(
-        host="127.0.0.1",
+        host="postgres",
         user="postgres",
         password=os.getenv("POSTGRES_PASSWORD"),
         database="mavefund"
