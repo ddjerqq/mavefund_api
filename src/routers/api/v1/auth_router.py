@@ -16,6 +16,7 @@ from src.utilities.render_template import TEMPLATES
 mail_conf = ConnectionConfig(
     MAIL_USERNAME=os.getenv('EMAIL_USERNAME'),
     MAIL_PASSWORD=os.getenv('EMAIL_PASSWORD'),
+    MAIL_FROM_NAME="Verify Email",
     MAIL_FROM=os.getenv('EMAIL_FROM'),
     MAIL_PORT=os.getenv('EMAIL_PORT'),
     MAIL_SERVER=os.getenv('EMAIL_HOST'),
