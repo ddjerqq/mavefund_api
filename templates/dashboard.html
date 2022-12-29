@@ -1,10 +1,307 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - MaveFund</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="imgs/default.jpg">
+  <style>
+    
+  </style>
+</head>
+<body>
+  <main>
+    <div class="logo-nav"><a href="home.html"><img class="logo" src="imgs/mavefund.png" alt="logo"></div></a>
+    <center>
+    <h1 class="heading">Dashboard</h1>
+    <div ><tton class="login"><a href="login/login.html" target="_blank">LOGIN</a></button></div>
 
-{% block content %}
+    <div class="nav">
+      <input type="checkbox" id="nav-check">
+      <div class="nav-btn">
+        <label for="nav-check">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
+    
+      
+    <nav>
+      <ul>
+      <div ><img src="icons/homepagewhite.png" alt=""> <li><a href="home.html">Home</a></li></div> <br>
+      <div ><img src="icons/dashboardwhite.png" alt=""> <li><a class="active" href="dashboard.html">Dashboard</a></li></div> <br>
+      <div ><img src="icons/box.png" alt=""> <li><a href="premium.html">Premium</a></li></div> <br>
+      </ul>
+    </nav>
+      
+     <div ><button class="button-table"><a href="table.html">table view</a></button></div>
+
+ 
 
     <div class="content" id="content">
-        <div class="content">
-        </div>
-    </div>
+      <div class="content">
+       <div class="chart">
+       
+		
+		
+		
+		<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+		<script type="text/javascript" src="https://cdn.amcharts.com/lib/3/serial.js"></script>
+		<script type="text/javascript" src="https://www.amcharts.com/lib/3/themes/dark.js"></script>
+		<style>[title="JavaScript charts"] {
+			display: none !important;
+		  }
+		  </style>
+		
 
-{% endblock %}
+		
+		<script type="text/javascript">
+			AmCharts.makeChart("chartdiv",
+				{
+					"type": "serial",
+					"categoryField": "date",
+					"dataDateFormat": "YYYY",
+					"theme": "dark",
+					"categoryAxis": {
+						"minPeriod": "YYYY",
+						"parseDates": true
+					},
+					"chartCursor": {
+						"enabled": true,
+						"animationDuration": 0,
+						"categoryBalloonDateFormat": "YYYY"
+					},
+					"chartScrollbar": {
+						"enabled": true
+					},
+					"trendLines": [],
+					"graphs": [
+						{
+							"hidden": true,
+							"id": "AmGraph-1",
+							"title": "net margin percentage",
+							"valueField": "column-1"
+						},
+						{
+							
+							"hidden": true,
+							"id": "AmGraph-2",
+							"title": "eps percentage over 1 year",
+							"valueField": "column-2"
+						},
+						{
+							"hidden": true,
+							"id": "AmGraph-3",
+							"title": "eps percentage over 3 years",
+							"valueField": "column-3"
+						},
+						{
+							"hidden": true,
+							"id": "AmGraph-4",
+							"title": "eps percentage over 5 yearw",
+							"valueField": "column-4"
+						},
+						{
+							"hidden": true,
+							"id": "AmGraph-5",
+							"title": "eps percentage over 10 years",
+							"valueField": "column-5"
+						},
+						{
+							"hidden": true,
+							"id": "AmGraph-6",
+							"title": "dividends usd",
+							"valueField": "column-6"
+						},
+						{
+							"hidden": true,
+							"id": "AmGraph-7",
+							"title": "stock price (mil)",
+							"valueField": "column-7"
+						},
+						{
+							"hidden": true,
+							"id": "AmGraph-8",
+							"title": "net debts (mil)",
+							"valueField": "column-8"
+						},
+						{
+							"hidden": true,
+							"id": "AmGraph-9",
+							"title": "current ratios",
+							"valueField": "column-9"
+						}
+					],
+					"guides": [],
+					"valueAxes": [
+						{
+              
+							"id": "ValueAxis-1",
+							"title": ""
+						}
+           
+
+					],
+					"allLabels": [],
+					"balloon": {},
+					"legend": {
+						"enabled": true,
+						"useGraphSettings": true
+					},
+					"titles": [
+						{
+							"id": "Title-1",
+							"size": 15,
+							"text": "agilent technologies"
+						}
+					],
+					"dataProvider": [
+						{
+							"date": "2012",
+							"column-1": "16.81",
+							"column-2": "14.74",
+							"column-3": "0",
+							"column-4": "15.81",
+							"column-5": "0",
+							"column-6": "0.3",
+							"column-7": "353",
+							"column-8":  "2.112",
+							"column-9": "2.45"
+						},
+						{
+							"date": "2013",
+							"column-1": "10.68",
+							"column-2": "-1.11",
+							"column-3": "7.6",
+							"column-4": "3.65",
+							"column-5": "0",
+							"column-6": "0.46",
+							"column-7": "345",
+							"column-8": "2.699",
+							"column-9": "3.11"
+						},
+						{
+							"date": "2014",
+							"column-1": "7.22",
+							"column-2": "-29.05",
+							"column-3": "-19.44",
+							"column-4": "0",
+							"column-5": "7.69",
+							"column-6": "0.53",
+							"column-7": "338",
+							"column-8": "1.663",
+							"column-9": "3.23"
+						},
+						{
+							"date": "2015",
+							"column-1": "9.93",
+							"column-2": "-19.46",
+							"column-3": "-22.44",
+							"column-4": "-9.16",
+							"column-5": "6.32",
+							"column-6": "0.4",
+							"column-7": "335",
+							"column-8": "1.665",
+							"column-9": "3.78"
+						},
+						{
+							"date": "2016",
+							"column-1": "10.99",
+							"column-2": "16.67",
+							"column-3": "-13.91",
+							"column-4": "-13.25",
+							"column-5": "2.86",
+							"column-6": "0.46",
+							"column-7": "329",
+							"column-8": "1.904",
+							"column-9": "3.85"
+						},
+						{
+							"date": "2017",
+							"column-1": "15.3",
+							"column-2": "30",
+							"column-3": "-13.8",
+							"column-4": "-8.48",
+							"column-5": "2.95",
+							"column-6": "0.53",
+							"column-7": "326",
+							"column-8": "1.801",
+							"column-9": "3.3"
+						},
+						{
+							"date": "2018",
+							"column-1": "6.43",
+							"column-2": "-53.81",
+							"column-3": "6.76",
+							"column-4": "-14.31",
+							"column-5": "-1.6",
+							"column-6": "0.59",
+							"column-7": "325",
+							"column-8": "1,799",
+							"column-9": "3.29"
+						},
+						{
+							"date": "2019",
+							"column-1": "20.74",
+							"column-2": "247.42",
+							"column-3": "34.02",
+							"column-4": "2.52",
+							"column-5": "0",
+							"column-6": "0.66",
+							"column-7": "318",
+							"column-8": "1.791",
+							"column-9": "1.53",
+						},
+            {
+							"date": "2020",
+							"column-1": "13.47",
+							"column-2": "-31.75",
+							"column-3": "3.08",
+							"column-4": "13.9",
+							"column-5": "1.72",
+							"column-6": "0.72",
+							"column-7": "312",
+							"column-8": "2.284",
+							"column-9": "2.33",
+						},
+            
+						{
+							"date": "2021",
+							"column-1": "19.15",
+							"column-2": "71.3",
+							"column-3": "59.55",
+							"column-4": "21.24",
+							"column-5": "3.29",
+							"column-6": "0.78",
+							"column-7": "307",
+							"column-8": "2.729",
+							"column-9": "2.22"
+						}
+					]
+				}
+			);
+		</script>
+	
+	
+		<div id="chartdiv" style="width: 100%; height: 400px; color: rgb(43, 43, 43);" ></div>
+	
+ 
+       
+
+  </div>   
+  
+    
+
+  
+  <footer>MaveFund™ All rights reserved</footer>
+  </main>
+  <script src="script.js"></script>
+  
+</body>
+</html>
