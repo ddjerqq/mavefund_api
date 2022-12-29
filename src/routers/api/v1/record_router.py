@@ -92,6 +92,10 @@ class RecordRouter:
 
     async def get_by_ticker(self, ticker: str) -> Symbol | None:
         records = await self.db.records.get_all_by_symbol(ticker)
+
+        if not records:
+            raise HTTPException(status_code=404, detail=f"no records found for {ticker}.")
+
         minimal_records = list(map(MinimalRecord.from_record, records))
         symbol = Symbol.from_minimal_records(minimal_records)
         return symbol
