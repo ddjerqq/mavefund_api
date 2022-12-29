@@ -17,8 +17,8 @@ mail_conf = ConnectionConfig(
     MAIL_USERNAME=os.getenv('EMAIL_USERNAME'),
     MAIL_PASSWORD=os.getenv('EMAIL_PASSWORD'),
     MAIL_FROM_NAME="Verify Email",
-    MAIL_FROM=os.getenv('EMAIL_FROM'),
-    MAIL_PORT=os.getenv('EMAIL_PORT'),
+    MAIL_FROM=os.getenv('EMAIL_FROM'),  # type: ignore
+    MAIL_PORT=os.getenv('EMAIL_PORT'),  # type: ignore
     MAIL_SERVER=os.getenv('EMAIL_HOST'),
     MAIL_STARTTLS=False,
     MAIL_SSL_TLS=True,
@@ -163,7 +163,7 @@ class AuthRouter:
             subject=subject,
             recipients=recipients,
             body=body,
-            subtype="html"
+            subtype="html"  # type: ignore
         )
         # Send the email
         fm = FastMail(mail_conf)
