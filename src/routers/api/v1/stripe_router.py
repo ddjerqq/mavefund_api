@@ -76,7 +76,7 @@ class StripeRouter:
             metadata={"rank": self.PRICE_ID_TO_RANK[price_id]},
             success_url="https://mavefund.com/api/v1/stripe/success?session_id={CHECKOUT_SESSION_ID}",
             cancel_url="https://mavefund.com/api/v1/stripe/cancel",
-            payment_method_types=["card"],
+            # payment_method_types=["card"],
             mode="subscription",
             line_items=[{
                 "price": price_id,
