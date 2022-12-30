@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+import json
 import os
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from starlette.responses import RedirectResponse
 from starlette.templating import _TemplateResponse
+
 from src.data import ApplicationDbContext
 from src.utilities import render_template, tokenizer
-from src.models.user import User
+from src.models import User
+from src.models.dto import Symbol, MinimalRecord
+from src.dependencies.auth import subscriber_only
 
 
 class IndexRouter:
@@ -60,14 +64,6 @@ class IndexRouter:
         )
 
         self.router.add_api_route(
-            "/logout",
-            self.logout,
-            methods=["GET"],
-            description="log the user out",
-            response_class=HTMLResponse
-        )
-
-        self.router.add_api_route(
             "/premium",
             self.premium,
             methods=["GET"],
@@ -76,15 +72,25 @@ class IndexRouter:
         )
 
         self.router.add_api_route(
-            "/dashboard",
+            "/dashboard/{ticker:str}",
             self.dashboard,
             methods=["GET"],
-            description="get the about page",
-            response_class=HTMLResponse
+            description="get the dashboard page",
+            response_class=HTMLResponse,
+            # TODO uncomment these
+            # dependencies=[Depends(subscriber_only)],
         )
 
-    async def index(self,
-                    req: Request) -> "_TemplateResponse" | RedirectResponse:
+        self.router.add_api_route(
+            "/table/{ticker:str}",
+            self.table,
+            methods=["GET"],
+            description="get the table view",
+            response_class=HTMLResponse,
+            # dependencies=[Depends(subscriber_only)],
+        )
+
+    async def index(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
         return render_template(
             "index.html",
             {
@@ -93,8 +99,7 @@ class IndexRouter:
             }
         )
 
-    async def login(self,
-                    req: Request) -> "_TemplateResponse" | RedirectResponse:
+    async def login(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
         if req.user:
             return RedirectResponse(url="/")
 
@@ -102,12 +107,7 @@ class IndexRouter:
                                {"request": req,
                                 'pub_key': self._recaptcha_public_key})
 
-    async def logout(self, req: Request) -> RedirectResponse:
-        req.cookies.pop("user_id")
-        return RedirectResponse(url="/")
-
-    async def premium(self,
-                      req: Request) -> "_TemplateResponse" | RedirectResponse:
+    async def premium(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
         return render_template(
             "premium.html",
             {
@@ -116,19 +116,60 @@ class IndexRouter:
             }
         )
 
-    async def dashboard(self, req: Request,
-                        ticker: int = "AAPL") -> "_TemplateResponse" | RedirectResponse:
+    async def dashboard(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
+        records = await self.db.records.get_all_by_symbol(ticker)
+        # if records is None
+        minimal_records = list(map(MinimalRecord.from_record, records))
+        s = Symbol.from_minimal_records(minimal_records)
+
         return render_template(
             "dashboard.html",
             {
                 "request": req,
-                "title": "dashboard",
+                "title": f"chart {ticker.upper()}",
                 "ticker": ticker,
+                "company_name": s.cnm,
+                "data_provider": json.dumps(s.data_provider, indent=4),
             }
         )
 
-    async def manage_subscription(self,
-                                  req: Request) -> "_TemplateResponse" | RedirectResponse:
+    async def table(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
+        # TODO verify the ticker here too
+        records = await self.db.records.get_all_by_symbol(ticker)
+        minimal_records = list(map(MinimalRecord.from_record, records))
+        symbol = Symbol.from_minimal_records(minimal_records)
+
+        dates = symbol.dt
+        table = {
+            "Revenue (USD mil)": symbol.gp_rum,
+            "Gross Margin %": symbol.gp_gm,
+            "Operating Income (USD MIL)": symbol.gp_oim,
+            "Operating Margin %": symbol.gp_om,
+            "Net Income (USD MIL)": symbol.gp_nim,
+            "Earnings Per Share (USD)": symbol.gp_eps,
+            "Dividends (USD)": symbol.gp_d,
+            "Payout Ratio %": symbol.gp_pr,
+            "Shares (Mil)": symbol.gp_sm,
+            "Book Value Per Share (USD)": symbol.gp_bvps,
+            "Operating Cash Flow (USD": symbol.gp_ocf,
+            "Cap Spending (USD MIL)": symbol.gp_sm,
+            "Free Cash Flow (USD MIL)": symbol.gp_fcf,
+            "Free Cash Flow Per Share (USD)": symbol.gp_fcfps,
+            "Working Capital (USD MIL)": symbol.gp_wc,
+        }
+
+        return render_template(
+            "table.html",
+            {
+                "request": req,
+                "title": f"table {ticker.upper()}",
+                "ticker": ticker,
+                "dates": dates,
+                "table": table
+            }
+        )
+
+    async def manage_subscription(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
         if req.user:
             return render_template("manage_subscription.html",
                                    {"request": req})
@@ -155,8 +196,7 @@ class IndexRouter:
         return render_template("reset-password.html",
                                {"request": req, 'token': token})
 
-    async def _verify_token(self, token: str,
-                            mark_as_verified=False) -> User | None:
+    async def _verify_token(self, token: str, mark_as_verified=False) -> User | None:
 
         email = tokenizer.decode_token(token)
         if not email:

@@ -1,6 +1,6 @@
-const BASIC_PRICE_ID = "price_1MFS3GLGZqgNQZ5xSM08eOPt";
-const PREMIUM_PRICE_ID = "price_1MFS4MLGZqgNQZ5x104ipW9N";
-const SUPER_PRICE_ID = "price_1MFS5ILGZqgNQZ5xW3GEw2F3";
+const BASIC_PRICE_ID = "price_1MFS3GLGZqgNQZ5xIvlOvBHN";
+const PREMIUM_PRICE_ID = "price_1MFS4MLGZqgNQZ5xHKDBEze7";
+const SUPER_PRICE_ID = "price_1MFS5ILGZqgNQZ5xO4f2sl1Q";
 
 
 async function createCheckoutSession(priceId) {

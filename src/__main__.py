@@ -123,10 +123,14 @@ async def startup():
 # make https redirect work
 if __name__ == "__main__":
     uvicorn.run(
-        app,
+        "__main__:app",
         ssl_certfile=join(PATH, "cert", "server.crt"),
         ssl_keyfile=join(PATH, "cert", "server.key"),
         loop="asyncio",
         host="0.0.0.0",
-        port=443
+        port=443,
+        reload=True,
+        env_file="../.env",
+        reload_dirs=["../"],
+        reload_includes=["../static", "../templates"],
     )
