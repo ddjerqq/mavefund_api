@@ -10,9 +10,9 @@ from src.data import ApplicationDbContext
 
 class StripeRouter:
     PRICE_ID_TO_RANK = {
-        os.getenv("BASIC_SUBSCRIPTION_MONTHLY_PRICE_ID"): 0,
-        os.getenv("PREMIUM_SUBSCRIPTION_MONTHLY_PRICE_ID"): 1,
-        os.getenv("SUPER_SUBSCRIPTION_MONTHLY_PRICE_ID"): 2,
+        os.getenv("BASIC_SUBSCRIPTION_PRICE_ID"): 0,
+        os.getenv("PREMIUM_SUBSCRIPTION_PRICE_ID"): 1,
+        os.getenv("SUPER_SUBSCRIPTION_PRICE_ID"): 2,
     }
 
     def __init__(self, db: ApplicationDbContext):
@@ -76,8 +76,8 @@ class StripeRouter:
             metadata={"rank": self.PRICE_ID_TO_RANK[price_id]},
             success_url="https://mavefund.com/api/v1/stripe/success?session_id={CHECKOUT_SESSION_ID}",
             cancel_url="https://mavefund.com/api/v1/stripe/cancel",
-            # payment_method_types=["card"],
-            mode="subscription",
+            payment_method_types=["card"],
+            mode="payment",
             line_items=[{
                 "price": price_id,
                 "quantity": 1,

@@ -2,9 +2,107 @@
 
 {% block content %}
 
-    <div class="content" id="content">
-        <div class="content">
+<div>
+    <button class="button-table">
+        <a href="/table/{{ ticker }}">table view</a>
+    </button>
+</div>
+
+
+<div class="content" id="content">
+    <div class="content">
+        <div class="chart">
+
+            <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+            <script type="text/javascript" src="https://cdn.amcharts.com/lib/3/serial.js"></script>
+            <script type="text/javascript" src="https://www.amcharts.com/lib/3/themes/dark.js"></script>
+
+            <script type="text/javascript" defer>
+                AmCharts.makeChart("chartdiv",
+                    {
+                        "type": "serial",
+                        "categoryField": "date",
+                        "dataDateFormat": "YYYY-MM",
+                        "theme": "dark",
+                        "categoryAxis": {
+                            "minPeriod": "YYYY-MM",
+                            // "parseDates": true
+                        },
+                        "chartCursor": {
+                            "enabled": true,
+                            "animationDuration": 0,
+                            "categoryBalloonDateFormat": "YYYY-MM"
+                        },
+                        "chartScrollbar": {
+                            "enabled": true
+                        },
+                        "trendLines": [],
+                        "graphs": [
+                            {
+                                "hidden": true,
+                                "id": "AmGraph-1",
+                                "title": "net margin percentage",
+                                "valueField": "column-1"
+                            },
+                            {
+                                "hidden": true,
+                                "id": "AmGraph-2",
+                                "title": "eps percentage 1 year",
+                                "valueField": "column-2"
+                            },
+                            {
+                                "hidden": true,
+                                "id": "AmGraph-3",
+                                "title": "eps percentage 3 years",
+                                "valueField": "column-3"
+                            },
+                            {
+                                "hidden": true,
+                                "id": "AmGraph-4",
+                                "title": "eps percentage 5 years",
+                                "valueField": "column-4"
+                            },
+                            {
+                                "hidden": true,
+                                "id": "AmGraph-5",
+                                "title": "eps percentage 10 years",
+                                "valueField": "column-5"
+                            },
+                            {
+                                "hidden": true,
+                                "id": "AmGraph-6",
+                                "title": "dividends usd",
+                                "valueField": "column-6"
+                            }
+                        ],
+                        "guides": [],
+                        "valueAxes": [
+                            {
+                                "id": "ValueAxis-1",
+                                "title": ""
+                            }
+                        ],
+                        "allLabels": [],
+                        "balloon": {},
+                        "legend": {
+                            "enabled": true,
+                            "useGraphSettings": true
+                        },
+                        "titles": [
+                            {
+                                "id": "Title-1",
+                                "size": 15,
+                                "text": "{{ company_name }}",
+                            }
+                        ],
+                        "dataProvider": {{ data_provider | safe }},
+                    }
+                );
+            </script>
+
+            <div id="chartdiv" style="width: 100%; height: 400px; color: rgb(43, 43, 43);"></div>
         </div>
     </div>
+</div>
 
 {% endblock %}

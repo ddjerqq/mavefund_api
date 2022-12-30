@@ -135,3 +135,31 @@ class Symbol(BaseModel):
             tck=first.tck,
             **data
         )
+
+
+    @property
+    def data_provider(self) -> list[dict[str, ...]]:
+        records = []
+
+        dates = self.dt
+        net_margin_percentages = self.p_nm
+        eps1 = self.g_eps_1
+        eps3 = self.g_eps_3
+        eps5 = self.g_eps_5
+        eps10 = self.g_eps_10
+        dividends_usd = self.gp_d
+
+        for i in range(len(self.dt)):
+            records.append(
+                {
+                    "date": dates[i],
+                    "column-1": round(net_margin_percentages[i], 2) if net_margin_percentages[i] is not None else None,
+                    "column-2": round(eps1[i], 2) if eps1[i] is not None else None,
+                    "column-3": round(eps3[i], 2) if eps3[i] is not None else None,
+                    "column-4": round(eps5[i], 2) if eps5[i] is not None else None,
+                    "column-5": round(eps10[i], 2) if eps10[i] is not None else None,
+                    "column-6": round(dividends_usd[i], 2) if dividends_usd[i] is not None else None,
+                }
+            )
+
+        return records
