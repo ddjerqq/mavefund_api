@@ -129,8 +129,8 @@ if __name__ == "__main__":
         loop="asyncio",
         host="0.0.0.0",
         port=443,
-        reload=True,
+        # reload=True,
         env_file="../.env",
-        reload_dirs=["../"],
-        reload_includes=["../static", "../templates"],
+        # reload_dirs=["../"],
+        # reload_includes=["../static", "../templates"],
     )
