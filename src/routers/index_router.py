@@ -77,8 +77,7 @@ class IndexRouter:
             methods=["GET"],
             description="get the dashboard page",
             response_class=HTMLResponse,
-            # TODO uncomment these
-            # dependencies=[Depends(subscriber_only)],
+            dependencies=[Depends(subscriber_only)],
         )
 
         self.router.add_api_route(
@@ -87,7 +86,7 @@ class IndexRouter:
             methods=["GET"],
             description="get the table view",
             response_class=HTMLResponse,
-            # dependencies=[Depends(subscriber_only)],
+            dependencies=[Depends(subscriber_only)],
         )
 
     async def index(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
