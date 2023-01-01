@@ -89,12 +89,18 @@ class IndexRouter:
             dependencies=[Depends(subscriber_only)],
         )
 
-    async def index(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+    async def index(self, req: Request, q: str | None = None) -> "_TemplateResponse" | RedirectResponse:
+        tickers = None
+
+        if q is not None:
+            tickers = await self.db.records.get_all_by_company_name(q)
+
         return render_template(
             "index.html",
             {
                 "request": req,
                 "title": "home",
+                "tickers": tickers
             }
         )
 

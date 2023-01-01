@@ -7,7 +7,7 @@
             <h1 class="heading">MaveFund</h1>
             <div class="search-wrapper">
                 <div class="input-holder">
-                    <input type="text" class="search-input" placeholder="Type to search"/>
+                    <input id="search-company" type="text" class="search-input" placeholder="Type to search"/>
                     <button class="search-icon"><span></span></button>
                 </div>
                 <span class="close"></span>
@@ -19,7 +19,7 @@
             {% for ticker, company_name in tickers.items() %}
 
                 <li class="company">
-                    <a href="/dashboard?ticker={{ ticker.lower() }}">
+                    <a href="/dashboard/{{ ticker.upper() }}">
                         {{ ticker.upper() }} - {{ company_name }}
                     </a>
                 </li>

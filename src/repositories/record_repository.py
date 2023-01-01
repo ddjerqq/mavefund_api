@@ -10,6 +10,21 @@ class RecordRepository(RepositoryBase):
     def __init__(self, pool: asyncpg.Pool):
         self.__pool = pool
 
+    async def get_all_by_company_name(self, name: str) -> dict:
+        name = f"%{name}%"
+        async with self.__pool.acquire(timeout=60) as conn:
+            rows = await conn.fetch("""
+            SELECT symbol, company_name
+            FROM stock_record
+            WHERE
+                company_name LIKE $1
+            """, name)
+
+            return {
+                symbol: company_name
+                for symbol, company_name in rows
+            }
+
     async def get_all_by_symbol(self, symbol: str) -> list[Record]:
         async with self.__pool.acquire(timeout=60) as conn:
             rows = await conn.fetch("""
