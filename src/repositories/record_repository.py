@@ -16,8 +16,8 @@ class RecordRepository(RepositoryBase):
             rows = await conn.fetch("""
             SELECT symbol, company_name
             FROM stock_record
-            WHERE
-                company_name LIKE $1
+            WHERE company_name LIKE $1
+                  OR symbol    LIKE $1
             """, name)
 
             return {

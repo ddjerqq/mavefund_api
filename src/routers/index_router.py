@@ -3,7 +3,8 @@ from __future__ import annotations
 import json
 import os
 
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request
+# from fastapi import Depends
 from fastapi.responses import HTMLResponse
 from starlette.responses import RedirectResponse
 from starlette.templating import _TemplateResponse
@@ -12,7 +13,7 @@ from src.data import ApplicationDbContext
 from src.utilities import render_template, tokenizer
 from src.models import User
 from src.models.dto import Symbol, MinimalRecord
-from src.dependencies.auth import subscriber_only
+# from src.dependencies.auth import subscriber_only
 
 
 class IndexRouter:
@@ -77,7 +78,7 @@ class IndexRouter:
             methods=["GET"],
             description="get the dashboard page",
             response_class=HTMLResponse,
-            dependencies=[Depends(subscriber_only)],
+            # dependencies=[Depends(subscriber_only)],
         )
 
         self.router.add_api_route(
@@ -86,7 +87,7 @@ class IndexRouter:
             methods=["GET"],
             description="get the table view",
             response_class=HTMLResponse,
-            dependencies=[Depends(subscriber_only)],
+            # dependencies=[Depends(subscriber_only)],
         )
 
     async def index(self, req: Request, q: str | None = None) -> "_TemplateResponse" | RedirectResponse:
@@ -122,6 +123,9 @@ class IndexRouter:
         )
 
     async def dashboard(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
+        if req.user.rank < 0:
+            return RedirectResponse("/premium")
+
         records = await self.db.records.get_all_by_symbol(ticker)
         # if records is None
         minimal_records = list(map(MinimalRecord.from_record, records))
@@ -139,7 +143,9 @@ class IndexRouter:
         )
 
     async def table(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
-        # TODO verify the ticker here too
+        if req.user.rank < 0:
+            return RedirectResponse("/premium")
+
         records = await self.db.records.get_all_by_symbol(ticker)
         minimal_records = list(map(MinimalRecord.from_record, records))
         symbol = Symbol.from_minimal_records(minimal_records)
