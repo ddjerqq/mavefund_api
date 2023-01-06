@@ -12,6 +12,7 @@ from fastapi.responses import HTMLResponse
 from starlette.responses import RedirectResponse, FileResponse
 from starlette.templating import _TemplateResponse
 
+from src import PATH
 from src.data import ApplicationDbContext
 from src.utilities import render_template, tokenizer, get_stock_price
 from src.models import User
@@ -90,6 +91,15 @@ class IndexRouter:
             methods=["GET"],
             description="get the table view",
             response_class=HTMLResponse,
+            # dependencies=[Depends(subscriber_only)],
+        )
+
+        self.router.add_api_route(
+            "/download/{ticker:str}",
+            self.download,
+            methods=["GET"],
+            description="download csv for ticker",
+            response_class=FileResponse,
             # dependencies=[Depends(subscriber_only)],
         )
 
@@ -305,16 +315,21 @@ class IndexRouter:
         symbol = Symbol.from_minimal_records(minimal_records)
 
         df = pd.DataFrame(symbol.dict())
-        df.to_csv(f"/tmp/{ticker}.csv", index=False)
+        fname = f"{PATH}/tmp/{ticker}.csv"
+
+        with open(fname, "w"):
+            ...
+
+        df.to_csv(fname)
 
         async def cleanup():
-            os.remove(f"/tmp/{ticker}.csv")
+            await aio.sleep(10)
+            os.remove(fname)
 
-        loop = aio.get_event_loop()
-        loop.call_later(15, cleanup)
+        aio.create_task(cleanup())
 
         return FileResponse(
-            f"{ticker}.csv",
+            fname,
             media_type="text/csv",
             headers={
                 "Content-Disposition": f"attachment; filename={ticker}_table.csv"

@@ -1,6 +1,5 @@
 import os
-import time
-from os.path import join, dirname, realpath
+from os.path import join
 
 import stripe
 import uvicorn
@@ -9,13 +8,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from src import PATH
 from src.utilities import render_template
 from src.middleware import AuthMiddleware
 from src.data import ApplicationDbContext
 from src.routers import IndexRouter, ApiRouter
 
-
-PATH = dirname(dirname(realpath(__file__)))
 
 stripe.api_key = os.getenv("STRIPE_SECRET_API_KEY")
 
