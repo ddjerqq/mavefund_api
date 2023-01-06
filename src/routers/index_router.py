@@ -155,7 +155,7 @@ class IndexRouter:
                 "title": f"chart {ticker.upper()}",
                 "ticker": ticker,
                 "company_name": s.cnm,
-                "data_provider": json.dumps(s.data_provider, indent=4),
+                "data_provider": json.dumps(data_provider, indent=4),
             }
         )
 
