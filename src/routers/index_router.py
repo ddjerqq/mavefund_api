@@ -3,11 +3,13 @@ from __future__ import annotations
 import json
 import os
 import re
+import asyncio as aio
 
+import pandas as pd
 from fastapi import APIRouter, Request
 # from fastapi import Depends
 from fastapi.responses import HTMLResponse
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, FileResponse
 from starlette.templating import _TemplateResponse
 
 from src.data import ApplicationDbContext
@@ -124,12 +126,12 @@ class IndexRouter:
         )
 
     async def dashboard(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
-        if req.user.rank < 0:
+        if req.user is None or req.user.rank < 0:
             return RedirectResponse("/premium")
 
         ticker_regex = re.compile(r"^[A-Z]{1,5}$")
 
-        if not re.match(ticker_regex, ticker):
+        if not re.match(ticker_regex, ticker) or not ticker:
             return RedirectResponse("/")
 
         records = await self.db.records.get_all_by_symbol(ticker)
@@ -158,12 +160,12 @@ class IndexRouter:
         )
 
     async def table(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
-        if req.user.rank < 0:
+        if req.user is None or req.user.rank < 0:
             return RedirectResponse("/premium")
 
         ticker_regex = re.compile(r"^[A-Z]{1,5}$")
 
-        if not re.match(ticker_regex, ticker):
+        if not re.match(ticker_regex, ticker) or not ticker:
             return RedirectResponse("/")
 
         records = await self.db.records.get_all_by_symbol(ticker)
@@ -286,6 +288,38 @@ class IndexRouter:
                 "dates": dates,
                 "table": table
             }
+        )
+
+    async def download(self, req: Request, ticker: str) -> FileResponse | RedirectResponse:
+        """Download the table as a CSV file."""
+        if req.user is None or req.user.rank < 0:
+            return RedirectResponse("/premium")
+
+        ticker_regex = re.compile(r"^[A-Z]{1,5}$")
+
+        if not re.match(ticker_regex, ticker) or not ticker:
+            return RedirectResponse("/")
+
+        records = await self.db.records.get_all_by_symbol(ticker)
+        minimal_records = list(map(MinimalRecord.from_record, records))
+        symbol = Symbol.from_minimal_records(minimal_records)
+
+        df = pd.DataFrame(symbol.dict())
+        df.to_csv(f"/tmp/{ticker}.csv", index=False)
+
+        async def cleanup():
+            os.remove(f"/tmp/{ticker}.csv")
+
+        loop = aio.get_event_loop()
+        loop.call_later(15, cleanup)
+
+        return FileResponse(
+            f"{ticker}.csv",
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": f"attachment; filename={ticker}_table.csv"
+            },
+            status_code=200,
         )
 
     async def manage_subscription(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
