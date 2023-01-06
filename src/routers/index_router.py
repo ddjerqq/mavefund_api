@@ -2,15 +2,18 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import asyncio as aio
 
+import pandas as pd
 from fastapi import APIRouter, Request
 # from fastapi import Depends
 from fastapi.responses import HTMLResponse
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, FileResponse
 from starlette.templating import _TemplateResponse
 
 from src.data import ApplicationDbContext
-from src.utilities import render_template, tokenizer
+from src.utilities import render_template, tokenizer, get_stock_price
 from src.models import User
 from src.models.dto import Symbol, MinimalRecord
 # from src.dependencies.auth import subscriber_only
@@ -123,13 +126,27 @@ class IndexRouter:
         )
 
     async def dashboard(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
-        if req.user.rank < 0:
+        if req.user is None or req.user.rank < 0:
             return RedirectResponse("/premium")
+
+        ticker_regex = re.compile(r"^[A-Z]{1,5}$")
+
+        if not re.match(ticker_regex, ticker) or not ticker:
+            return RedirectResponse("/")
 
         records = await self.db.records.get_all_by_symbol(ticker)
         # if records is None
         minimal_records = list(map(MinimalRecord.from_record, records))
         s = Symbol.from_minimal_records(minimal_records)
+        stock_prices = await get_stock_price(ticker)
+
+        # im sorry for this but this projects budget is too
+        # low for me to put any more effort into it
+        data_provider = s.data_provider
+        for record, price in zip(data_provider, stock_prices.values()):
+            # this could potentially be inaccurate, and sometime in the future it
+            # will go out of sync, wrong data will be displayed and chaos everywhere
+            record["column-0"] = price
 
         return render_template(
             "dashboard.html",
@@ -143,8 +160,13 @@ class IndexRouter:
         )
 
     async def table(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
-        if req.user.rank < 0:
+        if req.user is None or req.user.rank < 0:
             return RedirectResponse("/premium")
+
+        ticker_regex = re.compile(r"^[A-Z]{1,5}$")
+
+        if not re.match(ticker_regex, ticker) or not ticker:
+            return RedirectResponse("/")
 
         records = await self.db.records.get_all_by_symbol(ticker)
         minimal_records = list(map(MinimalRecord.from_record, records))
@@ -152,6 +174,7 @@ class IndexRouter:
 
         dates = symbol.dt
         table = {
+            "Growth Profit": "",
             "Revenue (USD mil)": symbol.gp_rum,
             "Gross Margin %": symbol.gp_gm,
             "Operating Income (USD MIL)": symbol.gp_oim,
@@ -167,6 +190,93 @@ class IndexRouter:
             "Free Cash Flow (USD MIL)": symbol.gp_fcf,
             "Free Cash Flow Per Share (USD)": symbol.gp_fcfps,
             "Working Capital (USD MIL)": symbol.gp_wc,
+
+            "Profit Margin": "",
+            "Revenue": symbol.pm_r,
+            "COGS": symbol.pm_cogs,
+            "Gross Margin": symbol.pm_gm,
+            "SG&A": symbol.pm_sga,
+            "R&D": symbol.pm_rd,
+            "Other": symbol.pm_o,
+            "Operating Margin": symbol.pm_om,
+            "Net Int Inc & Other": symbol.pm_nii,
+            "EBT Margin": symbol.pm_ebm,
+
+            "Profitability": "",
+            "Tax Rate %": symbol.p_trp,
+            "Net Margin %": symbol.p_nm,
+            "Asset Turnover (Average)": symbol.p_at,
+            "Return on Assets %": symbol.p_roa,
+            "Financial Leverage (Average)": symbol.p_fl,
+            "Return on Equity %": symbol.p_roe,
+            "Return on Invested Capital %": symbol.p_roic,
+            "Interest Coverage": symbol.p_ic,
+
+            "Growth": "",
+            "Revenue % Year over Year": symbol.g_rp_1,
+            "Revenue % 3-Year Average": symbol.g_rp_3,
+            "Revenue % 5-Year Average": symbol.g_rp_5,
+            "Revenue % 10-Year Average": symbol.g_rp_10,
+
+            "Operating Income % Year over Year": symbol.g_opi_1,
+            "Operating Income % 3-Year Average": symbol.g_opi_3,
+            "Operating Income % 5-Year Average": symbol.g_opi_5,
+            "Operating Income % 10-Year Average": symbol.g_opi_10,
+
+            "Net Income % Year over Year": symbol.g_ni_1,
+            "Net Income % 3-Year Average": symbol.g_ni_3,
+            "Net Income % 5-Year Average": symbol.g_ni_5,
+            "Net Income % 10-Year Average": symbol.g_ni_10,
+
+            "EPS % Year over Year": symbol.g_eps_1,
+            "EPS % 3-Year Average": symbol.g_eps_3,
+            "EPS % 5-Year Average": symbol.g_eps_5,
+            "EPS % 10-Year Average": symbol.g_eps_10,
+
+            "Cash Flow": "",
+            "Operating Cash Flow Growth % YOY": symbol.cf_ocf,
+            "Free Cash Flow Growth % YOY": symbol.cf_fcfgp,
+            "Cap Ex as a % of Sales": symbol.cf_ceag,
+            "Free Cash Flow/Sales %": symbol.cf_fcfos,
+            "Free Cash Flow/Net Income": symbol.cf_fcfoni,
+
+            "Financial Health": "",
+            "Cash & Short-Term Investments": symbol.fh_casti,
+            "Accounts Receivable": symbol.fh_ar,
+            "Inventory": symbol.fh_inv,
+            "Other Current Assets": symbol.fh_oca,
+            "Total Current Assets": symbol.fh_tca,
+            "Net PP&E": symbol.fh_nppe,
+            "Intangibles": symbol.fh_int,
+            "Other Long-Term Assets": symbol.fh_olta,
+            "Total Assets": symbol.fh_ta,
+            "Accounts Payable": symbol.fh_ap,
+            "Short-Term Debt": symbol.fh_std,
+            "Taxes Payable": symbol.fh_tp,
+            "Accrued Liabilities": symbol.fh_al,
+            "Other Short-Term Liabilities": symbol.fh_ostl,
+            "Total Current Liabilities": symbol.fh_tcl,
+            "Long-Term Debt": symbol.fh_ltd,
+            "Other Long-Term Liabilities": symbol.fh_oltl,
+            "Total Liabilities": symbol.fh_tl,
+            "Total Stockholders' Equity": symbol.fh_tse,
+            "Total Liabilities & Equity": symbol.fh_tle,
+
+            "Liquidity/Financial Health": "",
+            "Current Ratio": symbol.lqd_cr,
+            "Quick Ratio": symbol.lqd_qr,
+            "Financial Leverage": symbol.lqd_fl,
+            "Debt/Equity": symbol.lqd_doe,
+
+            "Efficiency Ratios": "",
+            "Days Sales Outstanding": symbol.efc_dso,
+            "Days Inventory": symbol.efc_di,
+            "Payables Period":  symbol.efc_pp,
+            "Cash Conversion Cycle": symbol.efc_ccc,
+            "Receivables Turnover": symbol.efc_rt,
+            "Inventory Turnover": symbol.efc_it,
+            "Fixed Assets Turnover": symbol.efc_fat,
+            "Asset Turnover": symbol.efc_at,
         }
 
         return render_template(
@@ -178,6 +288,38 @@ class IndexRouter:
                 "dates": dates,
                 "table": table
             }
+        )
+
+    async def download(self, req: Request, ticker: str) -> FileResponse | RedirectResponse:
+        """Download the table as a CSV file."""
+        if req.user is None or req.user.rank < 0:
+            return RedirectResponse("/premium")
+
+        ticker_regex = re.compile(r"^[A-Z]{1,5}$")
+
+        if not re.match(ticker_regex, ticker) or not ticker:
+            return RedirectResponse("/")
+
+        records = await self.db.records.get_all_by_symbol(ticker)
+        minimal_records = list(map(MinimalRecord.from_record, records))
+        symbol = Symbol.from_minimal_records(minimal_records)
+
+        df = pd.DataFrame(symbol.dict())
+        df.to_csv(f"/tmp/{ticker}.csv", index=False)
+
+        async def cleanup():
+            os.remove(f"/tmp/{ticker}.csv")
+
+        loop = aio.get_event_loop()
+        loop.call_later(15, cleanup)
+
+        return FileResponse(
+            f"{ticker}.csv",
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": f"attachment; filename={ticker}_table.csv"
+            },
+            status_code=200,
         )
 
     async def manage_subscription(self, req: Request) -> "_TemplateResponse" | RedirectResponse:

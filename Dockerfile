@@ -1,4 +1,4 @@
-FROM python:3.11-slim as build
+FROM python:3.10-slim as build
 
 # Install Python dependencies
 RUN pip install --upgrade pip

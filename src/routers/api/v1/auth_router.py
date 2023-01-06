@@ -102,12 +102,13 @@ class AuthRouter:
         self._is_valid_recaptcha_token(login.recaptcha_token, request)
         user = await self.db.users.get_by_username(login.username)
 
-        if not user.verified:
-            raise HTTPException(status_code=400,
-                                detail="unverified")
         if not user:
             raise HTTPException(status_code=404,
                                 detail="username not registered")
+
+        if not user.verified:
+            raise HTTPException(status_code=400,
+                                detail="unverified")
 
         if not Password.compare(user.password_hash, login.password):
             raise HTTPException(status_code=400,
