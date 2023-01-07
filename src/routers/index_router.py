@@ -3,16 +3,15 @@ from __future__ import annotations
 import json
 import os
 import re
+import io
 import asyncio as aio
 
-import pandas as pd
 from fastapi import APIRouter, Request
 # from fastapi import Depends
 from fastapi.responses import HTMLResponse
-from starlette.responses import RedirectResponse, FileResponse
+from starlette.responses import RedirectResponse, StreamingResponse
 from starlette.templating import _TemplateResponse
 
-from src import PATH
 from src.data import ApplicationDbContext
 from src.utilities import render_template, tokenizer, get_stock_price
 from src.models import User
@@ -99,7 +98,7 @@ class IndexRouter:
             self.download,
             methods=["GET"],
             description="download csv for ticker",
-            response_class=FileResponse,
+            response_class=StreamingResponse,
             # dependencies=[Depends(subscriber_only)],
         )
 
@@ -300,7 +299,7 @@ class IndexRouter:
             }
         )
 
-    async def download(self, req: Request, ticker: str) -> FileResponse | RedirectResponse:
+    async def download(self, req: Request, ticker: str) -> StreamingResponse | RedirectResponse:
         """Download the table as a CSV file."""
         if req.user is None or req.user.rank < 0:
             return RedirectResponse("/premium")
@@ -310,29 +309,19 @@ class IndexRouter:
         if not re.match(ticker_regex, ticker) or not ticker:
             return RedirectResponse("/")
 
-        records = await self.db.records.get_all_by_symbol(ticker)
-        minimal_records = list(map(MinimalRecord.from_record, records))
-        symbol = Symbol.from_minimal_records(minimal_records)
+        csv_content = await self.db.records.get_csv_by_symbol(ticker)
+        if csv_content is None:
+            return RedirectResponse("/not_found")
 
-        df = pd.DataFrame(symbol.dict())
-        fname = f"{PATH}/tmp/{ticker}.csv"
+        csv_data = io.BytesIO()
+        csv_data.write(csv_content.encode("utf-8"))
+        csv_data.seek(0)
 
-        with open(fname, "w"):
-            ...
-
-        df.to_csv(fname)
-
-        async def cleanup():
-            await aio.sleep(10)
-            os.remove(fname)
-
-        aio.create_task(cleanup())
-
-        return FileResponse(
-            fname,
+        return StreamingResponse(
+            csv_data,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename={ticker}_table.csv"
+                "Content-Disposition": f"attachment; filename={ticker}_mavefund.csv"
             },
             status_code=200,
         )

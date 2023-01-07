@@ -10,6 +10,19 @@ class RecordRepository(RepositoryBase):
     def __init__(self, pool: asyncpg.Pool):
         self.__pool = pool
 
+    async def get_csv_by_symbol(self, symbol: str) -> str | None:
+        async with self.__pool.acquire(timeout=60) as conn:
+            conn: asyncpg.Connection
+            csv: asyncpg.Record = await conn.fetchrow("""
+            SELECT content
+            FROM csv_data
+            WHERE
+                symbol = $1
+            """, symbol)
+
+            if csv is not None:
+                return csv[0]
+
     async def get_all_by_company_name(self, name: str) -> dict:
         name = f"%{name}%"
         async with self.__pool.acquire(timeout=60) as conn:

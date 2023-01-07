@@ -11,6 +11,9 @@ class RecordService(ServiceBase):
     def __init__(self, pool: asyncpg.Pool):
         self.__records = RecordRepository(pool)
 
+    async def get_csv_by_symbol(self, symbol: str) -> str | None:
+        return await self.__records.get_csv_by_symbol(symbol)
+
     async def get_all_by_company_name(self, name: str) -> dict:
         return await self.__records.get_all_by_company_name(name)
 
