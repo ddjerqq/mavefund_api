@@ -1,11 +1,8 @@
 import asyncio as aio
 import datetime
-import functools
 import pytest
 import yfinance as yf
 
-
-@functools.cache
 async def get_stock_price(ticker: str) -> dict[datetime.date, float]:
     """get the stock prices for a given ticker
 
