@@ -21,6 +21,11 @@ document.onkeydown = (e) => {
     }
 }
 
+function logout() {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.location.replace("/");
+}
+
 try {
     $search.addEventListener("click", searchToggle);
     $close.addEventListener("click", searchToggle);
