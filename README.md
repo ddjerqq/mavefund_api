@@ -1,6 +1,6 @@
 # MaveFund API 
 
-![logo](/static/images/mavefund.png)
+![logo](/static/image/mavefund.png)
 
 ## Introduction
 This is an API and a backend system for [mavefund.com](https://mavefund.com). 
