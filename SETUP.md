@@ -22,11 +22,13 @@ Python 3.10. scroll down a little and click the highlighted link:
 ### **3. install Git and GitHub desktop**
 * click this link to [download](https://git-scm.com/downloads) git. 
 * click this link to [download](https://desktop.github.com) GitHub desktop. 
+* after they are installed, sign in with your account
 
 ### **4. Clone this repository**
 * using your favorite IDE, clone this repository somewhere nice and safe.
   * for **Jetbrains IDEs** use the new project button: ![jb ide get from vcs](/tmp/jbide_get_from_vcs.png)
-  * for **VsCode** use the `clone_repository` button ![vsc clone repo](/tmp/vsc_clone_repo.png)
+  * for **VsCode** use the `clone_repository` button 
+  ![vsc clone repo](/tmp/vsc_clone_repo.png)
     * in the tab put in this url: `https://github.com/ddjerqq/mavefund_api.git`. 
     * (note: give it some time to download for the first time)
     * after this you should have the project downloaded and open
