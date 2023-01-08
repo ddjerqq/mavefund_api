@@ -76,7 +76,7 @@ async def startup():
         host=os.getenv("POSTGRES_HOST"),
         user="postgres",
         password=os.getenv("POSTGRES_PASSWORD"),
-        database="mavefund"
+        database="postgres"
     )
 
     # initialize routers
@@ -90,9 +90,6 @@ async def startup():
     app.include_router(index_router.router)
 
     app.include_router(api.router)
-
-    # mount static files
-    app.mount("/static", StaticFiles(directory=join(PATH, "static")), name="static")
 
     ##########################
     # configure middleware   #
