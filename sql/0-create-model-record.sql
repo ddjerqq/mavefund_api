@@ -1,4 +1,4 @@
-CREATE TABLE stock_record
+CREATE TABLE IF NOT EXISTS stock_record
 (
     id                                BIGINT         NOT NULL
         PRIMARY KEY
@@ -112,5 +112,5 @@ CREATE TABLE stock_record
     efc_asset_turnover                             REAL
 );
 
-CREATE UNIQUE INDEX stock_record_id_uindex
+CREATE UNIQUE INDEX IF NOT EXISTS stock_record_id_uindex
     ON stock_record (id);
