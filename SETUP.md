@@ -34,9 +34,25 @@ Python 3.10. scroll down a little and click the highlighted link:
     * after this you should have the project downloaded and open
 
 ### **5. Install requirements.txt**
-* run this in your terminal
+* First, you have to create virtual environment. Don't create it with Pycharm. It may install different python version.
+* Install virtualenv library
+   ```bash
+   pip install virutalenv
+   # into the project's root directory
+   virtualenv -p python3.10 your_venv_name
+   ```
+   or
+   ```bash
+   python3.10 -m venv your_env_name
+   ```
+* don't forget to activate it, by running `your_venv_name/Scripts/activate.bat`
+  or
+  ```bash
+    source myenv/bin/activate
+  ```
+* within your venv, run this in your terminal
     ```bash
-    py -3.10 -m pip install -r requiements.txt
+    py -3.10 -m pip install -r requirements.txt
     ```
 
 ### **6. Run setup.py**
