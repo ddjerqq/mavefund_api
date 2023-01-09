@@ -98,7 +98,7 @@ class StripeRouter:
             "url": session.url
         }
 
-    async def success(self, req: Request, session_id: str) -> RedirectResponse:
+    async def success(self, session_id: str):
 
         session = stripe.checkout.Session.retrieve(session_id)
 
@@ -111,7 +111,7 @@ class StripeRouter:
 
         return RedirectResponse(url="/")  # TODO redirect to dashboard
 
-    async def cancel(self, req: Request) -> RedirectResponse:
+    async def cancel(self, req: Request):
         return RedirectResponse(url="/")  # TODO redirect to dashboard
 
     async def webhook(

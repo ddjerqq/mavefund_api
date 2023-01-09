@@ -32,7 +32,6 @@ class IndexRouter:
             self.index,
             methods=["GET", "POST"],
             description="get the index page",
-            response_class=HTMLResponse
         )
 
         self.router.add_api_route(
@@ -40,7 +39,6 @@ class IndexRouter:
             self.login,
             methods=["GET"],
             description="get the login page",
-            response_class=HTMLResponse
         )
 
         self.router.add_api_route(
@@ -48,7 +46,6 @@ class IndexRouter:
             self.verify_email,
             methods=["GET"],
             description="Email verification",
-            response_class=HTMLResponse
         )
 
         self.router.add_api_route(
@@ -56,7 +53,6 @@ class IndexRouter:
             self.reset_password,
             methods=["GET"],
             description="Reset Password",
-            response_class=HTMLResponse
         )
 
         self.router.add_api_route(
@@ -64,7 +60,6 @@ class IndexRouter:
             self.reset_password_verify,
             methods=["GET"],
             description="Reset Password verify",
-            response_class=HTMLResponse
         )
 
         self.router.add_api_route(
@@ -72,7 +67,6 @@ class IndexRouter:
             self.premium,
             methods=["GET"],
             description="get the plans page",
-            response_class=HTMLResponse
         )
 
         self.router.add_api_route(
@@ -80,7 +74,6 @@ class IndexRouter:
             self.dashboard,
             methods=["GET"],
             description="get the dashboard page",
-            response_class=HTMLResponse,
             # dependencies=[Depends(subscriber_only)],
         )
 
@@ -89,7 +82,6 @@ class IndexRouter:
             self.table,
             methods=["GET"],
             description="get the table view",
-            response_class=HTMLResponse,
             # dependencies=[Depends(subscriber_only)],
         )
 
@@ -98,7 +90,6 @@ class IndexRouter:
             self.download,
             methods=["GET"],
             description="download csv for ticker",
-            response_class=StreamingResponse,
             # dependencies=[Depends(subscriber_only)],
         )
 
