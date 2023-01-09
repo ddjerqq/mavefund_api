@@ -102,7 +102,7 @@ class IndexRouter:
             # dependencies=[Depends(subscriber_only)],
         )
 
-    async def index(self, req: Request, q: str | None = None) -> "_TemplateResponse" | RedirectResponse:
+    async def index(self, req: Request, q: str | None = None):
         tickers = None
 
         if q is not None:
@@ -117,7 +117,7 @@ class IndexRouter:
             }
         )
 
-    async def login(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+    async def login(self, req: Request):
         if req.user:
             return RedirectResponse(url="/")
 
@@ -125,7 +125,7 @@ class IndexRouter:
                                {"request": req,
                                 'pub_key': self._recaptcha_public_key})
 
-    async def premium(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+    async def premium(self, req: Request):
         return render_template(
             "premium.html",
             {
@@ -134,7 +134,7 @@ class IndexRouter:
             }
         )
 
-    async def dashboard(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
+    async def dashboard(self, req: Request, ticker: str):
         if req.user is None or req.user.rank < 0:
             return RedirectResponse("/premium")
 
@@ -168,7 +168,7 @@ class IndexRouter:
             }
         )
 
-    async def table(self, req: Request, ticker: str) -> "_TemplateResponse" | RedirectResponse:
+    async def table(self, req: Request, ticker: str):
         if req.user is None or req.user.rank < 0:
             return RedirectResponse("/premium")
 
@@ -299,7 +299,7 @@ class IndexRouter:
             }
         )
 
-    async def download(self, req: Request, ticker: str) -> StreamingResponse | RedirectResponse:
+    async def download(self, req: Request, ticker: str):
         """Download the table as a CSV file."""
         if req.user is None or req.user.rank < 0:
             return RedirectResponse("/premium")
@@ -326,7 +326,7 @@ class IndexRouter:
             status_code=200,
         )
 
-    async def manage_subscription(self, req: Request) -> "_TemplateResponse" | RedirectResponse:
+    async def manage_subscription(self, req: Request):
         if req.user:
             return render_template("manage_subscription.html",
                                    {"request": req})
