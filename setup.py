@@ -106,7 +106,7 @@ async def main():
     await migration_up()
 
     await populate_init()
-    # await populate_up()
+    await populate_up()
 
     postgres.stop()
     postgres.remove()
