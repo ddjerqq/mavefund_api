@@ -33,10 +33,10 @@ Python 3.10. scroll down a little and click the highlighted link:
     * (note: give it some time to download for the first time)
     * after this you should have the project downloaded and open
 
-### **5. Install requirements.txt**
+### **5. Install requirements-setup.txt**
 * run this in your terminal
     ```bash
-    py -3.10 -m pip install -r requirements.txt
+    py -3.10 -m pip install -r requirements-setup.txt
     ```
 
 ### **6. Run setup.py**
