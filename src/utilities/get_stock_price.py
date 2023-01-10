@@ -3,6 +3,7 @@ import datetime
 import pytest
 import yfinance as yf
 
+
 async def get_stock_price(ticker: str) -> dict[datetime.date, float]:
     """get the stock prices for a given ticker
 
@@ -21,7 +22,7 @@ async def get_stock_price(ticker: str) -> dict[datetime.date, float]:
         lambda: ticker.history(period="10y", interval="1mo")
     )
 
-    timestamp_open_slice = df.iloc[::12, 0:1]
+    timestamp_open_slice = df.iloc[::13, 0:1]
     data = timestamp_open_slice.to_dict()["Open"]
     return {
         timestamp.date(): price
