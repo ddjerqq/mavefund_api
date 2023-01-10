@@ -9,14 +9,16 @@ from src.services import RecordService
 load_dotenv()
 
 
+async def resource_1_setup():
+    ...
+
+
 async def get_record_service() -> RecordService:
     pool = await asyncpg.create_pool(
-        user='postgres',
+        user="postgres",
         password=os.getenv("POSTGRES_PASSWORD"),
-        database='postgres',
+        database="postgres",
         host=os.getenv("HOST"),
-        min_size=1,
-        max_size=2,
     )
     return RecordService(pool)
 

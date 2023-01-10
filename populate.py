@@ -10,17 +10,18 @@ import aiofiles
 from src.utilities.csv_parser import CsvDataParser
 from src.models import User
 
-
-logging.config.fileConfig("logging.conf")
-log = logging.getLogger("setup")
-
 # mavefund_api/
 PATH = dirname(realpath(__file__))
 
 
+logging.config.fileConfig(join(PATH, "logging.conf"))
+log = logging.getLogger("setup")
+
+
+
 files = [
     join(PATH, "sample_data", file)
-    for file in os.listdir("sample_data")
+    for file in os.listdir(join(PATH, "sample_data"))
     if file.endswith(".csv")
 ]
 
@@ -53,7 +54,8 @@ async def _record_up():
     )
 
     try:
-        await conn.executemany("""
+        for record in record_payload:
+            await conn.execute("""
         INSERT INTO stock_record(
             id, 
             company_name, 
@@ -238,7 +240,7 @@ async def _record_up():
             $88,
             $89
         )
-        """, record_payload)
+        """, record)
     except:
         log.exception(
             "error occurred while inserting records inside the database",
@@ -261,19 +263,20 @@ async def _test_users_up():
     ]
 
     try:
-        await conn.executemany("""
-        INSERT INTO app_user
-        (id, username, email, password_hash, rank, verified)
-        VALUES 
-        (
-            $1,
-            $2,
-            $3,
-            $4,
-            $5,
-            $6
-        )
-        """, *map(lambda user: user.dict().values(), users))
+        for user in users:
+            await conn.execute("""
+            INSERT INTO app_user
+            (id, username, email, password_hash, rank, verified)
+            VALUES 
+            (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5,
+                $6
+            )
+            """, user.dict().values())
     except:
         log.exception(
             "error occurred while inserting test users inside the database",
@@ -299,21 +302,22 @@ async def _csv_data_up():
         if file.endswith(".csv")
     ])
 
-    await conn.executemany("""
-    INSERT INTO csv_data
-    VALUES 
-    (
-        $1,
-        $2
-    )
-    """, symbol_filenames)
+    for csv in symbol_filenames:
+        await conn.execute("""
+        INSERT INTO csv_data
+        VALUES 
+        (
+            $1,
+            $2
+        )
+        """, csv)
     log.info("csv files are UP")
 
 
 async def up():
     log.info("starting populating the database")
     await _record_up()
-    await _test_users_up()
+    # await _test_users_up()
     await _csv_data_up()
     log.info("populating the database finished successfully")
 
