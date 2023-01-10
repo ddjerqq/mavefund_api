@@ -95,7 +95,6 @@ class IndexRouter:
 
     async def index(self, req: Request, q: str | None = None):
         tickers = {
-            "META": "Meta (Facebook)",
             "AMZN": "Amazon",
             "AAPL": "Apple",
             "NFLX": "Netflix",
@@ -132,7 +131,7 @@ class IndexRouter:
         )
 
     async def dashboard(self, req: Request, ticker: str):
-        if (req.user is None or req.user.rank < 0) and ticker not in ("META", "AMZN", "AAPL", "NFLX", "GOOGL"):
+        if (req.user is None or req.user.rank < 0) and ticker not in ("AMZN", "AAPL", "NFLX", "GOOGL"):
             return RedirectResponse("/premium")
 
         ticker_regex = re.compile(r"^[A-Z]{1,5}$")
@@ -166,7 +165,7 @@ class IndexRouter:
         )
 
     async def table(self, req: Request, ticker: str):
-        if (req.user is None or req.user.rank < 0) and ticker not in ("META", "AMZN", "AAPL", "NFLX", "GOOGL"):
+        if (req.user is None or req.user.rank < 0) and ticker not in ("AMZN", "AAPL", "NFLX", "GOOGL"):
             return RedirectResponse("/premium")
 
         ticker_regex = re.compile(r"^[A-Z]{1,5}$")
@@ -298,7 +297,7 @@ class IndexRouter:
 
     async def download(self, req: Request, ticker: str):
         """Download the table as a CSV file."""
-        if (req.user is None or req.user.rank < 0) and ticker not in ("META", "AMZN", "AAPL", "NFLX", "GOOGL"):
+        if (req.user is None or req.user.rank < 0) and ticker not in ("AMZN", "AAPL", "NFLX", "GOOGL"):
             return RedirectResponse("/premium")
 
         ticker_regex = re.compile(r"^[A-Z]{1,5}$")
