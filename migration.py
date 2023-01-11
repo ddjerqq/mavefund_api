@@ -3,6 +3,8 @@ from __future__ import annotations
 import logging.config
 import os
 from os.path import dirname, realpath, join
+import asyncio as aio
+
 import asyncpg
 import aiofiles
 
@@ -57,3 +59,13 @@ async def down():
     DROP TABLE csv_data;
     """)
     log.info("migration DOWN finished successfully")
+
+
+async def main():
+    os.environ["HOST"] = "31.220.57.57"
+    await init()
+    await up()
+
+
+if __name__ == "__main__":
+    aio.run(main())

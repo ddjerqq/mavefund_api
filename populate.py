@@ -49,13 +49,12 @@ async def init():
 async def _record_up():
     log.info("records going UP")
     record_payload = (
-        list(record.flat_dict().values())
+        tuple(record.flat_dict().values())
         for record in records
     )
 
     try:
-        for record in record_payload:
-            await conn.execute("""
+        await conn.executemany("""
         INSERT INTO stock_record(
             id, 
             company_name, 
@@ -240,7 +239,7 @@ async def _record_up():
             $88,
             $89
         )
-        """, record)
+        """, record_payload)
     except:
         log.exception(
             "error occurred while inserting records inside the database",
@@ -263,8 +262,7 @@ async def _test_users_up():
     ]
 
     try:
-        for user in users:
-            await conn.execute("""
+        await conn.execute("""
             INSERT INTO app_user
             (id, username, email, password_hash, rank, verified)
             VALUES 
@@ -276,7 +274,7 @@ async def _test_users_up():
                 $5,
                 $6
             )
-            """, user.dict().values())
+            """, map(lambda user: user.dict().values(), users))
     except:
         log.exception(
             "error occurred while inserting test users inside the database",
@@ -287,9 +285,9 @@ async def _test_users_up():
 
 
 async def _read_file(filepath: str) -> tuple[str, str]:
-    *_, filename = filepath.split("/")
-    symbol, *_ = filename.split(" ")
-    async with aiofiles.open(filename) as f:
+    _, tail = os.path.split(filepath)
+    symbol, *_ = tail.split(" ")
+    async with aiofiles.open(filepath) as f:
         content = await f.read()
     return symbol, content
 
@@ -297,26 +295,25 @@ async def _read_file(filepath: str) -> tuple[str, str]:
 async def _csv_data_up():
     log.info("csv files going UP")
     symbol_filenames = await aio.gather(*[
-        _read_file(file)
-        for file in os.listdir(".")
+        _read_file(join(PATH, "sample_data", file))
+        for file in os.listdir("sample_data")
         if file.endswith(".csv")
     ])
 
-    for csv in symbol_filenames:
-        await conn.execute("""
-        INSERT INTO csv_data
-        VALUES 
-        (
-            $1,
-            $2
-        )
-        """, csv)
+    await conn.executemany("""
+    INSERT INTO csv_data
+    VALUES 
+    (
+        $1,
+        $2
+    )
+    """, symbol_filenames)
     log.info("csv files are UP")
 
 
 async def up():
     log.info("starting populating the database")
-    await _record_up()
+    # await _record_up()
     # await _test_users_up()
     await _csv_data_up()
     log.info("populating the database finished successfully")
@@ -330,3 +327,14 @@ async def down():
     DELETE FROM csv_data;
     """)
     log.info("tearing DOWN data done")
+
+
+
+async def main():
+    os.environ["host"] = "31.220.57.57"
+    await init()
+    await up()
+
+
+if __name__ == "__main__":
+    aio.run(main())
