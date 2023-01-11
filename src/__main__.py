@@ -76,7 +76,7 @@ async def startup():
         host=os.getenv("POSTGRES_HOST"),
         user="postgres",
         password=os.getenv("POSTGRES_PASSWORD"),
-        database="mavefund"
+        database="postgres"
     )
 
     # initialize routers
