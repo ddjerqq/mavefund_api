@@ -119,7 +119,7 @@ async def startup():
 # make https redirect work
 if __name__ == "__main__":
 
-    Popen(["python", "https_redirect.py"])
+    Popen(["python", join(PATH, "src", "https_redirect.py")])
 
     uvicorn.run(
         "__main__:app",
