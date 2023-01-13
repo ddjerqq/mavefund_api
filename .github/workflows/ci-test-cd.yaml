@@ -57,7 +57,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd mavefund
+            cd work
             docker-compose down
             docker pull ddjerqq/private:latest
             docker-compose up -d

@@ -1,5 +1,6 @@
 import os
 from os.path import join
+from subprocess import Popen
 
 import stripe
 import uvicorn
@@ -117,6 +118,9 @@ async def startup():
 
 # make https redirect work
 if __name__ == "__main__":
+
+    Popen(["python", "https_redirect.py"])
+
     uvicorn.run(
         "__main__:app",
         ssl_certfile=join(PATH, "cert", "server.crt"),
