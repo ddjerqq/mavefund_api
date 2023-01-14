@@ -142,7 +142,11 @@ class IndexRouter:
         records = await self.db.records.get_all_by_symbol(ticker)
         # if records is None
         minimal_records = list(map(MinimalRecord.from_record, records))
+
         s = Symbol.from_minimal_records(minimal_records)
+        if s is None:
+            return RedirectResponse("/not_found")
+
         stock_prices = await get_stock_price(ticker)
 
         # im sorry for this but this projects budget is too

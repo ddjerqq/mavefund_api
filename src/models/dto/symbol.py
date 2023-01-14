@@ -111,12 +111,14 @@ class Symbol(BaseModel):
     efc_at: list[float | None] = []
 
     @classmethod
-    def from_minimal_records(cls, records: list[MinimalRecord]) -> Symbol:
+    def from_minimal_records(cls, records: list[MinimalRecord]) -> Symbol | None:
         # potential bug comparing dates and strings may be problematic
         # potential solution convert date to string
         records.sort(key=lambda r: str(r.dt))
 
-        first = records[0]
+        first = records[0:1]
+        if len(first) == 0:
+            return None
 
         keys = list(vars(first).keys())
         keys.remove("cnm")
