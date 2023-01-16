@@ -117,8 +117,10 @@ class Symbol(BaseModel):
         records.sort(key=lambda r: str(r.dt))
 
         first = records[0:1]
-        if len(first) == 0:
+        if not first:
             return None
+        else:
+            first = first[0]
 
         keys = list(vars(first).keys())
         keys.remove("cnm")
