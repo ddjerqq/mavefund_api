@@ -4,110 +4,9 @@ import csv
 import os
 from typing import Callable
 
-from src.models.record import *
-from src.utilities import Snowflake
+import aiofiles
 
-
-# record = {
-#     "company_name": str,
-#     "symbol": str,
-#     "symbol_date": str,
-#
-#     "growth_profitability_and_financial_ratios": {
-#         "revenue_usd_mil": int,
-#         "gross_margin": float,
-#         "operating_income_usd_mil": int,
-#         "operating_margin": float,
-#         "net_income_usd_mil": int,
-#         "earnings_per_share_usd": float,
-#         "dividends_usd": float,
-#         "payout_ratio": float,
-#         "shares_mil": int,
-#         "book_value_per_share_usd": float,
-#         "operation_cash_flow_usd_mil": int,
-#         "cap_spending_usd_mil": int,
-#         "free_cash_flow_usd_mil": int,
-#         "free_cash_flow_per_share_usd": float,
-#         "working_capital_usd_mil": float,
-#     },
-#     "profitability_margin_perc_of_sales": {
-#         "revenue": float,
-#         "cogs": float,
-#         "gross_margin": float,
-#         "sg_and_a": float,
-#         "r_and_d": float,
-#         "other": float,
-#         "operating_margin": float,
-#         "net_interest_income_and_other": float,
-#         "ebt_margin": float,
-#     },
-#     "profitability": {
-#         "tax_rate_perc": float,
-#         "net_margin_perc": float,
-#         "asset_turnover": float,
-#         "return_on_assets": float,
-#         "financial_leverage": float,
-#         "return_on_equity": float,
-#         "return_on_invested_capital": float,
-#         "interest_coverage": float,
-#     },
-#     "growth": {
-#         "revenue_perc_over_1_year_average": float,
-#         "revenue_perc_over_3_years_average": float,
-#         "revenue_perc_over_5_years_average": float,
-#         "revenue_perc_over_10_years_average": float,
-#
-#         "operating_income_perc_over_1_year_average": float,
-#         "operating_income_perc_over_3_years_average": float,
-#         "operating_income_perc_over_5_years_average": float,
-#         "operating_income_perc_over_10_years_average": float,
-#
-#         "net_income_perc_over_1_year_average": float,
-#         "net_income_perc_over_3_years_average": float,
-#         "net_income_perc_over_5_years_average": float,
-#         "net_income_perc_over_10_years_average": float,
-#
-#         "eps_perc_over_1_year_average": float,
-#         "eps_perc_over_3_years_average": float,
-#         "eps_perc_over_5_years_average": float,
-#         "eps_perc_over_10_years_average": float,
-#     },
-#     "cash_flow_ratios": {
-#         "operating_cash_flow_growth_and_yoy": float,
-#         "free_cash_flow_growth_and_yoy": float,
-#         "cap_ex_as_a_perc_of_sales": float,
-#         "free_cash_flow_as_a_perc_of_sales": float,
-#         "free_cash_flow_as_a_perc_of_net_income": float,
-#     },
-#     "financial_health_balance_sheet_items": {
-#         "cash_and_short_term_investments": float,
-#         "accounts_receivable": float,
-#         "inventory": float,
-#         "other_current_assets": float,
-#         "total_current_assets": float,
-#         "net_pp_and_e": float,
-#         "intangibles": float,
-#         "other_long_term_assets": float,
-#         "total_assets": float,
-#         "accounts_payable": float,
-#         "short_term_debt": float,
-#         "taxes_payable": float,
-#         "accrued_liabilities": float,
-#         "other_short_term_liabilities": float,
-#         "total_current_liabilities": float,
-#         "long_term_debt": float,
-#         "other_long_term_liabilities": float,
-#         "total_liabilities": float,
-#         "total_stockholders_equity": float,
-#         "total_liabilities_and_equity": float,
-#     },
-#     "financial_health": {
-#         "current_ratio": float,
-#         "quick_ratio": float,
-#         "financial_leverage": float,
-#         "debt_to_equity": float,
-#     }
-# }
+from src.models import *
 
 __all__ = {
     "CsvDataParser"
@@ -160,15 +59,17 @@ class CsvDataParser:
         ][1:]
 
     @classmethod
-    def parse(cls, path: str) -> list[Record]:
+    async def parse(cls, path: str) -> CompanyInfo:
         name = None
+        ticker = os.path.basename(path).split(".")[0].split()[0]
 
-        with open(path, "r") as f:
+        # TODO make this async
+        async with aiofiles.open(path, "r", encoding="utf-8", errors="ignore") as f:
             chunks = []
             lines = []
-            for _line in f.readlines():
-                if not name and "Ratios for " in _line:
-                    name = _line.split("Ratios for ")[1][:-5].lower().replace(" ", "_")
+            async for _line in f:
+                if name is None and "Ratios for " in _line:
+                    name = _line.split("Ratios for ")[1][:-1].lower()
 
                 if _line == "\n":
                     chunks.append(lines)
@@ -179,8 +80,6 @@ class CsvDataParser:
 
             chunks.append(lines)
             del lines
-
-        symbol = os.path.basename(path).split(".")[0].split()[0]
 
         # parsing a chunk returns a list of record-dicts
         # for that chunk
@@ -317,22 +216,117 @@ class CsvDataParser:
         for idx, method in enumerate(methods):
             chunk_records.append(method(chunks[idx]))
 
-        records = []
-        for gp, pm, p, g, cf, fh, lqd, efc in zip(*chunk_records):
-            record = Record(
-                id=Snowflake(),
-                company_name=name[:32],
-                symbol=symbol,
-                symbol_date=gp["symbol_date"],
+        info = CompanyInfo(company_name=name, ticker=ticker)
 
-                growth_profitability=GrowthProfitability(**gp),
-                profitability_margin=ProfitabilityMargin(**pm),
-                profitability=Profitability(**p),
-                growth=Growth(**g),
-                cash_flow=CashFlow(**cf),
-                financial_health=FinancialHealth(**fh),
-                liquidity=Liquidity(**lqd),
-                efficiency=Efficiency(**efc),
-            )
-            records.append(record)
-        return records
+        # iterate this and append shit here everytime instead of creating vars.
+
+        for gp, pm, p, g, cf, fh, lqd, efc in zip(*chunk_records):
+            date = gp["symbol_date"]
+            gp = GrowthProfitability(**gp)
+            pm = ProfitabilityMargin(**pm)
+            p = Profitability(**p)
+            g = Growth(**g)
+            cf = CashFlow(**cf)
+            fh = FinancialHealth(**fh)
+            lqd = Liquidity(**lqd)
+            efc = Efficiency(**efc)
+
+            info.dates.append(date)
+
+            info.gp_revenue_usd_mil.append(gp.gp_revenue_usd_mil)
+            info.gp_gross_margin.append(gp.gp_gross_margin)
+            info.gp_operating_income_usd_mil.append(gp.gp_operating_income_usd_mil)
+            info.gp_operating_margin.append(gp.gp_operating_margin)
+            info.gp_net_income_usd_mil.append(gp.gp_net_income_usd_mil)
+            info.gp_earnings_per_share_usd.append(gp.gp_earnings_per_share_usd)
+            info.gp_dividends_usd.append(gp.gp_dividends_usd)
+            info.gp_payout_ratio.append(gp.gp_payout_ratio)
+            info.gp_shares_mil.append(gp.gp_shares_mil)
+            info.gp_book_value_per_share_usd.append(gp.gp_book_value_per_share_usd)
+            info.gp_operation_cash_flow_usd_mil.append(gp.gp_operation_cash_flow_usd_mil)
+            info.gp_cap_spending_usd_mil.append(gp.gp_cap_spending_usd_mil)
+            info.gp_free_cash_flow_usd_mil.append(gp.gp_free_cash_flow_usd_mil)
+            info.gp_free_cash_flow_per_share_usd.append(gp.gp_free_cash_flow_per_share_usd)
+            info.gp_working_capital_usd_mil.append(gp.gp_working_capital_usd_mil)
+
+            info.pm_revenue.append(pm.pm_revenue)
+            info.pm_cogs.append(pm.pm_cogs)
+            info.pm_gross_margin.append(pm.pm_gross_margin)
+            info.pm_sg_and_a.append(pm.pm_sg_and_a)
+            info.pm_r_and_d.append(pm.pm_r_and_d)
+            info.pm_other.append(pm.pm_other)
+            info.pm_operating_margin.append(pm.pm_operating_margin)
+            info.pm_net_interest_income_and_other.append(pm.pm_net_interest_income_and_other)
+            info.pm_ebt_margin.append(pm.pm_ebt_margin)
+
+            info.p_tax_rate_perc.append(p.p_tax_rate_perc)
+            info.p_net_margin_perc.append(p.p_net_margin_perc)
+            info.p_asset_turnover.append(p.p_asset_turnover)
+            info.p_return_on_assets.append(p.p_return_on_assets)
+            info.p_financial_leverage.append(p.p_financial_leverage)
+            info.p_return_on_equity.append(p.p_return_on_equity)
+            info.p_return_on_invested_capital.append(p.p_return_on_invested_capital)
+            info.p_interest_coverage.append(p.p_interest_coverage)
+
+            info.g_revenue_perc_over_1_year_average.append(g.g_revenue_perc_over_1_year_average)
+            info.g_revenue_perc_over_3_years_average.append(g.g_revenue_perc_over_3_years_average)
+            info.g_revenue_perc_over_5_years_average.append(g.g_revenue_perc_over_5_years_average)
+            info.g_revenue_perc_over_10_years_average.append(g.g_revenue_perc_over_10_years_average)
+
+            info.g_operating_income_perc_over_1_year_average.append(g.g_operating_income_perc_over_1_year_average)
+            info.g_operating_income_perc_over_3_years_average.append(g.g_operating_income_perc_over_3_years_average)
+            info.g_operating_income_perc_over_5_years_average.append(g.g_operating_income_perc_over_5_years_average)
+            info.g_operating_income_perc_over_10_years_average.append(g.g_operating_income_perc_over_10_years_average)
+
+            info.g_net_income_perc_over_1_year_average.append(g.g_net_income_perc_over_1_year_average)
+            info.g_net_income_perc_over_3_years_average.append(g.g_net_income_perc_over_3_years_average)
+            info.g_net_income_perc_over_5_years_average.append(g.g_net_income_perc_over_5_years_average)
+            info.g_net_income_perc_over_10_years_average.append(g.g_net_income_perc_over_10_years_average)
+
+            info.g_eps_perc_over_1_year_average.append(g.g_eps_perc_over_1_year_average)
+            info.g_eps_perc_over_3_years_average.append(g.g_eps_perc_over_3_years_average)
+            info.g_eps_perc_over_5_years_average.append(g.g_eps_perc_over_5_years_average)
+            info.g_eps_perc_over_10_years_average.append(g.g_eps_perc_over_10_years_average)
+
+            info.cf_operating_cash_flow_growth_perc_yoy.append(cf.cf_operating_cash_flow_growth_perc_yoy)
+            info.cf_free_cash_flow_growth_perc_yoy.append(cf.cf_free_cash_flow_growth_perc_yoy)
+            info.cf_cap_ex_as_growth_perc_of_sales.append(cf.cf_cap_ex_as_growth_perc_of_sales)
+            info.cf_free_cash_flow_over_sales_perc.append(cf.cf_free_cash_flow_over_sales_perc)
+            info.cf_free_cash_flow_over_net_income.append(cf.cf_free_cash_flow_over_net_income)
+
+            info.fh_cash_and_short_term_investments.append(fh.fh_cash_and_short_term_investments)
+            info.fh_accounts_receivable.append(fh.fh_accounts_receivable)
+            info.fh_inventory.append(fh.fh_inventory)
+            info.fh_other_current_assets.append(fh.fh_other_current_assets)
+            info.fh_total_current_assets.append(fh.fh_total_current_assets)
+            info.fh_net_pp_and_e.append(fh.fh_net_pp_and_e)
+            info.fh_intangibles.append(fh.fh_intangibles)
+            info.fh_other_long_term_assets.append(fh.fh_other_long_term_assets)
+            info.fh_total_assets.append(fh.fh_total_assets)
+            info.fh_accounts_payable.append(fh.fh_accounts_payable)
+            info.fh_short_term_debt.append(fh.fh_short_term_debt)
+            info.fh_taxes_payable.append(fh.fh_taxes_payable)
+            info.fh_accrued_liabilities.append(fh.fh_accrued_liabilities)
+            info.fh_other_short_term_liabilities.append(fh.fh_other_short_term_liabilities)
+            info.fh_total_current_liabilities.append(fh.fh_total_current_liabilities)
+            info.fh_long_term_debt.append(fh.fh_long_term_debt)
+            info.fh_other_long_term_liabilities.append(fh.fh_other_long_term_liabilities)
+            info.fh_total_liabilities.append(fh.fh_total_liabilities)
+            info.fh_total_stockholders_equity.append(fh.fh_total_stockholders_equity)
+            info.fh_total_liabilities_and_equity.append(fh.fh_total_liabilities_and_equity)
+
+            info.lqd_current_ratio.append(lqd.lqd_current_ratio)
+            info.lqd_quick_ratio.append(lqd.lqd_quick_ratio)
+            info.lqd_financial_leverage.append(lqd.lqd_financial_leverage)
+            info.lqd_debt_over_equity.append(lqd.lqd_debt_over_equity)
+
+            info.efc_days_sales_outstanding.append(efc.efc_days_sales_outstanding)
+            info.efc_days_inventory.append(efc.efc_days_inventory)
+            info.efc_payable_period.append(efc.efc_payable_period)
+            info.efc_cash_conversion_cycle.append(efc.efc_cash_conversion_cycle)
+            info.efc_receivable_turnover.append(efc.efc_receivable_turnover)
+            info.efc_inventory_turnover.append(efc.efc_inventory_turnover)
+            info.efc_fixed_asset_turnover.append(efc.efc_fixed_asset_turnover)
+            info.efc_asset_turnover.append(efc.efc_asset_turnover)
+
+        return info

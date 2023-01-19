@@ -4,30 +4,29 @@ import asyncpg
 
 from src.models.user import User
 from src.repositories.user_repository import UserRepository
-from src.services.service_base import ServiceBase
 
 
-class UserService(ServiceBase):
+class UserService:
     def __init__(self, pool: asyncpg.Pool):
-        self.__users = UserRepository(pool)
+        self._users = UserRepository(pool)
 
     async def get_by_username(self, username: str) -> User | None:
-        return await self.__users.get_by_username(username)
+        return await self._users.get_by_username(username)
 
     async def get_by_email(self, email: str) -> User | None:
-        return await self.__users.get_by_email(email)
+        return await self._users.get_by_email(email)
 
     async def get_all(self) -> list[User]:
-        return await self.__users.get_all()
+        return await self._users.get_all()
 
     async def get_by_id(self, id: int) -> User | None:
-        return await self.__users.get_by_id(id)
+        return await self._users.get_by_id(id)
 
     async def add(self, entity: User) -> None:
-        await self.__users.add(entity)
+        await self._users.add(entity)
 
     async def update(self, entity: User) -> None:
-        await self.__users.update(entity)
+        await self._users.update(entity)
 
     async def delete(self, id: int) -> None:
-        await self.__users.delete(id)
+        await self._users.delete(id)

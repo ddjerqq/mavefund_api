@@ -17,4 +17,5 @@ def decode_token(token, expiration=172800):
         )
         return email
     except Exception as e:
+        print(f"exception decoding token: {e}")
         return False

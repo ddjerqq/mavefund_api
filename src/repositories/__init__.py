@@ -1,2 +1,2 @@
 from .user_repository import UserRepository
-from .repository_base import RepositoryBase
+from .company_info_repository import CompanyInfoRepository

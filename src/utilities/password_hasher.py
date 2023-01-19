@@ -2,7 +2,6 @@ import os
 import string
 # import hashlib
 import bcrypt
-import secrets
 import random
 
 from dotenv import load_dotenv
