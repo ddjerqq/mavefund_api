@@ -28,11 +28,6 @@ try:
     from docker.models.containers import Container
     from dotenv import load_dotenv
 
-    from migration import (
-        init as migration_init,
-        up as migration_up,
-    )
-
     from populate import (
         init as populate_init,
         up as populate_up,
@@ -102,9 +97,6 @@ async def main():
     await aio.sleep(10)
     log.info("postgres should be ready by now")
 
-    await migration_init()
-    await migration_up()
-
     await populate_init()
     await populate_up()
 
@@ -116,9 +108,6 @@ async def main():
         path=".",
         tag="ddjerqq/server:latest"
     )
-    server: docker.models.containers.Container
-    server.stop()
-    server.remove()
     log.info("building mavefund_api container finished successfully")
 
     log.info("SUCCESS!!! the application is fully setup and ready to be ran")
