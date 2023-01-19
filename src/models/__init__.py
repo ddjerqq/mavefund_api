@@ -1,2 +1,3 @@
 from .user import User
-from .record import Record
+from .company_info import CompanyInfo
+from .record import *
