@@ -5,41 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - MaveFund</title>
-    <link rel="stylesheet" href="../static/css/login.css">
-    <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
-    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="stylesheet" href="login.css">
+    <link rel="icon" type="image/x-icon" href="default.jpg">
 </head>
 <body>
 <h1 class="heading">MaveFund</h1>
 <div class="container" id="container">
     <div class="form-container sign-up-container">
-        <form id="register-form">
-            <h1>Sign up</h1>
+        <form action="#">
+            <h1>Create a MaveFund account</h1>
             <br>
-            <input id="register-username" type="text" placeholder="Username"/>
-            <input id="register-email" type="email" placeholder="Email"/>
-            <input id="register-password" type="password"
-                   placeholder="Password"/>
-            <input id="register-captcha" type="hidden"/>
-            <div class="g-recaptcha" data-callback="reg_call"
-                 data-sitekey="{{ pub_key }}"></div>
-            <button id="reg-btn" type="submit" disabled>Sign Up</button>
-            <p id="register-error" class="error"></p>
+            <input type="text" placeholder="Name" />
+            <input type="email" placeholder="Email" />
+            <input type="password" placeholder="Password" />
+            <button>Sign Up</button>
+            <p class="error"></p>
         </form>
     </div>
     <div class="form-container sign-in-container">
-        <form id="login-form">
+        <form action="#">
             <h1>Sign in</h1>
             <br>
-            <input id="login-username" type="text" placeholder="Username"/>
-            <input id="login-password" type="password" placeholder="Password"/>
-            <input id="login-captcha" type="hidden"/>
-            <div class="g-recaptcha" data-callback="log_call"
-                 data-sitekey="{{ pub_key }}"></div>
-            <button id="log-btn" type="submit" disabled>Sign In</button>
-            <a href="/reset-password">Forget Password?</a>
-            <p id="login-info" class="info"></p>
-            <p id="login-error" class="error"></p>
+            <input type="email" placeholder="Email" />
+            <input type="password" placeholder="Password" />
+            <a href="#" class="forgot-password">Forgot your password?</a>
+            <button>Sign In</button>
+            <p class="error"></p>
         </form>
     </div>
     <div class="overlay-container">
@@ -47,18 +38,17 @@
             <div class="overlay-panel overlay-left">
                 <h1>Already got an account?</h1>
                 <p>Log in now!</p>
-                <button class="ghost" id="sign-in">Sign In</button>
+                <button class="ghost" id="signIn">Sign In</button>
             </div>
             <div class="overlay-panel overlay-right">
                 <h1>Sign Up Now!</h1>
-                <p>If you don't already have an MaveFund account, create one
-                    here!</p>
-                <button class="ghost" id="sign-up">Sign Up</button>
+                <p>If you don't already got an MaveFund account, create one here!</p>
+                <button class="ghost" id="signUp">Sign Up</button>
             </div>
         </div>
     </div>
 </div>
 <footer>MaveFund™ All rights reserved</footer>
-<script src="../static/js/login.js" defer></script>
+<script src="login.js"></script>
 </body>
 </html>

@@ -1,8 +1,71 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Packages - MaveFund</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="imgs/default.jpg">
+</head>
+<style>
+    @media (max-width:600px) {
+        .login {
+            top: 22%;
+            left: 85%;
+        }
 
-{% block content %}
+        .heading {
+            top: 5%
 
-    <div class="content">
+        }
+    }
+
+    @media (max-width: 900px) and (min-width: 600px) {
+        .login {
+            top: 25%;
+            left: 80%;
+        }
+
+        .heading {
+            top: 20%
+
+        }
+
+        .nav > .nav-btn {
+            top: 8%;
+        }
+    }
+</style>
+<body>
+<div class="logo-nav"><a href="home.html"><img class="logo" src="../static/image/mavefund.png" alt="logo"></a></div>
+<center>
+    <h1 class="heading">Premium</h1>
+    <div ><button class="login"><a href="login/login.html" target="_blank">LOGIN</a></button></div>
+
+    <div class="nav">
+        <input type="checkbox" id="nav-check">
+        <div class="nav-btn">
+            <label for="nav-check">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+        </div>
+
+        <nav>
+            <ul>
+                <div ><img src="icons/homepagewhite.png" alt=""> <li><a href="home.html">Home</a></li></div> <br>
+                <div ><img src="icons/dashboardwhite.png" alt=""> <li><a href="dashboard.html">Dashboard</a></li></div> <br>
+                <div ><img src="icons/box.png" alt=""> <li><a class="active" href="package.html">Premium</a></li></div> <br>
+            </ul>
+        </nav>
+
+
         <div class="packages">
             <div class="information">
                 <table class="u-table-entity">
@@ -15,6 +78,7 @@
                     <th class="u-table-cell-4"><b>SUPER</b>
                         <br>
                     </th>
+                    </tr>
                     </thead>
                     <tbody class="u-table-body-1">
                     <tr>
@@ -56,19 +120,21 @@
                     <tr>
                         <td class="u-table-cell-29"></td>
                         <td class="u-table-cell-30">
-                            <button onclick="checkout(0)" class="buy-button">GET</button>
+                            <button class="buy-button">GET</button>
                         </td>
                         <td class="u-table-cell-31">
-                            <button onclick="checkout(1)" class="buy-button">GET</button>
+                            <button class="buy-button">GET</button>
                         </td>
                         <td class="u-table-cell-32">
-                            <button onclick="checkout(2)" class="buy-button">GET</button>
+                            <button class="buy-button">GET</button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
 
-{% endblock %}
+        <footer>MaveFund™ All rights reserved</footer>
+        <script src="script.js"></script>
+</body>
+</html>
