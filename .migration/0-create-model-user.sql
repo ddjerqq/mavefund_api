@@ -1,4 +1,4 @@
-CREATE TABLE  IF NOT EXISTS app_user
+CREATE TABLE IF NOT EXISTS app_user
 (
     id            BIGINT         NOT NULL
         PRIMARY KEY
