@@ -79,6 +79,7 @@ async def startup():
         password=os.getenv("POSTGRES_PASSWORD"),
         database="postgres"
     )
+    await db.migrate()
 
     # initialize routers
     index_router = IndexRouter(db)
