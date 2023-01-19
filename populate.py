@@ -138,7 +138,7 @@ async def _csv_data_up():
 
 async def up():
     log.info("starting populating the database")
-    await _record_up()
+    # await _record_up()
     # await _test_users_up()
     await _csv_data_up()
     log.info("populating the database finished successfully")
