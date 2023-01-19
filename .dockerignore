@@ -1,6 +1,7 @@
 /git/
 /.postgres/
 /idea/
+/tmp/
 /github/
 /pytest_cache/
 /sample_data/

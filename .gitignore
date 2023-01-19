@@ -2,4 +2,5 @@
 /.idea/*
 /.postgres/
 /.pytest_cache
+/sample_data/
 __pycache__/
