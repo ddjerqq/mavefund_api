@@ -4,3 +4,4 @@
 /.pytest_cache
 /sample_data/
 __pycache__/
+/_templates/

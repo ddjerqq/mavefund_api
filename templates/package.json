@@ -1,0 +1,19 @@
+{
+  "name": "bootstraptemp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "bootstrap-select": "^1.13.18",
+    "chart.js": "^4.2.0",
+    "fontawesome-4.7": "^4.7.0",
+    "gridjs": "^6.0.5",
+    "jquery": "^1.12.4"
+  }
+}
