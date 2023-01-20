@@ -1,140 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Packages - MaveFund</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="imgs/default.jpg">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.108.0">
+    <title>Signin Template · Bootstrap v5.3</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="node_modules/fontawesome-4.7/css/font-awesome.min.css" rel="stylesheet">
+    <link href="site.css" rel="stylesheet">
+    <link href="signin.css" rel="stylesheet">
+    <link href="premium.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="site.js"></script>
+
 </head>
-<style>
-    @media (max-width:600px) {
-        .login {
-            top: 22%;
-            left: 85%;
-        }
 
-        .heading {
-            top: 5%
+<body class="text-center">
 
-        }
-    }
-
-    @media (max-width: 900px) and (min-width: 600px) {
-        .login {
-            top: 25%;
-            left: 80%;
-        }
-
-        .heading {
-            top: 20%
-
-        }
-
-        .nav > .nav-btn {
-            top: 8%;
-        }
-    }
-</style>
-<body>
-<div class="logo-nav"><a href="home.html"><img class="logo" src="../static/image/mavefund.png" alt="logo"></a></div>
-<center>
-    <h1 class="heading">Premium</h1>
-    <div ><button class="login"><a href="login/login.html" target="_blank">LOGIN</a></button></div>
-
-    <div class="nav">
-        <input type="checkbox" id="nav-check">
-        <div class="nav-btn">
-            <label for="nav-check">
-                <span></span>
-                <span></span>
-                <span></span>
-            </label>
-        </div>
-
-        <nav>
-            <ul>
-                <div ><img src="icons/homepagewhite.png" alt=""> <li><a href="home.html">Home</a></li></div> <br>
-                <div ><img src="icons/dashboardwhite.png" alt=""> <li><a href="dashboard.html">Dashboard</a></li></div> <br>
-                <div ><img src="icons/box.png" alt=""> <li><a class="active" href="package.html">Premium</a></li></div> <br>
-            </ul>
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <div class="container">
+            <a class="navbar-brand" href="/">
+              <img src="./assets/mavefund.png" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+              aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="company.html">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="premium.html">Premium</a>
+                </li>
+                <!-- <li class="nav-item">
+                  <a class="nav-link" href="#">Login</a>
+                </li> -->
+              </ul>
+              <form id="navbarSearch" class="d-flex" role="search" data-bs-toggle="modal" data-bs-target="#searchModal">
+                <div class="navbar-search-input-holder">
+                  <i class="fa fa-search"></i>
+                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                </div>
+              </form>
+              <div>
+                <a class="btn btn-dark nav-login-button" href="signin.html" role="button">Login</a>
+              </div>
+            </div>
+          </div>
         </nav>
+      </header>
+    
 
+<section class="main">
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">Pricing</h1>
+        <!-- <p class="lead white">Quickly build an effective pricing table for your potential customers with this Bootstrap example. It's built with default Bootstrap components and utilities with little customization.</p> -->
+      </div>
+  
+      <div class="container">
+        <div class="card-deck mb-3 text-center row">
+            <div class="col-md-4">
 
-        <div class="packages">
-            <div class="information">
-                <table class="u-table-entity">
-                    <thead class="u-table-header-1">
-                    <th class="u-table-cell-1">Compare all plans</th>
-                    <th class="u-table-cell-2"><b>BASIC</b>
-                    </th>
-                    <th class="u-table-cell-3"><b>PREMIUM</b>
-                    </th>
-                    <th class="u-table-cell-4"><b>SUPER</b>
-                        <br>
-                    </th>
-                    </tr>
-                    </thead>
-                    <tbody class="u-table-body-1">
-                    <tr>
-                        <td class="u-table-cell-5">Price / month</td>
-                        <td class="u-table-cell-6">$0.99</td>
-                        <td class="u-table-cell-7">$1.99</td>
-                        <td class="u-table-cell-8">$2.99</td>
-                    </tr>
-                    <tr>
-                        <td class="u-table-cell-9">Access to all 10,000 CSV file</td>
-                        <td class="u-table-cell-10">✔</td>
-                        <td class="u-table-cell-11">✓</td>
-                        <td class="u-table-cell-12">✓</td>
-                    </tr>
-                    <tr>
-                        <td class="u-table-cell-13">Dashboard display for all companies</td>
-                        <td class="u-table-cell-14">✓</td>
-                        <td class="u-table-cell-15">✓</td>
-                        <td class="u-table-cell-16">✓</td>
-                    </tr>
-                    <tr>
-                        <td class="u-table-cell-17">Get quarterly data</td>
-                        <td class="u-table-cell-18">✕</td>
-                        <td class="u-table-cell-19">✓</td>
-                        <td class="u-table-cell-20">✓</td>
-                    </tr>
-                    <tr>
-                        <td class="u-table-cell-21">API key with access to Yearly data</td>
-                        <td class="u-table-cell-22">✕</td>
-                        <td class="u-table-cell-23">✓</td>
-                        <td class="u-table-cell-24">✓</td>
-                    </tr>
-                    <tr>
-                        <td class="u-table-cell-25">API key with access to Quarterly data</td>
-                        <td class="u-table-cell-26">✕</td>
-                        <td class="u-table-cell-27">✕</td>
-                        <td class="u-table-cell-28">✓</td>
-                    </tr>
-                    <tr>
-                        <td class="u-table-cell-29"></td>
-                        <td class="u-table-cell-30">
-                            <button class="buy-button">GET</button>
-                        </td>
-                        <td class="u-table-cell-31">
-                            <button class="buy-button">GET</button>
-                        </td>
-                        <td class="u-table-cell-32">
-                            <button class="buy-button">GET</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header basic-header">
+                      <h4 class="my-0 font-weight-normal">Basic</h4>
+                    </div>
+                    <div class="card-body">
+                      <h1 class="card-title pricing-card-title black">$0.99 <small class="text-muted">/ mo</small></h1>
+                      <ul class="list-unstyled mt-3 mb-4">
+                        <li>Access to all 10,000 CSV file</li>
+                        <li>Dashboard display for all companies</li>
+                      </ul>
+                      <a type="button" href="signin.html" class="btn btn-lg btn-block btn-outline-primary">Get Now</a>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-md-4">
+
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header premium-header">
+                      <h4 class="my-0 font-weight-normal">Premium</h4>
+                    </div>
+                    <div class="card-body">
+                      <h1 class="card-title pricing-card-title black">$1.99 <small class="text-muted">/ mo</small></h1>
+                      <ul class="list-unstyled mt-3 mb-4">
+                        <li>Access to all 10,000 CSV file</li>
+                        <li>Dashboard display for all companies</li>
+                        <li>Get quarterly data</li>
+                        <li>API key with access to Yearly data</li>
+                      </ul>
+                      <a type="button" href="signin.html" class="btn btn-lg btn-block btn-outline-primary">Get Now</a>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-md-4">
+
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header super-header">
+                      <h4 class="my-0 font-weight-normal">Super</h4>
+                    </div>
+                    <div class="card-body">
+                      <h1 class="card-title pricing-card-title black">$2.99 <small class="text-muted">/ mo</small></h1>
+                      <ul class="list-unstyled mt-3 mb-4">
+                        <li>Access to all 10,000 CSV file</li>
+                        <li>Dashboard display for all companies</li>
+                        <li>Get quarterly data</li>
+                        <li>API key with access to Yearly data</li>
+                        <li>API key with access to Quarterly data</li>
+                      </ul>
+                      <a type="button" href="signin.html" class="btn btn-lg btn-block btn-outline-primary">Get Now</a>
+                    </div>
+                  </div>
             </div>
         </div>
+</section>
 
-        <footer>MaveFund™ All rights reserved</footer>
-        <script src="script.js"></script>
+
 </body>
+
 </html>
