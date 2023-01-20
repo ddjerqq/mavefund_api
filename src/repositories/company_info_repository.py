@@ -4,6 +4,7 @@ import asyncpg
 
 from src.models import CompanyInfo
 from src.utilities.csv_parser import CsvDataParser
+from src.utilities import get_stock_price
 
 
 class CompanyInfoRepository:
@@ -44,6 +45,8 @@ class CompanyInfoRepository:
             }
 
     async def get_by_ticker(self, ticker: str) -> CompanyInfo | None:
+        ticker = ticker.upper()
+
         async with self.__pool.acquire(timeout=60) as conn:
             conn: asyncpg.Connection
             row = await conn.fetchrow("""
@@ -51,12 +54,15 @@ class CompanyInfoRepository:
             FROM csv_data
             WHERE
                 ticker = $1
-            """, ticker.upper())
+            """, ticker)
 
             if row is None:
                 return None
 
-            return await CsvDataParser.parse(db_data=row)
+            info = await CsvDataParser.parse(db_data=row)
+            stock_prices = await get_stock_price(ticker)
+            info.stock_prices = list(map(lambda price: round(price, 2), stock_prices.values()))
+            return info
 
     async def get_all(self) -> list[CompanyInfo]:
         raise NotImplementedError

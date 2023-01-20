@@ -19,7 +19,7 @@ async def get_stock_price(ticker: str) -> dict[datetime.date, float]:
 
     df = await loop.run_in_executor(
         None,
-        lambda: ticker.history(period="10y", interval="1mo")
+        lambda: ticker.history(period="11y", interval="1mo")
     )
 
     timestamp_open_slice = df.iloc[::13, 0:1]
