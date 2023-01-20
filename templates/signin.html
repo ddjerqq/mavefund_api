@@ -128,11 +128,11 @@
             <h1 class="h3 mb-3 fw-normal">Sign In</h1>
 
             <div class="form-floating">
-                <input type="text" class="form-control email-input" id="floatingInput" placeholder="name@example.com">
+                <input type="text" class="form-control email-input" id="username" placeholder="name@example.com">
                 <label for="floatingInput">Username</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <input type="password" class="form-control" id="password" placeholder="Password">
                 <label for="floatingPassword">Password</label>
             </div>
 
@@ -156,7 +156,30 @@
 
 </div>
 
+<script>
+  
+  $('form').submit(function(e) {
+    const recaptcha_token = document.getElementById("login-captcha").value;
+    e.preventDefault();
+    const data = {
+      username: $('#username').val(),
+      password: $('#password').val(),
+      recaptcha_token: recaptcha_token
+    }
+    $.ajax({
+      url: 'http://mavefund.com/api/v1/auth/login',
+      data: data,
+      method: 'POST',
+      success: function(e) {
+        console.log(e)
+      },
+      error: function(err) {
+        alert('An error happened');
+      }
+    })
+  });
 
+</script>
 </body>
 
 </html>

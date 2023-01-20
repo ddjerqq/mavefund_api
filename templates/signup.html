@@ -75,8 +75,6 @@
     </style>
 
 
-    <!-- Custom styles for this template -->
-    <link href="sign-in.css" rel="stylesheet">
 </head>
 
 <body class="text-center">
@@ -128,15 +126,15 @@
             <h1 class="h3 mb-3 fw-normal">Sign Up</h1>
 
             <div class="form-floating">
-              <input type="text" class="form-control email-input" id="floatingInput" placeholder="name@example.com">
+              <input type="text" class="form-control email-input" id="username" placeholder="name@example.com">
               <label for="floatingInput">Username</label>
           </div>
           <div class="form-floating">
-              <input type="email" class="form-control no-bordere-radius" id="floatingInput" placeholder="name@example.com">
+              <input type="email" class="form-control no-bordere-radius" id="email" placeholder="name@example.com">
               <label for="floatingInput">Email</label>
           </div>
             <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <input type="password" class="form-control" id="password" placeholder="Password">
                 <label for="floatingPassword">Password</label>
             </div>
 
@@ -152,6 +150,29 @@
 
 </div>
 
+<script>
+  $('form').submit(function(e) {
+    const recaptcha_token = document.getElementById("login-captcha").value;
+    e.preventDefault();
+    const data = {
+      email: $('#email').val(),
+      username: $('#username').val(),
+      password: $('#password').val(),
+      recaptcha_token: recaptcha_token
+    }
+    $.ajax({
+      url: 'http://mavefund.com/api/v1/auth/register',
+      data: data,
+      method: 'POST',
+      success: function(e) {
+        console.log(e)
+      },
+      error: function(err) {
+        alert('An error happened');
+      }
+    })
+  });
+</script>
 
 </body>
 
