@@ -10,6 +10,8 @@ class CompanyInfo(BaseModel):
 
     dates: list[date | str] = []
 
+    stock_prices: list[float] = []
+
     # region fields
 
     gp_revenue_usd_mil: list[int | None] = []

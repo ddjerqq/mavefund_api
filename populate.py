@@ -78,21 +78,11 @@ async def up():
     log.info("populating the database finished successfully")
 
 
-async def down():
-    log.info("starting tearing DOWN the data")
-    await conn.execute("""
-    DELETE FROM stock_record;
-    DELETE FROM app_user;
-    DELETE FROM csv_data;
-    """)
-    log.info("tearing DOWN data done")
-
-
-
 async def main():
     os.environ["POSTGRES_HOST"] = "127.0.0.1"
     await init()
     await up()
+    await conn.close()
 
 
 if __name__ == "__main__":

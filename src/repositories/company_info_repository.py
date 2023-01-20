@@ -4,6 +4,7 @@ import asyncpg
 
 from src.models import CompanyInfo
 from src.utilities.csv_parser import CsvDataParser
+from src.utilities import get_stock_price
 
 
 class CompanyInfoRepository:
@@ -18,23 +19,25 @@ class CompanyInfoRepository:
             FROM csv_data
             WHERE
                 ticker = $1
-            """, ticker)
+            """, ticker.upper())
 
             return csv
 
     async def get_all_companies_by_name_or_ticker(self, name_or_ticker: str) -> dict[str, str]:
+        q = f"%{name_or_ticker}%"
+
         async with self.__pool.acquire(timeout=60) as conn:
             company_names = await conn.fetch("""
             SELECT ticker, company_name
             FROM csv_data
             WHERE company_name ILIKE $1
-            """, name_or_ticker + "%")
+            """, q)
 
             ticker_companies = await conn.fetch("""
             SELECT ticker, company_name
             FROM csv_data
             WHERE ticker ILIKE $1
-            """, name_or_ticker + "%")
+            """, q)
 
             return {
                 symbol: company_name
@@ -42,19 +45,24 @@ class CompanyInfoRepository:
             }
 
     async def get_by_ticker(self, ticker: str) -> CompanyInfo | None:
+        ticker = ticker.upper()
+
         async with self.__pool.acquire(timeout=60) as conn:
             conn: asyncpg.Connection
-            csv_file = await conn.fetchval("""
+            row = await conn.fetchrow("""
             SELECT *
             FROM csv_data
             WHERE
                 ticker = $1
             """, ticker)
 
-            if csv_file is None:
+            if row is None:
                 return None
 
-            return await CsvDataParser.parse(csv_file)
+            info = await CsvDataParser.parse(db_data=row)
+            stock_prices = await get_stock_price(ticker)
+            info.stock_prices = list(map(lambda price: round(price, 2), stock_prices.values()))
+            return info
 
     async def get_all(self) -> list[CompanyInfo]:
         raise NotImplementedError

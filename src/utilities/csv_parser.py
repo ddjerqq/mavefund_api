@@ -59,27 +59,42 @@ class CsvDataParser:
         ][1:]
 
     @classmethod
-    async def parse(cls, path: str) -> CompanyInfo:
-        name = None
-        ticker = os.path.basename(path).split(".")[0].split()[0]
-
-        # TODO make this async
+    async def read_csv(cls, path: str) -> str:
         async with aiofiles.open(path, "r", encoding="utf-8", errors="ignore") as f:
-            chunks = []
-            lines = []
-            async for _line in f:
-                if name is None and "Ratios for " in _line:
-                    name = _line.split("Ratios for ")[1][:-1].lower()
+            return await f.read()
 
-                if _line == "\n":
-                    chunks.append(lines)
-                    lines = []
+    @classmethod
+    async def parse(
+            cls,
+            path: str | None = None,
+            db_data: tuple[str, str, str] | None = None,
+    ) -> CompanyInfo:
+        name = None
 
-                else:
-                    lines.append(_line.strip())
+        if db_data is not None:
+            ticker, name, content = db_data
+            content = content.strip("﻿")
+            line_separator = ""
+        else:
+            content = await cls.read_csv(path)
+            ticker = os.path.basename(path).removesuffix(".csv").split(" ")[0]
+            line_separator = "\n"
 
-            chunks.append(lines)
-            del lines
+        chunks = []
+        lines = []
+        for _line in content.splitlines():
+            if name is None and "Ratios for " in _line:
+                name = _line.split("Ratios for ")[1][:-1].lower()
+
+            if _line == line_separator:
+                chunks.append(lines)
+                lines = []
+
+            else:
+                lines.append(_line.strip())
+
+        chunks.append(lines)
+        del lines
 
         # parsing a chunk returns a list of record-dicts
         # for that chunk
