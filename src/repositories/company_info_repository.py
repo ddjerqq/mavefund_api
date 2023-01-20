@@ -18,23 +18,25 @@ class CompanyInfoRepository:
             FROM csv_data
             WHERE
                 ticker = $1
-            """, ticker)
+            """, ticker.upper())
 
             return csv
 
     async def get_all_companies_by_name_or_ticker(self, name_or_ticker: str) -> dict[str, str]:
+        q = f"%{name_or_ticker}%"
+
         async with self.__pool.acquire(timeout=60) as conn:
             company_names = await conn.fetch("""
             SELECT ticker, company_name
             FROM csv_data
             WHERE company_name ILIKE $1
-            """, name_or_ticker + "%")
+            """, q)
 
             ticker_companies = await conn.fetch("""
             SELECT ticker, company_name
             FROM csv_data
             WHERE ticker ILIKE $1
-            """, name_or_ticker + "%")
+            """, q)
 
             return {
                 symbol: company_name
