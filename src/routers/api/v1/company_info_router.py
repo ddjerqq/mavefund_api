@@ -20,7 +20,7 @@ class CompanyInfoRouter:
         )
 
         self.router.add_api_route(
-            "/download/{ticker:str}",
+            "/download",
             self.download_csv,
             methods=["GET"],
         )
@@ -38,11 +38,11 @@ class CompanyInfoRouter:
             response_model=CompanyInfo,
         )
 
-    async def download_csv(self, ticker: str):
-        csv = await self.db.companies.get_csv_by_ticker(ticker)
+    async def download_csv(self, q: str):
+        csv = await self.db.companies.get_csv_by_ticker(q)
 
         if csv is None:
-            raise HTTPException(status_code=404, detail=f"no records found for {ticker}.")
+            raise HTTPException(status_code=404, detail=f"no records found for {q}.")
 
         csv_data = io.BytesIO()
         csv_data.write(csv.encode("utf-8"))
@@ -52,7 +52,7 @@ class CompanyInfoRouter:
             csv_data,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename={ticker}_mavefund.csv"
+                "Content-Disposition": f"attachment; filename={q}_mavefund.csv"
             },
             status_code=200
         )

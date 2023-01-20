@@ -44,17 +44,17 @@ class CompanyInfoRepository:
     async def get_by_ticker(self, ticker: str) -> CompanyInfo | None:
         async with self.__pool.acquire(timeout=60) as conn:
             conn: asyncpg.Connection
-            csv_file = await conn.fetchval("""
+            row = await conn.fetchrow("""
             SELECT *
             FROM csv_data
             WHERE
                 ticker = $1
-            """, ticker)
+            """, ticker.upper())
 
-            if csv_file is None:
+            if row is None:
                 return None
 
-            return await CsvDataParser.parse(csv_file)
+            return await CsvDataParser.parse(db_data=row)
 
     async def get_all(self) -> list[CompanyInfo]:
         raise NotImplementedError
