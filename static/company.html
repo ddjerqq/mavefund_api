@@ -194,7 +194,7 @@
 
 
     if (location.href && location.href.split('?')[1]) {
-      params = new URLSearchParams(location.href.split('?')[1]);
+      var params = new URLSearchParams(location.href.split('?')[1]);
       $.ajax({
         url: `/api/v1/info/get?q=${params.get('key')}`,
         success: function (res) {
