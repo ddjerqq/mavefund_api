@@ -13,8 +13,8 @@ from src import PATH
 from src.utilities import render_template
 from src.middleware import AuthMiddleware
 from src.data import ApplicationDbContext
-from src.routers import IndexRouter, ApiRouter
-
+from src.routers import ApiRouter
+from src.utilities import SinglePageApplication
 
 stripe.api_key = os.getenv("STRIPE_SECRET_API_KEY")
 
@@ -81,15 +81,15 @@ async def startup():
     )
     await db.migrate()
 
-    # initialize routers
-    index_router = IndexRouter(db)
+    # # initialize routers
+    # index_router = IndexRouter(db)
 
     api = ApiRouter(db)
 
     ##########################
     # add routers            #
     ##########################
-    app.include_router(index_router.router)
+    # app.include_router(index_router.router)
 
     app.include_router(api.router)
 
@@ -113,8 +113,13 @@ async def startup():
     app.add_middleware(HTTPSRedirectMiddleware)
 
 
-    # mount static files
-    app.mount("/static", StaticFiles(directory=join(PATH, "static")), name="static")
+    # mount static
+    app.mount(
+        path="/",
+        app=SinglePageApplication(directory=join(PATH, "static")),
+        name="static"
+    )
+    # app.mount("/static", StaticFiles(directory=join(PATH, "static")), name="static")
 
 
 # make https redirect work

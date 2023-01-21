@@ -1,0 +1,215 @@
+body {
+    background-color: #333;
+    background-image: url(../image/bg.png);
+    background-size: 900px;
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+h1 {
+    color: #fff;
+    margin: 30px 0;
+    text-align: center;
+}
+h2 {
+    color: #fff;
+}
+.card-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.modal h1 {
+    color: #000;
+}
+nav.navbar {
+    background: #4ecca3 !important;
+    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%), inset 0 -1px 0 rgb(0 0 0 / 15%);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+.navbar-brand img {
+    height: 35px;
+    filter: brightness(0) invert(1);
+}
+.nav-login-button {
+    margin-left: 10px;
+    opacity: 0.7;
+}
+.navbar-collapse > * {
+    flex-grow: 1;
+}
+
+#navbarSearch input {
+    width: auto;
+    background-color: rgba(0,0,0,0.1);
+    border: none;
+    cursor: pointer;
+    padding-left: 30px;
+}
+.navbar-search-input-holder {
+    position: relative;
+}
+.navbar-search-input-holder i {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.7);
+}
+
+#navbarSearch input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgba(255,255,255,0.7);
+    opacity: 1; /* Firefox */
+  }
+  
+  #navbarSearch input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: rgba(255,255,255,0.7);
+  }
+  
+  #navbarSearch input::-ms-input-placeholder { /* Microsoft Edge */
+    color: rgba(255,255,255,0.7);
+  }
+
+.nav-login-button {
+    float: right;
+}
+
+.DocSearch-Hit-Container > div {
+    display: flex;
+}
+
+.DocSearch-Hit-Container > div > div {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+.DocSearch-Hit-Container button {
+    border: none;
+    color: #fff;
+    background-color: transparent;
+}
+#docsearch-list {
+    list-style: none;
+    padding: 0;
+}
+.DocSearch-Hit-Container {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 10px;
+    background: #747474;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: #fff;
+    align-items: center;
+    transition: background 0.2s ease-in-out;
+}
+.DocSearch-Hit-Container:hover {
+    background: #4ecca3;
+}
+.no-underline {
+    text-decoration: none;
+}
+.home-result-card {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0,0,0,0.5);
+    transition: all 0.2s ease-in-out;
+}
+.home-result-card:hover {
+    transform: scale(1.02);
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.5);
+}
+.home-result-card a {
+    text-decoration: none !important;
+    color: #333 !important;
+}
+.widget-container {
+    border-radius: 5px;
+    background-color: #222;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+}
+
+.white {
+    color: #fff;
+}
+.black {
+    color: #000;
+}
+
+.btn-primary {
+    background: #4ecca3;
+    border-color: #4ecca3;
+    filter: brightness(1);
+    transition: filter 0.2s ease-in-out;
+}
+.btn-primary:hover {
+    background: #4ecca3;
+    border-color: #4ecca3;
+    filter: brightness(0.9);
+}
+
+.btn-outline-primary {
+    color: #4ecca3;
+    border-color: inherit;
+}
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #4ecca3;
+    border-color: inherit;
+}
+
+.fa-facebook {
+    background: #3B5998;
+    color: white;
+}
+  
+.fa-twitter {
+    background: #55ACEE;
+    color: white;
+}
+
+.fa-linkedin {
+    background: #007bb5;
+    color: white;
+}
+
+.social-media-container a {
+    padding: 10px;
+    padding-right: 20px;
+    font-size: 30px;
+    text-decoration: none;
+    text-align: center;
+    color: #fff !important;
+    position: relative;
+    right: -12px;
+    transition: right 0.2s ease-in-out;
+}
+.social-media-container a:hover {
+    right: 0;
+}
+
+.social-media-container {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+}
+
+@media screen and (max-width: 991px) {
+    .nav-login-button {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+    }
+    .navbar-search-input-holder {
+        width: 100%;
+    }
+    #navbarSearch input {
+        width: 100%;
+    }
+}

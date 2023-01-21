@@ -133,12 +133,10 @@ class AuthRouter:
                                 detail="Invalid recaptcha!")
         return True
 
-    async def reset_password(self, reset: ResetPassword,
-                             background_tasks: BackgroundTasks) -> str:
+    async def reset_password(self, reset: ResetPassword, background_tasks: BackgroundTasks) -> str:
         user = await self.db.users.get_by_email(reset.email)
         if user is None:
-            raise HTTPException(status_code=400,
-                                detail="There is no account with this email!")
+            raise HTTPException(status_code=400, detail="There is no account with this email!")
         token = tokenizer.encode_token(user.email)
         background_tasks.add_task(self.send_password_reset_link, user, token)
 
@@ -148,12 +146,10 @@ class AuthRouter:
 
         email = tokenizer.decode_token(form.token)
         if not email:
-            raise HTTPException(status_code=400,
-                                detail="Invalid Token!")
+            raise HTTPException(status_code=400, detail="Invalid Token!")
         user = await self.db.users.get_by_email(email)
         if not email:
-            raise HTTPException(status_code=400,
-                                detail="Not found")
+            raise HTTPException(status_code=400, detail="Not found")
         user.verified = True
         user.password_hash = Password.new(form.password)
         await self.db.users.update(user)
@@ -173,15 +169,19 @@ class AuthRouter:
     async def send_verification_mail(self, user: User, token: str):
         subject = "Verify your email address"
         template = TEMPLATES.get_template('verify/email.html')
-        html = template.render(subject=subject, username=user.username,
-                               url="https://mavefund.com/verify-email/{}".format(
-                                   token))
+        html = template.render(
+            subject=subject,
+            username=user.username,
+            url=f"https://mavefund.com/verify-email/{token}"
+        )
         await self._send_mail(subject, [user.email], html)
 
     async def send_password_reset_link(self, user: User, token: str):
         subject = "Password Reset"
         template = TEMPLATES.get_template('verify/password-reset.html')
-        html = template.render(subject=subject, username=user.username,
-                               url="https://mavefund.com/reset-password-verify/{}".format(
-                                   token))
+        html = template.render(
+            subject=subject,
+            username=user.username,
+            url=f"https://mavefund.com/reset-password-verify/{token}"
+        )
         await self._send_mail(subject, [user.email], html)
