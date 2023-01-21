@@ -255,6 +255,7 @@
         tension: 0
       }];
       const keysArr = ['gp_free_cash_flow_per_share_usd', 'pm_gross_margin', 'gp_earnings_per_share_usd', 'gp_book_value_per_share_usd', 'p_return_on_equity'];
+      const axes = {};
       ($('.selectpicker').val() || keysArr).forEach(element => {
         switch (element) {
           case 'gp_free_cash_flow_per_share_usd':
@@ -264,7 +265,19 @@
               data: data.gp_free_cash_flow_per_share_usd,
               // fill: true,
               tension: 0
-            })
+            });
+            axes['B'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Free Cash Flow Per Share',
+                color: '#ff6384'
+              }
+            };
             break;
 
           case 'pm_gross_margin':
@@ -275,6 +288,18 @@
               // fill: true,
               tension: 0
             })
+            axes['C'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Gross Margin',
+                color: '#ff9f40'
+              }
+            };
             break;
 
           case 'gp_earnings_per_share_usd':
@@ -284,7 +309,19 @@
               data: data.gp_earnings_per_share_usd,
               // fill: true,
               tension: 0
-            })
+            });
+            axes['D'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Earnings Per Share',
+                color: '#ffcd56'
+              }
+            };
             break;
 
           case 'gp_book_value_per_share_usd':
@@ -294,7 +331,19 @@
               data: data.gp_book_value_per_share_usd,
               // fill: true,
               tension: 0
-            })
+            });
+            axes['E'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Book Value Per Share',
+                color: '#4bc0c0'
+              }
+            };
             break;
 
           case 'p_return_on_equity':
@@ -304,7 +353,19 @@
               data: data.p_return_on_equity,
               // fill: true,
               tension: 0
-            })
+            });
+            axes['F'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Return on Equity',
+                color: '#9966ff'
+              }
+            };
             break;
         }
       });
@@ -337,48 +398,18 @@
               position: 'right',
               ticks: {
                 color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Stock Price',
+                color: '#36a2eb'
               }
             },
-            B: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            C: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            D: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            E: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            F: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            x: {
+           x: {
               ticks: {
                 color: 'white'
               }
-            }
+            } , ...axes
           }
         }
       };
