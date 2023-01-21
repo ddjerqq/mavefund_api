@@ -44,5 +44,5 @@ label.remember-me {
     border-radius: 0;
 }
 a {
-    color: #4ecca3;
+    color: var(--primary);
 }

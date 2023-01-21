@@ -1,5 +1,10 @@
+:root {
+    --backgroundcolor: #333;
+    --headerscolor: #fff;
+    --primary: #4ecca3;
+}
 body {
-    background-color: #333;
+    background-color: var(--backgroundcolor);
     background-image: url(../image/bg.png);
     background-size: 900px;
     background-position: bottom right;
@@ -7,12 +12,12 @@ body {
     min-height: 100vh;
 }
 h1 {
-    color: #fff;
+    color: var(--headerscolor);
     margin: 30px 0;
     text-align: center;
 }
 h2 {
-    color: #fff;
+    color: var(--headerscolor);
 }
 .card-title {
     white-space: nowrap;
@@ -23,7 +28,7 @@ h2 {
     color: #000;
 }
 nav.navbar {
-    background: #4ecca3 !important;
+    background: var(--primary) !important;
     box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%), inset 0 -1px 0 rgb(0 0 0 / 15%);
 }
 
@@ -88,7 +93,7 @@ img {
 }
 .DocSearch-Hit-Container button {
     border: none;
-    color: #fff;
+    color: var(--headerscolor);
     background-color: transparent;
 }
 #docsearch-list {
@@ -102,12 +107,12 @@ img {
     background: #747474;
     border-radius: 5px;
     margin-bottom: 10px;
-    color: #fff;
+    color: var(--headerscolor);
     align-items: center;
     transition: background 0.2s ease-in-out;
 }
 .DocSearch-Hit-Container:hover {
-    background: #4ecca3;
+    background: var(--primary);
 }
 .no-underline {
     text-decoration: none;
@@ -133,31 +138,31 @@ img {
 }
 
 .white {
-    color: #fff;
+    color: var(--headerscolor);
 }
 .black {
     color: #000;
 }
 
 .btn-primary {
-    background: #4ecca3;
-    border-color: #4ecca3;
+    background: var(--primary);
+    border-color: var(--primary);
     filter: brightness(1);
     transition: filter 0.2s ease-in-out;
 }
 .btn-primary:hover {
-    background: #4ecca3;
-    border-color: #4ecca3;
+    background: var(--primary);
+    border-color: var(--primary);
     filter: brightness(0.9);
 }
 
 .btn-outline-primary {
-    color: #4ecca3;
+    color: var(--primary);
     border-color: inherit;
 }
 .btn-outline-primary:hover {
-    color: #fff;
-    background-color: #4ecca3;
+    color: var(--headerscolor);
+    background-color: var(--primary);
     border-color: inherit;
 }
 
@@ -182,7 +187,7 @@ img {
     font-size: 30px;
     text-decoration: none;
     text-align: center;
-    color: #fff !important;
+    color: var(--headerscolor) !important;
     position: relative;
     right: -12px;
     transition: right 0.2s ease-in-out;
