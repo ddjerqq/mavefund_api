@@ -206,6 +206,7 @@ $('form').submit(function (e) {
             url: 'http://mavefund.com/api/v1/auth/register',
             data: data,
             method: 'POST',
+            contentType: "application/json",
             success: function (e) {
               console.log(e)
             },
