@@ -92,7 +92,7 @@
           <select class="selectpicker" multiple data-live-search="true">
             <option value="gp_free_cash_flow_per_share_usd">Free Cash Flow Per Share</option>
             <option value="pm_gross_margin">Gross Margin</option>
-            <option value="gp_earnings_per_share_usd">Earnings Per Share</option>
+            <option value="gp_earnings_per_share_usd" selected>Earnings Per Share</option>
             <option value="gp_book_value_per_share_usd">Book Value Per Share</option>
             <option value="p_return_on_equity">Return on Equity</option>
           </select>
@@ -250,10 +250,12 @@
       let datasets = [{
         label: 'Stock Price',
         yAxisID: 'A',
+        borderColor: '#36a2eb',
         data: data.stock_prices,
         // fill: true,
         tension: 0
       }];
+      // const keysArr = ['gp_free_cash_flow_per_share_usd', 'pm_gross_margin', 'gp_earnings_per_share_usd', 'gp_book_value_per_share_usd', 'p_return_on_equity'];
       const keysArr = ['gp_free_cash_flow_per_share_usd', 'pm_gross_margin', 'gp_earnings_per_share_usd', 'gp_book_value_per_share_usd', 'p_return_on_equity'];
       const axes = {};
       ($('.selectpicker').val() || keysArr).forEach(element => {
@@ -263,6 +265,7 @@
               label: 'Free Cash Flow Per Share',
               yAxisID: 'B',
               data: data.gp_free_cash_flow_per_share_usd,
+              borderColor: '#ff6384',
               // fill: true,
               tension: 0
             });
@@ -285,6 +288,7 @@
               label: 'Gross Margin',
               yAxisID: 'C',
               data: data.pm_gross_margin,
+              borderColor: '#ff9f40',
               // fill: true,
               tension: 0
             })
@@ -308,6 +312,7 @@
               yAxisID: 'D',
               data: data.gp_earnings_per_share_usd,
               // fill: true,
+              borderColor: '#ffcd56',
               tension: 0
             });
             axes['D'] = {
@@ -329,6 +334,7 @@
               label: 'Book Value Per Share',
               yAxisID: 'E',
               data: data.gp_book_value_per_share_usd,
+              borderColor: '#4bc0c0',
               // fill: true,
               tension: 0
             });
@@ -351,6 +357,7 @@
               label: 'Return on Equity',
               yAxisID: 'F',
               data: data.p_return_on_equity,
+              borderColor: '#9966ff',
               // fill: true,
               tension: 0
             });

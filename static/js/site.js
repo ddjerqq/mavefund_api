@@ -20,6 +20,20 @@ const companies = [
 ];
 
 $(document).ready(function() {
+  if (localStorage.getItem('token')) {
+    $('.nav-login-button').text('Logout')
+  } else {
+    $('.nav-login-button').text('Login')
+  }
+  $('.nav-login-button').click(function(e) {
+    e.preventDefault();
+    if (localStorage.getItem('token')) {
+      localStorage.removeItem('token');
+      location.reload();
+    } else {
+      location.href = '/signin.html'
+    }
+  })
     $('#modalSearchForm').submit((e) => {
         e.preventDefault();
         $('#docsearch-list').empty();
