@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import io
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from starlette.responses import StreamingResponse
 
 from src.data import ApplicationDbContext
@@ -15,14 +15,13 @@ class CompanyInfoRouter:
 
         self.router = APIRouter(
             prefix="/info",
-            # TODO uncomment this before production
-            #  dependencies=[Depends(subscriber_only)],
         )
 
         self.router.add_api_route(
             "/download",
             self.download_csv,
             methods=["GET"],
+            dependencies=[Depends(subscriber_only)],
         )
 
         self.router.add_api_route(
@@ -36,6 +35,7 @@ class CompanyInfoRouter:
             self.get_by_ticker,
             methods=["GET"],
             response_model=CompanyInfo,
+            dependencies=[Depends(subscriber_only)],
         )
 
     async def download_csv(self, q: str):
