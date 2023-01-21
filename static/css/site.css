@@ -217,6 +217,9 @@ img {
     #navbarSearch input {
         width: 100%;
     }
+    [col-id=title] {
+        font-size: 10px;
+    }
 }
 #liveToastBtn, #liveToastBtn2 {
     position: fixed;

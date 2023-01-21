@@ -21,6 +21,7 @@
 
 
   <script src="js/site.js"></script>
+  <script src="js/company_info_name_mapping.js"></script>
   <title>Home - Mavefund</title>
 </head>
 
@@ -211,14 +212,18 @@
 
     function renderTable(data) {
       const columnDefs = [
-        { field: "title", headerName: "Title", pinned: 'left', sortable: true, filter: 'agTextColumnFilter' }, ...data.dates.map(d => { return { field: d, filter: 'agNumberColumnFilter', sortable: true } })
+        { field: "title", headerName: "Title", pinned: 'left', 
+        width: '100px',
+        resizable: true,
+        sortable: true, filter: 'agTextColumnFilter' }, ...data.dates.map(d => { return { field: d, 
+        width: '100px', resizable: true, headerName: NAME_MAPPING[d], filter: 'agNumberColumnFilter', sortable: true } })
       ];
-
+      
       // specify the data
       let series = []
       for (let key in data) {
         if (data[key] && key !== 'company_name' && key !== 'dates' && key !== 'ticker' && key !== 'stock_prices') {
-          const obj = { title: key };
+          const obj = { title: NAME_MAPPING[key] };
           data[key].forEach((d, i) => {
             obj[data.dates[i]] = d;
           })
