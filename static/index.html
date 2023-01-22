@@ -203,7 +203,7 @@
 $('.search-input-in').keyup(function(e){
   const query = $(this).val();
     $.ajax({
-      url: `https://mavefund.com/api/v1/info/search?q=${query}`,
+      url: `/api/v1/info/search?q=${query}`,
       success: function(res) {
         $('.search-results').empty();
         for (let key in res) {
@@ -219,7 +219,7 @@ $('.search-input-in').keyup(function(e){
 })
 
     // $.ajax({
-    //   url: 'https://mavefund.com/api/v1/info/search?q',
+    //   url: '/api/v1/info/search?q',
     //   success: function(res) {
     //     for (let key in res) {
     //       if (res[key]) {

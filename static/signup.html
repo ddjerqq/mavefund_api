@@ -203,7 +203,7 @@ $('form').submit(function (e) {
             recaptcha_token: token
           }
           $.ajax({
-            url: 'https://mavefund.com/api/v1/auth/register',
+            url: '/api/v1/auth/register',
             data: JSON.stringify(data),
             method: 'POST',
             contentType: "application/json",

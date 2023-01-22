@@ -204,7 +204,7 @@
             recaptcha_token: token
           }
           $.ajax({
-            url: 'https://mavefund.com/api/v1/auth/login',
+            url: '/api/v1/auth/login',
             data: JSON.stringify(data),
             method: 'POST',
             contentType: "application/json",
