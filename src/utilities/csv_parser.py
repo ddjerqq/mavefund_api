@@ -73,20 +73,18 @@ class CsvDataParser:
 
         if db_data is not None:
             ticker, name, content = db_data
-            content = content.strip("﻿")
-            line_separator = ""
+            content = content.replace("﻿", "")
         else:
             content = await cls.read_csv(path)
             ticker = os.path.basename(path).removesuffix(".csv").split(" ")[0]
-            line_separator = "\n"
 
         chunks = []
         lines = []
         for _line in content.splitlines():
             if name is None and "Ratios for " in _line:
-                name = _line.split("Ratios for ")[1][:-1].lower()
+                name = _line.split("Ratios for ")[1].lower()
 
-            if _line == line_separator:
+            if _line == "":
                 chunks.append(lines)
                 lines = []
 

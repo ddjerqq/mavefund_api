@@ -21,8 +21,8 @@
 
 
   <script src="js/site.js"></script>
+  <title>Dashboard - Mavefund</title>
   <script src="js/company_info_name_mapping.js"></script>
-  <title>Home - Mavefund</title>
 </head>
 
 
@@ -195,7 +195,7 @@
 
 
     if (location.href && location.href.split('?')[1]) {
-      params = new URLSearchParams(location.href.split('?')[1]);
+      var params = new URLSearchParams(location.href.split('?')[1]);
       $.ajax({
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -215,13 +215,13 @@
 
     function renderTable(data) {
       const columnDefs = [
-        { field: "title", headerName: "Title", pinned: 'left', 
+        { field: "title", headerName: "Title", pinned: 'left',
         width: '100px',
         resizable: true,
-        sortable: true, filter: 'agTextColumnFilter' }, ...data.dates.map(d => { return { field: d, 
+        sortable: true, filter: 'agTextColumnFilter' }, ...data.dates.map(d => { return { field: d,
         width: '100px', resizable: true, headerName: NAME_MAPPING[d], filter: 'agNumberColumnFilter', sortable: true } })
       ];
-      
+
       // specify the data
       let series = []
       for (let key in data) {
