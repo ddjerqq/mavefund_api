@@ -22,7 +22,7 @@ class AuthMiddleware:
 
         scope["user"] = None
 
-        if "static" not in str(request.url):
+        if "api" in str(request.url):
             token = request.headers.get("authorization")
             if token is None:
                 token = request.cookies.get("token")
