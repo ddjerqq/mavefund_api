@@ -7,11 +7,16 @@ import jose.exceptions
 from jose import jwt
 
 
-def extract_claims_from_jwt(token: str) -> dict[str, ...] | None:
+def extract_claims_from_jwt(token: str | None) -> dict[str, ...] | None:
     """Extract claims from JWT token
 
     returns the claims: ("sub", "exp") if the JWT is valid and signed correctly, None otherwise
     """
+    if token is None:
+        return None
+    if token.startswith("Bearer "):
+        token = token.removeprefix("Bearer ")
+
     try:
         return jwt.decode(
             token,

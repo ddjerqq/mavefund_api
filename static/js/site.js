@@ -39,7 +39,7 @@ $(document).ready(function() {
         $('#docsearch-list').empty();
         
     $.ajax({
-      url: `https://mavefund.com/api/v1/info/search?q=${$('#searchInput').val().toLowerCase()}`,
+      url: `/api/v1/info/search?q=${$('#searchInput').val().toLowerCase()}`,
       success: function(res) {
         for (let key in res) {
           if (res[key]) {

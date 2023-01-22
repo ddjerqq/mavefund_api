@@ -1,4 +1,6 @@
+import atexit
 import os
+import traceback
 from os.path import join
 from subprocess import Popen
 
@@ -7,10 +9,8 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from src import PATH
-from src.utilities import render_template
 from src.middleware import AuthMiddleware
 from src.data import ApplicationDbContext
 from src.routers import ApiRouter
@@ -23,52 +23,6 @@ app = FastAPI(
     docs_url=None,
     redoc_url=None,
 )
-
-
-@app.exception_handler(Exception)
-async def internal_server_error_handler(req: Request, _exc: Exception):
-    return render_template(
-        "error.html",
-        {
-            "request": req,
-            "error_message": None,
-            "title": "internal server error",
-        },
-        status_code=500
-    )
-
-
-@app.exception_handler(403)
-async def forbidden_error_handler(req: Request, _exc: Exception):
-    return render_template(
-        "error.html",
-        {
-            "request": req,
-            "error_message": "You do not have access to this resource.",
-            "title": "forbidden",
-        },
-        status_code=403
-    )
-
-
-@app.exception_handler(401)
-async def unauthorized_error_handler(req: Request, _exc: Exception):
-    return render_template(
-        "error.html",
-        {
-            "request": req,
-            "error_message": "You must login to access this resource.",
-            "title": "unauthorized",
-        },
-        status_code=401
-    )
-
-
-@app.exception_handler(404)
-async def not_found_error_handler(req: Request, _exc: Exception):
-    return render_template("not_found.html", {"request": req, "title": "not found"}, status_code=404)
-
-
 
 
 @app.on_event("startup")
@@ -125,7 +79,8 @@ async def startup():
 # make https redirect work
 if __name__ == "__main__":
 
-    Popen(["python", join(PATH, "src", "https_redirect.py")])
+    process = Popen(["python", join(PATH, "src", "https_redirect.py")])
+    atexit.register(process.terminate)
 
     uvicorn.run(
         "__main__:app",

@@ -197,10 +197,10 @@
     if (location.href && location.href.split('?')[1]) {
       params = new URLSearchParams(location.href.split('?')[1]);
       $.ajax({
-        url: `https://mavefund.com/api/v1/info/get?q=${params.get('key')}`,
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         },
+        url: `/api/v1/info/get?q=${params.get('key')}`,
         success: function (res) {
           $('.company-tag').text(params.get('key'));
           $('.company-name').text(res.company_name);
@@ -434,16 +434,16 @@
 
     $('.download-file').click(function () {
       $.ajax({
-        url: 'https://mavefund.com/api/v1/info/download?q=MNST',
+        url: `/api/v1/info/download?q=${params.get('key')}`,
         method: 'GET',
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         contentType: 'text',
         success: function (res) {
-          var a = document.createElement("a");
-          a.href = window.URL.createObjectURL(new Blob([res], { type: "text/plain" }));
-          a.download = "data.csv";
+          let a = document.createElement("a");
+          a.href = window.URL.createObjectURL(new Blob([res], { type: "text/csv" }));
+          a.download = `${params.get('key')}_mavefund.csv`;
           a.click();
         }
       })
