@@ -83,7 +83,7 @@
 
     <div class="container">
       <h1>
-        <img src="https://logo.clearbit.com/apple.com" width="50px" />
+        <!-- <img src="https://logo.clearbit.com/apple.com" width="50px" /> -->
         <span class="company-name"></span> - <span class="company-tag"></span>
       </h1>
 
@@ -198,6 +198,9 @@
       params = new URLSearchParams(location.href.split('?')[1]);
       $.ajax({
         url: `https://mavefund.com/api/v1/info/get?q=${params.get('key')}`,
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
         success: function (res) {
           $('.company-tag').text(params.get('key'));
           $('.company-name').text(res.company_name);
@@ -433,6 +436,9 @@
       $.ajax({
         url: 'https://mavefund.com/api/v1/info/download?q=MNST',
         method: 'GET',
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
         contentType: 'text',
         success: function (res) {
           var a = document.createElement("a");
