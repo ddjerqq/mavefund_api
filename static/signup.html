@@ -204,14 +204,20 @@ $('form').submit(function (e) {
           }
           $.ajax({
             url: '/api/v1/auth/register',
-            data: data,
+            data: JSON.stringify(data),
             method: 'POST',
             contentType: "application/json",
+            dataType: "json",
             success: function (e) {
-              console.log(e)
+              console.log(e);
+              const toast = new bootstrap.Toast(document.getElementById('liveToastBtn2'))
+              toast.show()
             },
             error: function (err) {
-              alert('An error happened');
+              const toast = new bootstrap.Toast(document.getElementById('liveToastBtn'))
+              toast.show()
+              console.log(err)
+              $('.toast-body').text(err.responseJSON.detail)
             }
           })
         });
@@ -219,6 +225,25 @@ $('form').submit(function (e) {
     });
 
 </script>
+
+<div id="liveToastBtn" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="d-flex">
+    <div class="toast-body">
+
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
+
+
+<div id="liveToastBtn2" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="d-flex">
+    <div class="toast-body">
+      please verify your email address. check your email inbox
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
 
 </body>
 

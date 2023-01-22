@@ -23,10 +23,14 @@ class AuthMiddleware:
         scope["user"] = None
 
         if "static" not in str(request.url):
-            if token := request.cookies.get("token"):
-                if claims := extract_claims_from_jwt(token):
-                    user_id = int(claims["sub"])
-                    user = await self.db.users.get_by_id(user_id)
-                    scope["user"] = user
+            token = request.headers.get("authorization")
+            if token is None:
+                token = request.cookies.get("token")
+
+            claims = extract_claims_from_jwt(token)
+            if claims is not None:
+                user_id = int(claims["sub"])
+                user = await self.db.users.get_by_id(user_id)
+                scope["user"] = user
 
         return await self.app(scope, receive, send)

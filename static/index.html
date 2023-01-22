@@ -62,6 +62,13 @@
     max-width: 100%;
     filter: brightness(0) invert(1);"/>
   </h1>
+
+  <div class="search-input" style="position: relative;">
+    <input placeholder="Search ..." class="search-input-in"/>
+    <ul class="search-results">
+    </ul>
+  </div>
+
   <div class="row home-companies">
   </div>
 </div>
@@ -107,6 +114,26 @@
   </div>
 
   <script>
+
+
+$('.search-input-in').keyup(function(e){
+  const query = $(this).val();
+    $.ajax({
+      url: `https://mavefund.com/api/v1/info/search?q=${query}`,
+      success: function(res) {
+        $('.search-results').empty();
+        for (let key in res) {
+          if (res[key]) {
+            $('.search-results').append(`<li><a href="company.html?key=${key}"><strong>${key}</strong> - ${res[key]}</a></li>`)
+          }
+        }
+      },
+      error: function(err) {
+        console.error(err)
+      }
+    })
+})
+
     $.ajax({
       url: '/api/v1/info/search?q',
       success: function(res) {

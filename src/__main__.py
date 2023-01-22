@@ -1,3 +1,4 @@
+import atexit
 import os
 from os.path import join
 from subprocess import Popen
@@ -125,7 +126,8 @@ async def startup():
 # make https redirect work
 if __name__ == "__main__":
 
-    Popen(["python", join(PATH, "src", "https_redirect.py")])
+    process = Popen(["python", join(PATH, "src", "https_redirect.py")])
+    atexit.register(process.terminate)
 
     uvicorn.run(
         "__main__:app",

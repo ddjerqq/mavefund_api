@@ -22,6 +22,7 @@
 
   <script src="js/site.js"></script>
   <title>Dashboard - Mavefund</title>
+  <script src="js/company_info_name_mapping.js"></script>
 </head>
 
 
@@ -92,7 +93,7 @@
           <select class="selectpicker" multiple data-live-search="true">
             <option value="gp_free_cash_flow_per_share_usd">Free Cash Flow Per Share</option>
             <option value="pm_gross_margin">Gross Margin</option>
-            <option value="gp_earnings_per_share_usd">Earnings Per Share</option>
+            <option value="gp_earnings_per_share_usd" selected>Earnings Per Share</option>
             <option value="gp_book_value_per_share_usd">Book Value Per Share</option>
             <option value="p_return_on_equity">Return on Equity</option>
           </select>
@@ -211,14 +212,18 @@
 
     function renderTable(data) {
       const columnDefs = [
-        { field: "title", headerName: "Title", pinned: 'left', sortable: true, filter: 'agTextColumnFilter' }, ...data.dates.map(d => { return { field: d, filter: 'agNumberColumnFilter', sortable: true } })
+        { field: "title", headerName: "Title", pinned: 'left',
+        width: '100px',
+        resizable: true,
+        sortable: true, filter: 'agTextColumnFilter' }, ...data.dates.map(d => { return { field: d,
+        width: '100px', resizable: true, headerName: NAME_MAPPING[d], filter: 'agNumberColumnFilter', sortable: true } })
       ];
 
       // specify the data
       let series = []
       for (let key in data) {
         if (data[key] && key !== 'company_name' && key !== 'dates' && key !== 'ticker' && key !== 'stock_prices') {
-          const obj = { title: key };
+          const obj = { title: NAME_MAPPING[key] };
           data[key].forEach((d, i) => {
             obj[data.dates[i]] = d;
           })
@@ -250,11 +255,14 @@
       let datasets = [{
         label: 'Stock Price',
         yAxisID: 'A',
+        borderColor: '#36a2eb',
         data: data.stock_prices,
         // fill: true,
         tension: 0
       }];
+      // const keysArr = ['gp_free_cash_flow_per_share_usd', 'pm_gross_margin', 'gp_earnings_per_share_usd', 'gp_book_value_per_share_usd', 'p_return_on_equity'];
       const keysArr = ['gp_free_cash_flow_per_share_usd', 'pm_gross_margin', 'gp_earnings_per_share_usd', 'gp_book_value_per_share_usd', 'p_return_on_equity'];
+      const axes = {};
       ($('.selectpicker').val() || keysArr).forEach(element => {
         switch (element) {
           case 'gp_free_cash_flow_per_share_usd':
@@ -262,9 +270,22 @@
               label: 'Free Cash Flow Per Share',
               yAxisID: 'B',
               data: data.gp_free_cash_flow_per_share_usd,
+              borderColor: '#ff6384',
               // fill: true,
               tension: 0
-            })
+            });
+            axes['B'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Free Cash Flow Per Share',
+                color: '#ff6384'
+              }
+            };
             break;
 
           case 'pm_gross_margin':
@@ -272,9 +293,22 @@
               label: 'Gross Margin',
               yAxisID: 'C',
               data: data.pm_gross_margin,
+              borderColor: '#ff9f40',
               // fill: true,
               tension: 0
             })
+            axes['C'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Gross Margin',
+                color: '#ff9f40'
+              }
+            };
             break;
 
           case 'gp_earnings_per_share_usd':
@@ -283,8 +317,21 @@
               yAxisID: 'D',
               data: data.gp_earnings_per_share_usd,
               // fill: true,
+              borderColor: '#ffcd56',
               tension: 0
-            })
+            });
+            axes['D'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Earnings Per Share',
+                color: '#ffcd56'
+              }
+            };
             break;
 
           case 'gp_book_value_per_share_usd':
@@ -292,9 +339,22 @@
               label: 'Book Value Per Share',
               yAxisID: 'E',
               data: data.gp_book_value_per_share_usd,
+              borderColor: '#4bc0c0',
               // fill: true,
               tension: 0
-            })
+            });
+            axes['E'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Book Value Per Share',
+                color: '#4bc0c0'
+              }
+            };
             break;
 
           case 'p_return_on_equity':
@@ -302,9 +362,22 @@
               label: 'Return on Equity',
               yAxisID: 'F',
               data: data.p_return_on_equity,
+              borderColor: '#9966ff',
               // fill: true,
               tension: 0
-            })
+            });
+            axes['F'] = {
+              type: 'linear',
+              position: 'left',
+              ticks: {
+                color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Return on Equity',
+                color: '#9966ff'
+              }
+            };
             break;
         }
       });
@@ -337,48 +410,18 @@
               position: 'right',
               ticks: {
                 color: "white",
+              },
+              title: {
+                display: true,
+                text: 'Stock Price',
+                color: '#36a2eb'
               }
             },
-            B: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            C: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            D: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            E: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            F: {
-              type: 'linear',
-              position: 'left',
-              ticks: {
-                color: "white",
-              }
-            },
-            x: {
+           x: {
               ticks: {
                 color: 'white'
               }
-            }
+            } , ...axes
           }
         }
       };

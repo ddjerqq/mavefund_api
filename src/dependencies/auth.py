@@ -10,7 +10,10 @@ def authenticated_only(req: Request):
         raise UNAUTHORIZED
 
 
-def subscriber_only(req: Request):
+def subscriber_only(req: Request, q: str):
+    if q in ["META", "AAPL", "AMZN", "NFLX", "GOOGL"]:
+        return
+
     if req.user is None:
         raise UNAUTHORIZED
 

@@ -149,6 +149,7 @@
       </form>
     </main>
 
+
   </div>
 
 
@@ -191,7 +192,6 @@
     </div>
   </div>
 
-
   <script>
 
     $('form').submit(function (e) {
@@ -205,14 +205,19 @@
           }
           $.ajax({
             url: '/api/v1/auth/login',
-            data: data,
+            data: JSON.stringify(data),
             method: 'POST',
             contentType: "application/json",
+            dataType: "json",
             success: function (e) {
               console.log(e)
+              localStorage.setItem('token', e);
+              location.href = '/'
             },
             error: function (err) {
-              alert('An error happened');
+              const toast = new bootstrap.Toast(document.getElementById('liveToastBtn'))
+              toast.show()
+              $('.toast-body').text('Wrong username or password')
             }
           })
         });
@@ -220,6 +225,18 @@
     });
 
   </script>
+
+
+<div id="liveToastBtn" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="d-flex">
+    <div class="toast-body">
+
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
+
+
 </body>
 
 </html>
