@@ -1,6 +1,6 @@
 import os
 import stripe
-from fastapi import APIRouter, Request, Header, Depends
+from fastapi import APIRouter, Request, Header, Depends, HTTPException
 
 from starlette.responses import RedirectResponse
 
@@ -59,17 +59,15 @@ class StripeRouter:
         )
 
     async def create_checkout_session(self, req: Request) -> dict:
-        print(self.PRICE_ID_TO_RANK)
-
         if req.user is None:
-            return {"status": "fail", "message": "Please log in or register before subscribing."}
+            raise HTTPException(401, detail="Unauthenticated")
 
         data = await req.json()
         price_id = data["priceId"]
 
         # 0 - basic, 1 - premium, 2 - super
         if req.user.rank >= self.PRICE_ID_TO_RANK[price_id]:
-            return {"status": "fail", "message": "User is already subscribed!"}
+            raise HTTPException(400, detail="User has a higher subscription than the one they are trying to purchase")
 
         checkout_session = stripe.checkout.Session.create(
             client_reference_id=req.user.id,
