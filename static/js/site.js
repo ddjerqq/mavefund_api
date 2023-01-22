@@ -122,8 +122,13 @@ async function checkout(level) {
     if (session.status === "success") {
         window.location.href = session.url;
     } else {
-        console.log(session);
-        alert(session.message);
+      console.log(session)
+        if (session.detail === 'Unauthenticated') {
+          location.href = '/signin.html'
+        } else {
+          const toast = new bootstrap.Toast(document.getElementById('liveToastBtn2'));
+          toast.show();
+        }
     }
 }
 
