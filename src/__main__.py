@@ -1,5 +1,4 @@
 import atexit
-import logging
 import os
 import traceback
 from os.path import join
@@ -7,7 +6,7 @@ from subprocess import Popen
 
 import stripe
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
@@ -24,36 +23,6 @@ app = FastAPI(
     docs_url=None,
     redoc_url=None,
 )
-
-
-@app.exception_handler(Exception)
-async def internal_server_error_handler(_exc: Exception):
-    print(_exc)
-    traceback.print_exc()
-    return {"error": "internal server error"}
-
-
-@app.exception_handler(403)
-async def forbidden_error_handler(_exc: Exception):
-    print(_exc)
-    traceback.print_exc()
-    return {"error": "forbidden"}
-
-
-@app.exception_handler(401)
-async def unauthorized_error_handler(_exc: Exception):
-    print(_exc)
-    traceback.print_exc()
-    return {"error": "unauthorized"}
-
-
-@app.exception_handler(404)
-async def not_found_error_handler(_exc: Exception):
-    print(_exc)
-    traceback.print_exc()
-    return {"error": "not found"}
-
-
 
 
 @app.on_event("startup")
