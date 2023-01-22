@@ -1,17 +1,17 @@
 import atexit
+import logging
 import os
+import traceback
 from os.path import join
 from subprocess import Popen
 
 import stripe
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from src import PATH
-from src.utilities import render_template
 from src.middleware import AuthMiddleware
 from src.data import ApplicationDbContext
 from src.routers import ApiRouter
@@ -27,47 +27,31 @@ app = FastAPI(
 
 
 @app.exception_handler(Exception)
-async def internal_server_error_handler(req: Request, _exc: Exception):
-    return render_template(
-        "error.html",
-        {
-            "request": req,
-            "error_message": None,
-            "title": "internal server error",
-        },
-        status_code=500
-    )
+async def internal_server_error_handler(_exc: Exception):
+    print(_exc)
+    traceback.print_exc()
+    return {"error": "internal server error"}
 
 
 @app.exception_handler(403)
-async def forbidden_error_handler(req: Request, _exc: Exception):
-    return render_template(
-        "error.html",
-        {
-            "request": req,
-            "error_message": "You do not have access to this resource.",
-            "title": "forbidden",
-        },
-        status_code=403
-    )
+async def forbidden_error_handler(_exc: Exception):
+    print(_exc)
+    traceback.print_exc()
+    return {"error": "forbidden"}
 
 
 @app.exception_handler(401)
-async def unauthorized_error_handler(req: Request, _exc: Exception):
-    return render_template(
-        "error.html",
-        {
-            "request": req,
-            "error_message": "You must login to access this resource.",
-            "title": "unauthorized",
-        },
-        status_code=401
-    )
+async def unauthorized_error_handler(_exc: Exception):
+    print(_exc)
+    traceback.print_exc()
+    return {"error": "unauthorized"}
 
 
 @app.exception_handler(404)
-async def not_found_error_handler(req: Request, _exc: Exception):
-    return render_template("not_found.html", {"request": req, "title": "not found"}, status_code=404)
+async def not_found_error_handler(_exc: Exception):
+    print(_exc)
+    traceback.print_exc()
+    return {"error": "not found"}
 
 
 
