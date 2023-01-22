@@ -255,7 +255,7 @@ ul.search-results {
     width: calc(100% - 100px);
     left: 50px;
     box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
-    margin-top: -30px;
+    margin-top: -40px;
     max-height: 600px;
     overflow-y: auto;
     overflow-x: hidden;

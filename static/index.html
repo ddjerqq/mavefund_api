@@ -70,6 +70,91 @@
   </div>
 
   <div class="row home-companies">
+    <div class="col-lg-4 col-md-4 col-sm12">
+      <div class="card mb-3 home-result-card" style="max-width: 540px;" title="facebook">
+        <a href="company.html?key=FB">
+        <div class="row g-0">
+          <div class="col-md-4" style="background-image: url(https://logo.clearbit.com/facebook.com); background-size: contain; background-position: center; background-repeat: no-repeat;">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">Meta Platforms inc Class A</h5>
+              <strong class="card-text">FB</strong>
+              <p class="card-text"><small class="text-muted"></small></p>
+            </div>
+          </div>
+        </div>
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm12">
+      <div class="card mb-3 home-result-card" style="max-width: 540px;" title="amazon">
+        <a href="company.html?key=AMZN">
+        <div class="row g-0">
+          <div class="col-md-4" style="background-image: url(https://logo.clearbit.com/amazon.com); background-size: contain; background-position: center; background-repeat: no-repeat;">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">Amazon.com inc</h5>
+              <strong class="card-text">AMZN</strong>
+              <p class="card-text"><small class="text-muted"></small></p>
+            </div>
+          </div>
+        </div>
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm12">
+      <div class="card mb-3 home-result-card" style="max-width: 540px;" title="apple">
+        <a href="company.html?key=AAPL">
+        <div class="row g-0">
+          <div class="col-md-4" style="background-image: url(https://logo.clearbit.com/apple.com); background-size: contain; background-position: center; background-repeat: no-repeat;">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">Apple inc</h5>
+              <strong class="card-text">AAPL</strong>
+              <p class="card-text"><small class="text-muted"></small></p>
+            </div>
+          </div>
+        </div>
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm12">
+      <div class="card mb-3 home-result-card" style="max-width: 540px;" title="netflix">
+        <a href="company.html?key=NFLX">
+        <div class="row g-0">
+          <div class="col-md-4" style="background-image: url(https://logo.clearbit.com/netflix.com); background-size: contain; background-position: center; background-repeat: no-repeat;">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">Netflix inc</h5>
+              <strong class="card-text">NFLX</strong>
+              <p class="card-text"><small class="text-muted"></small></p>
+            </div>
+          </div>
+        </div>
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm12">
+      <div class="card mb-3 home-result-card" style="max-width: 540px;" title="google">
+        <a href="company.html?key=GOOGL">
+        <div class="row g-0">
+          <div class="col-md-4" style="background-image: url(https://logo.clearbit.com/google.com); background-size: contain; background-position: center; background-repeat: no-repeat;">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">Alphabet inc Class A</h5>
+              <strong class="card-text">GOOGL</strong>
+              <p class="card-text"><small class="text-muted"></small></p>
+            </div>
+          </div>
+        </div>
+        </a>
+      </div>
+    </div>
   </div>
 </div>
     
@@ -119,7 +204,7 @@
 $('.search-input-in').keyup(function(e){
   const query = $(this).val();
     $.ajax({
-      url: `https://mavefund.com/api/v1/info/search?q=${query}`,
+      url: `/api/v1/info/search?q=${query}`,
       success: function(res) {
         $('.search-results').empty();
         for (let key in res) {
@@ -134,19 +219,19 @@ $('.search-input-in').keyup(function(e){
     })
 })
 
-    $.ajax({
-      url: '/api/v1/info/search?q',
-      success: function(res) {
-        for (let key in res) {
-          if (res[key]) {
-            $('.home-companies').append(returnCardString(res[key], key))
-          }
-        }
-      },
-      error: function(err) {
-        console.error(err)
-      }
-    })
+    // $.ajax({
+    //   url: '/api/v1/info/search?q',
+    //   success: function(res) {
+    //     for (let key in res) {
+    //       if (res[key]) {
+    //         $('.home-companies').append(returnCardString(res[key], key))
+    //       }
+    //     }
+    //   },
+    //   error: function(err) {
+    //     console.error(err)
+    //   }
+    // })
 
     function returnCardString(name, key) {
       return `<div class="col-lg-4 col-md-4 col-sm12">
@@ -159,7 +244,7 @@ $('.search-input-in').keyup(function(e){
             <div class="card-body">
               <h5 class="card-title">${name}</h5>
               <strong class="card-text">${key}</strong>
-              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+              <p class="card-text"><small class="text-muted"></small></p>
             </div>
           </div>
         </div>

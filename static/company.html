@@ -83,7 +83,7 @@
 
     <div class="container">
       <h1>
-        <img src="https://logo.clearbit.com/apple.com" width="50px" />
+        <!-- <img src="https://logo.clearbit.com/apple.com" width="50px" /> -->
         <span class="company-name"></span> - <span class="company-tag"></span>
       </h1>
 
@@ -197,6 +197,9 @@
     if (location.href && location.href.split('?')[1]) {
       var params = new URLSearchParams(location.href.split('?')[1]);
       $.ajax({
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
         url: `/api/v1/info/get?q=${params.get('key')}`,
         success: function (res) {
           $('.company-tag').text(params.get('key'));
@@ -433,6 +436,9 @@
       $.ajax({
         url: `/api/v1/info/download?q=${params.get('key')}`,
         method: 'GET',
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
         contentType: 'text',
         success: function (res) {
           let a = document.createElement("a");

@@ -50,24 +50,12 @@ $(document).ready(function() {
               <div class="DocSearch-Hit-Container">
                 <div>
                   <div class="DocSearch-Hit-icon">
-                    <img src="https://logo.clearbit.com/${res[key]}.com" height="20px" width="20px"/>
                   </div>
                   <div class="DocSearch-Hit-content-wrapper"><span class="DocSearch-Hit-title"><strong>${key}</strong> ${res[key]}</span>
                   </div>
                 </div>
                 <div>
-                  <div class="DocSearch-Hit-action"><button class="DocSearch-Hit-action-button"
-                      title="Save this search" type="submit"><svg width="20" height="20" viewBox="0 0 20 20">
-                        <path d="M10 14.2L5 17l1-5.6-4-4 5.5-.7 2.5-5 2.5 5 5.6.8-4 4 .9 5.5z"
-                          stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linejoin="round"></path>
-                      </svg></button></div>
-                  <div class="DocSearch-Hit-action"><button class="DocSearch-Hit-action-button"
-                      title="Remove this search from history" type="submit"><svg width="20" height="20"
-                        viewBox="0 0 20 20">
-                        <path d="M10 10l5.09-5.09L10 10l5.09 5.09L10 10zm0 0L4.91 4.91 10 10l-5.09 5.09L10 10z"
-                          stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round"
-                          stroke-linejoin="round"></path>
-                      </svg></button></div>
+                 
                 </div>
               </div>
             </a>
@@ -81,4 +69,63 @@ $(document).ready(function() {
       }
     })
     })
+
+
+$('.premium-btn').click(function(e) {
+  e.preventDefault();
+  checkout($(this).data('level'))
+})
+
+    const BASIC_PRICE_ID = "price_1MFS3GLGZqgNQZ5xIvlOvBHN";
+const PREMIUM_PRICE_ID = "price_1MFS4MLGZqgNQZ5xHKDBEze7";
+const SUPER_PRICE_ID = "price_1MFS5ILGZqgNQZ5xO4f2sl1Q";
+
+
+async function createCheckoutSession(priceId) {
+    const response = await fetch("/api/v1/stripe/create_checkout_session", {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+            priceId: priceId,
+        }),
+    });
+
+    return await response.json();
+}
+
+
+async function checkout(level) {
+    let session;
+    switch (level) {
+        case 0:
+            // basic
+            session = await createCheckoutSession(BASIC_PRICE_ID);
+            break;
+
+        case 1:
+            // premium
+            session = await createCheckoutSession(PREMIUM_PRICE_ID);
+            break;
+
+        case 2:
+            // super
+            session = await createCheckoutSession(SUPER_PRICE_ID);
+            break;
+        default:
+            alert("what are you trying to do exactly??? 🤨🤨🤨");
+            break;
+    }
+
+    if (session.status === "success") {
+        window.location.href = session.url;
+    } else {
+        console.log(session);
+        alert(session.message);
+    }
+}
+
+
 })
