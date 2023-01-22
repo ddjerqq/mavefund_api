@@ -208,7 +208,11 @@
           renderChart(res);
         },
         error: function (err) {
-          console.error(err)
+          if (err.status === 401) {
+            location.href = '/signin.html';
+          } else if (err.status === 403) {
+            location.href = '/premium.html';
+          }
         }
       });
     }
