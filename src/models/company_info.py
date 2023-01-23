@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+import pytest
+import asyncio as aio
 from datetime import date
+
+import pandas as pd
+import yfinance as yf
 from pydantic import BaseModel
 
 
@@ -8,7 +13,7 @@ class CompanyInfo(BaseModel):
     company_name: str
     ticker: str
 
-    dates: list[date | str] = []
+    dates: list[date] = []
 
     stock_prices: list[float] = []
 
@@ -111,3 +116,89 @@ class CompanyInfo(BaseModel):
     efc_asset_turnover: list[float | None] = []
 
     # endregion
+
+
+    def parse_all_dates(self) -> None:
+        for idx, value in enumerate(self.dates):
+            if value == "TTM":
+                previous = self.dates[idx - 1]
+                self.dates[idx] = date(previous.year + 1, previous.month, 1)
+
+            elif isinstance(value, str):
+                year, month = value.split("-")
+                self.dates[idx] = date(int(year), int(month), 1)
+
+            elif isinstance(value, date):
+                continue
+
+    async def fetch_stock_price(self) -> None:
+        """get the stock prices for a given CompanyInfo
+
+        get back a dictionary mapping of the previous 10 years for this ticker and the
+        stock prices for the opening price of this company.
+
+        return type is dictionary with keys of `datetime.date` and values of floats the
+        opening of the stocks
+        """
+        ticker = yf.Ticker(self.ticker.upper())
+        loop = aio.get_event_loop()
+        # normalize the dates anyway
+        self.parse_all_dates()
+
+        # we have the dataframe, and the CompanyInfo object.
+        # we will get the data from the company info using its
+        # dates and insert the info back into the CompanyInfo object
+
+        start = self.dates[0].strftime("%Y-%m-%d")
+
+        # we need +1 date at the end in order for us to get the last year
+        # in the TTM tab
+        last_date = self.dates[-1]
+        last_date = date(last_date.year + 1, last_date.month, last_date.day)
+        end = last_date.strftime("%Y-%m-%d")
+
+        df = await loop.run_in_executor(
+            None,
+            lambda: ticker.history(
+                start=start,
+                end=end,
+                interval="1mo",
+                rounding=True,
+            )
+        )
+
+        df_dict = df.iloc[::12, 0:1].to_dict()["Open"]
+        self.stock_prices = list(df_dict.values())
+
+    @property
+    def as_df(self) -> pd.DataFrame:
+        """return the CompanyInfo object as a pandas dataframe
+
+        return type is a pandas dataframe
+        """
+        # TODO add this to the LIBRARY
+        return pd.DataFrame(self.__dict__)
+
+
+@pytest.mark.asyncio
+async def test_fetch_stock_prices():
+    from src.models import CompanyInfo
+
+    info = CompanyInfo(
+        ticker="MSFT",
+        company_name="Microsoft",
+        dates=[
+            date(2012, 6, 1),
+            date(2013, 6, 1),
+            date(2014, 6, 1),
+            date(2015, 6, 1),
+            date(2016, 6, 1),
+            date(2017, 6, 1),
+            date(2018, 6, 1),
+            date(2019, 6, 1),
+            date(2020, 6, 1),
+            date(2021, 6, 1),
+            "TTM"
+        ])
+
+    await info.fetch_stock_price()

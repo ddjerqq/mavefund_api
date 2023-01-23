@@ -4,7 +4,6 @@ import asyncpg
 
 from src.models import CompanyInfo
 from src.utilities.csv_parser import CsvDataParser
-from src.utilities import get_stock_price
 
 
 class CompanyInfoRepository:
@@ -60,8 +59,6 @@ class CompanyInfoRepository:
                 return None
 
             info = await CsvDataParser.parse(db_data=row)
-            stock_prices = await get_stock_price(ticker)
-            info.stock_prices = list(map(lambda price: round(price, 2), stock_prices.values()))
             return info
 
     async def get_all(self) -> list[CompanyInfo]:
