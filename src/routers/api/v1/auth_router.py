@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends
 from src.data import ApplicationDbContext
 from src.models.user import User
 from src.models.dto import UserRegister, UserLogin, ResetPassword, ResetPasswordVerify
-from src.utilities import Password, tokenizer
+from src.utilities import Password, extract_claims_from_jwt
 from src.dependencies.auth import subscriber_only
 from src.dependencies.validate_captcha_token import validate_captcha_token
 from src.utilities.email_utilities import send_verification_email, send_reset_password_email
@@ -100,14 +100,16 @@ class AuthRouter:
         return "Reset password link has been sent to you, Please check your inbox!"
 
     async def reset_password_verify(self, form: ResetPasswordVerify) -> str:
-        email = tokenizer.decode_token(form.token)
-
-        if not email:
+        claims = extract_claims_from_jwt(form.token)
+        if claims is None:
             raise HTTPException(status_code=400, detail="Invalid Token!")
 
-        user = await self.db.users.get_by_email(email)
-        if not email:
-            raise HTTPException(status_code=400, detail="Not found")
+        id = claims["sub"]
+        id = int(id)
+        user = await self.db.users.get_by_id(id)
+
+        if not user:
+            raise HTTPException(status_code=400, detail="user is not found")
 
         user.verified = True
         user.password_hash = Password.new(form.password)
