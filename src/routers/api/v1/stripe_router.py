@@ -72,8 +72,8 @@ class StripeRouter:
         checkout_session = stripe.checkout.Session.create(
             client_reference_id=req.user.id,
             metadata={"rank": self.PRICE_ID_TO_RANK[price_id]},
-            success_url="https://mavefund.com/api/v1/stripe/success?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url="https://mavefund.com/api/v1/stripe/cancel",
+            success_url=f"{os.getenv('BASE_URL')}/api/v1/stripe/success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{os.getenv('BASE_URL')}/api/v1/stripe/cancel",
             payment_method_types=["card"],
             mode="payment",
             line_items=[{
@@ -109,7 +109,7 @@ class StripeRouter:
 
         return RedirectResponse(url="/")  # TODO redirect to dashboard
 
-    async def cancel(self, req: Request):
+    async def cancel(self):
         return RedirectResponse(url="/")  # TODO redirect to dashboard
 
     async def webhook(

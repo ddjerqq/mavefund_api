@@ -342,4 +342,6 @@ class CsvDataParser:
             info.efc_fixed_asset_turnover.append(efc.efc_fixed_asset_turnover)
             info.efc_asset_turnover.append(efc.efc_asset_turnover)
 
+        info.parse_all_dates()
+
         return info

@@ -9,7 +9,7 @@ from starlette.templating import _TemplateResponse
 PATH = dirname(dirname(dirname(realpath(__file__))))
 
 TEMPLATES = Jinja2Templates(
-    directory=os.path.join(PATH, "templates")
+    directory=os.path.join(PATH, "static")
 )
 
 

@@ -112,8 +112,10 @@ async function login() {
         return;
     }
 
+    let response;
+
     try {
-        var response = await fetch("api/v1/auth/login", {
+        response = await fetch("api/v1/auth/login", {
             method: "POST",
             headers: new Headers({
                 "content-type": "application/json"
@@ -128,6 +130,7 @@ async function login() {
     } catch (error) {
         console.log(error);
         error_el.textContent = "Something went wrong. Please try again later!";
+        return
     }
 
     switch (response.status) {
@@ -163,16 +166,6 @@ async function login() {
     }
 }
 
-function reg_call(token) {
-    document.getElementById('register-captcha').setAttribute('value', token)
-    document.getElementById('reg-btn').removeAttribute('disabled')
-}
-
-function log_call(token) {
-    document.getElementById('login-captcha').setAttribute('value', token)
-    document.getElementById('log-btn').removeAttribute('disabled')
-}
-
 document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById("login-form").addEventListener("submit", function (e) {
         e.preventDefault() // Cancel the default action
@@ -192,6 +185,4 @@ document.addEventListener('DOMContentLoaded', (event) => {
     } else if (message === 'email-verified') {
         login_info.textContent = "your email has been verified successfully!"
     }
-
-
 });

@@ -17,7 +17,9 @@ class CompanyInfoService:
         return await self._repo.get_all_companies_by_name_or_ticker(name_or_ticker)
 
     async def get_by_ticker(self, ticker: str) -> CompanyInfo | None:
-        return await self._repo.get_by_ticker(ticker)
+        info = await self._repo.get_by_ticker(ticker)
+        await info.fetch_stock_price()
+        return info
 
     async def get_all(self) -> list[CompanyInfo]:
         raise NotImplementedError

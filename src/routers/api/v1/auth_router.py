@@ -1,35 +1,17 @@
 from __future__ import annotations
 
-import os
-import requests
-from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Request, Depends
 
 from src.data import ApplicationDbContext
 from src.models.user import User
-from src.models.dto import UserRegister, UserLogin, ResetPassword, \
-    ResetPasswordVerify
-from src.utilities import Password, tokenizer
+from src.models.dto import UserRegister, UserLogin, ResetPassword, ResetPasswordVerify
+from src.utilities import Password, extract_claims_from_jwt
 from src.dependencies.auth import subscriber_only
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
-from src.utilities.render_template import TEMPLATES
-
-mail_conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv('EMAIL_USERNAME'),
-    MAIL_PASSWORD=os.getenv('EMAIL_PASSWORD'),
-    MAIL_FROM_NAME="Verify Email",
-    MAIL_FROM=os.getenv('EMAIL_FROM'),  # type: ignore
-    MAIL_PORT=os.getenv('EMAIL_PORT'),  # type: ignore
-    MAIL_SERVER=os.getenv('EMAIL_HOST'),
-    MAIL_STARTTLS=False,
-    MAIL_SSL_TLS=True,
-    USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True
-)
+from src.dependencies.validate_captcha_token import validate_captcha_token
+from src.utilities.email_utilities import send_verification_email, send_reset_password_email
 
 
 class AuthRouter:
-    _recaptcha_secret_key = os.getenv('RECAPTCHA_SECRET')
-
     def __init__(self, db: ApplicationDbContext):
         self.db = db
 
@@ -38,8 +20,10 @@ class AuthRouter:
         self.router.add_api_route(
             "/register",
             self.register,
-            methods=["POST"]
+            methods=["POST"],
+            dependencies=[Depends(validate_captcha_token)],
         )
+
         self.router.add_api_route(
             "/reset-password-verify",
             self.reset_password_verify,
@@ -49,7 +33,8 @@ class AuthRouter:
         self.router.add_api_route(
             "/login",
             self.login,
-            methods=["POST"]
+            methods=["POST"],
+            dependencies=[Depends(validate_captcha_token)],
         )
 
         self.router.add_api_route(
@@ -66,21 +51,12 @@ class AuthRouter:
             response_model=str
         )
 
-    async def register(self, register: UserRegister, request: Request,
-                       background_tasks: BackgroundTasks) -> str:
-        self._is_valid_recaptcha_token(register.recaptcha_token, request)
-
+    async def register(self, register: UserRegister):
         if await self.db.users.get_by_email(register.email):
-            raise HTTPException(status_code=409,
-                                detail="email is already registered")
+            raise HTTPException(status_code=409, detail="email is already registered")
 
         if await self.db.users.get_by_username(register.username):
-            raise HTTPException(status_code=409,
-                                detail="username is already registered")
-
-        # TODO: change the rank depending on the payment later, we will also need to verify captcha and
-        #  email address
-        # TODO dont trust the client, make sure the input is valid.
+            raise HTTPException(status_code=409, detail="username is already registered")
 
         user = User.new(
             register.username.lower(),
@@ -92,96 +68,51 @@ class AuthRouter:
 
         await self.db.users.add(user)
 
-        token = tokenizer.encode_token(user.email)
+        await send_verification_email(user)
 
-        background_tasks.add_task(self.send_verification_mail, user, token)
+        return {"message": "please verify your email address. check your email inbox"}
 
-        return "please verify your email address. check your email inbox"
-
-    async def login(self, login: UserLogin, request: Request) -> str:
-        self._is_valid_recaptcha_token(login.recaptcha_token, request)
+    async def login(self, login: UserLogin) -> str:
         user = await self.db.users.get_by_username(login.username)
 
         if not user:
-            raise HTTPException(status_code=404,
-                                detail="username not registered")
+            raise HTTPException(status_code=404, detail="username not registered")
 
         if not user.verified:
-            raise HTTPException(status_code=400,
-                                detail="unverified")
+            raise HTTPException(status_code=400, detail="unverified")
 
         if not Password.compare(user.password_hash, login.password):
-            raise HTTPException(status_code=400,
-                                detail="password is incorrect")
+            raise HTTPException(status_code=400, detail="password is incorrect")
 
         return user.jwt_token
 
     async def api_key(self, req: Request) -> User:
         return req.user.api_key
 
-    def _is_valid_recaptcha_token(self, token: str, request: Request):
-        recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'
-        payload = {
-            'secret': self._recaptcha_secret_key,
-            'response': token,
-            'remoteip': request.client.host,
-        }
-        response = requests.post(recaptcha_url, data=payload)
-        result = response.json()
-        if not result.get('success', False):
-            raise HTTPException(status_code=400,
-                                detail="Invalid recaptcha!")
-        return True
-
-    async def reset_password(self, reset: ResetPassword, background_tasks: BackgroundTasks) -> str:
+    async def reset_password(self, reset: ResetPassword) -> str:
         user = await self.db.users.get_by_email(reset.email)
+
         if user is None:
             raise HTTPException(status_code=400, detail="There is no account with this email!")
-        token = tokenizer.encode_token(user.email)
-        background_tasks.add_task(self.send_password_reset_link, user, token)
 
-        return "Reset password link has been sent you, Please check your email inbox!"
+        await send_reset_password_email(user)
+
+        return "Reset password link has been sent to you, Please check your inbox!"
 
     async def reset_password_verify(self, form: ResetPasswordVerify) -> str:
-
-        email = tokenizer.decode_token(form.token)
-        if not email:
+        claims = extract_claims_from_jwt(form.token)
+        if claims is None:
             raise HTTPException(status_code=400, detail="Invalid Token!")
-        user = await self.db.users.get_by_email(email)
-        if not email:
-            raise HTTPException(status_code=400, detail="Not found")
+
+        id = claims["sub"]
+        id = int(id)
+        user = await self.db.users.get_by_id(id)
+
+        if not user:
+            raise HTTPException(status_code=400, detail="user is not found")
+
         user.verified = True
         user.password_hash = Password.new(form.password)
         await self.db.users.update(user)
+
         return user.jwt_token
-
-    async def _send_mail(self, subject: str, recipients: list, body):
-        message = MessageSchema(
-            subject=subject,
-            recipients=recipients,
-            body=body,
-            subtype="html"  # type: ignore
-        )
-        # Send the email
-        fm = FastMail(mail_conf)
-        await fm.send_message(message)
-
-    async def send_verification_mail(self, user: User, token: str):
-        subject = "Verify your email address"
-        template = TEMPLATES.get_template('verify/email.html')
-        html = template.render(
-            subject=subject,
-            username=user.username,
-            url=f"https://mavefund.com/verify-email/{token}"
-        )
-        await self._send_mail(subject, [user.email], html)
-
-    async def send_password_reset_link(self, user: User, token: str):
-        subject = "Password Reset"
-        template = TEMPLATES.get_template('verify/password-reset.html')
-        html = template.render(
-            subject=subject,
-            username=user.username,
-            url=f"https://mavefund.com/reset-password-verify/{token}"
-        )
-        await self._send_mail(subject, [user.email], html)
