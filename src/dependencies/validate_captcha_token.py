@@ -1,5 +1,5 @@
 import os
-import aiohttp
+import requests
 from fastapi import Request, HTTPException
 
 
@@ -18,9 +18,12 @@ async def validate_captcha_token(request: Request):
         "remoteip": request.client.host,
     }
 
-    async with aiohttp.ClientSession() as session:
-        async with session.post(recaptcha_url, data=payload) as resp:
-            result = await resp.json()
+    # async with aiohttp.ClientSession() as session:
+    #     async with session.post(recaptcha_url, data=payload) as resp:
+    #         result = await resp.json()
+    # temporarily have this here.
+    resp = requests.get(recaptcha_url, data=payload)
+    result = resp.json()
 
     if not result.get("success", False):
         raise HTTPException(status_code=400, detail="Invalid recaptcha response!")
