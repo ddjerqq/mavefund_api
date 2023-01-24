@@ -53,9 +53,17 @@ class User(BaseModel):
         }
         return jwt.encode(claims, key=os.getenv("JWT_SECRET"))
 
+    @property
+    def verification_code(self) -> str:
+        expires = datetime.now() + timedelta(days=2)
+        claims = {
+            "sub": str(self.id),
+            "exp": int(expires.timestamp()),
+        }
+        return jwt.encode(claims, key=os.getenv("JWT_SECRET"))
+
     @classmethod
-    def new(cls, username: str, email: str, password: str, rank: int,
-            verified: bool, verification_code=None) -> User:
+    def new(cls, username: str, email: str, password: str, rank: int, verified: bool) -> User:
         return cls(
             id=Snowflake(),
             username=username,
