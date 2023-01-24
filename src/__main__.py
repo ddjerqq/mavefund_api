@@ -1,12 +1,11 @@
 import atexit
 import os
-import traceback
 from os.path import join
 from subprocess import Popen
 
 import stripe
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 

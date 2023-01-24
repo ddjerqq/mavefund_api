@@ -2,12 +2,12 @@ from itsdangerous import URLSafeTimedSerializer
 import os
 
 
-def encode_token(email):
+def encode_token(email: str) -> str:
     serializer = URLSafeTimedSerializer(os.getenv("PEPPER"))
     return serializer.dumps(email, os.getenv("SALT"))
 
 
-def decode_token(token, expiration=172800):
+def decode_token(token: str, expiration: int = 172800):
     serializer = URLSafeTimedSerializer(os.getenv("PEPPER"))
     try:
         email = serializer.loads(

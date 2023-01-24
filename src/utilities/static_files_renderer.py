@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Tuple, Coroutine, Any
+from typing import Tuple
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
