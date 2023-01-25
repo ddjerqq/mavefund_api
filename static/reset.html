@@ -124,30 +124,18 @@
     <main class="form-signin w-100 m-auto">
       <form>
         <img class="mb-4" src="image/mavefundw.png" alt="" width="72" height="57">
-        <h1 class="h3 mb-3 fw-normal">Sign In</h1>
+        <h1 class="h3 mb-3 fw-normal">Reset Password</h1>
 
         <div class="form-floating">
-          <input type="text" class="form-control email-input" id="username" placeholder="name@example.com">
-          <label for="floatingInput">Username</label>
+          <input type="password" style="margin-bottom: 0; border-radius: 0.37rem 0.37rem 0 0;" class="form-control email-input" id="password" placeholder="name@example.com">
+          <label for="floatingInput">New Password</label>
         </div>
         <div class="form-floating">
-          <input type="password" class="form-control" id="password" placeholder="Password">
-          <label for="floatingPassword">Password</label>
+          <input type="password" style="margin-bottom: 0; border-radius: 0 0 0.37rem 0.37rem;" class="form-control email-input" id="newPassword" placeholder="name@example.com">
+          <label for="floatingInput">Confirm New Password</label>
         </div>
-        <div class="checkbox mb-3">
-          <label class="remember-me">
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
-        </div>
-        <div>
-          Don't have an account? <a href="signup.html">Sign Up</a>
-        </div>
-        <div>
-          Forgot password? <a href="forget.html">Reset Password</a>
-          <br />
-          <br />
-        </div>
-        <button class="w-100 btn btn-lg btn-primary btn-saturated" type="submit">Sign in</button>
+        <br/>
+        <button class="w-100 btn btn-lg btn-primary btn-saturated" type="submit">Change Password</button>
         <!-- <p class="mt-5 mb-3 text-muted">&copy; 2017–2022</p> -->
       </form>
     </main>
@@ -199,23 +187,27 @@
 
     $('form').submit(function (e) {
       e.preventDefault();
+      var params = new URLSearchParams(location.href.split('?')[1]);
+      if (!params.get('token')) {
+        alert('No Token !');
+        return;
+      }
       grecaptcha.ready(function () {
         grecaptcha.execute('6LeLvB8kAAAAACGIdynvkNbxRV4rC-ROKRu06oOB', { action: 'submit' }).then(function (token) {
           const data = {
-            username: $('#username').val(),
             password: $('#password').val(),
-            recaptcha_token: token
+            recaptcha_token: token,
+            token: params.get('token')
           }
           $.ajax({
-            url: '/api/v1/auth/login',
+            url: '/api/v1/auth/reset-password-verify',
             data: JSON.stringify(data),
             method: 'POST',
             contentType: "application/json",
             dataType: "json",
             success: function (e) {
               console.log(e)
-              localStorage.setItem('token', e);
-              location.href = '/'
+              location.href = '/signin.html'
             },
             error: function (err) {
               const toast = new bootstrap.Toast(document.getElementById('liveToastBtn'))
