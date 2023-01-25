@@ -190,7 +190,7 @@
       grecaptcha.ready(function () {
         grecaptcha.execute('6LeLvB8kAAAAACGIdynvkNbxRV4rC-ROKRu06oOB', { action: 'submit' }).then(function (token) {
           const data = {
-            username: $('#email').val(),
+            email: $('#email').val(),
             recaptcha_token: token
           }
           $.ajax({
