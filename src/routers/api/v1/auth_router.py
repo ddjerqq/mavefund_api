@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Request, Depends
+from fastapi.responses import RedirectResponse
 
 from src.data import ApplicationDbContext
 from src.models.user import User
@@ -25,16 +26,24 @@ class AuthRouter:
         )
 
         self.router.add_api_route(
-            "/reset-password-verify",
-            self.reset_password_verify,
-            methods=["POST"]
-        )
-
-        self.router.add_api_route(
             "/login",
             self.login,
             methods=["POST"],
             dependencies=[Depends(validate_captcha_token)],
+        )
+
+        self.router.add_api_route(
+            "/api-key",
+            self.api_key,
+            methods=["GET"],
+            dependencies=[Depends(subscriber_only)],
+            response_model=str
+        )
+
+        self.router.add_api_route(
+            "/verify-email/{token:str}",
+            self.verify_email,
+            methods=["GET"]
         )
 
         self.router.add_api_route(
@@ -44,11 +53,9 @@ class AuthRouter:
         )
 
         self.router.add_api_route(
-            "/api-key",
-            self.api_key,
-            methods=["GET"],
-            dependencies=[Depends(subscriber_only)],
-            response_model=str
+            "/reset-password-verify/{token:str}",
+            self.reset_password_verify,
+            methods=["POST"]
         )
 
     async def register(self, register: UserRegister):
@@ -89,18 +96,8 @@ class AuthRouter:
     async def api_key(self, req: Request) -> User:
         return req.user.api_key
 
-    async def reset_password(self, reset: ResetPassword) -> str:
-        user = await self.db.users.get_by_email(reset.email)
-
-        if user is None:
-            raise HTTPException(status_code=400, detail="There is no account with this email!")
-
-        await send_reset_password_email(user)
-
-        return "Reset password link has been sent to you, Please check your inbox!"
-
-    async def reset_password_verify(self, form: ResetPasswordVerify) -> str:
-        claims = extract_claims_from_jwt(form.token)
+    async def verify_email(self, token: str):
+        claims = extract_claims_from_jwt(token)
         if claims is None:
             raise HTTPException(status_code=400, detail="Invalid Token!")
 
@@ -108,11 +105,38 @@ class AuthRouter:
         id = int(id)
         user = await self.db.users.get_by_id(id)
 
+        user.verified = True
+
+        await self.db.users.update(user)
+
+        return RedirectResponse(url="/login", status_code=302)
+
+    async def reset_password(self, reset: ResetPassword):
+        user = await self.db.users.get_by_email(reset.email)
+
+        if user is None:
+            raise HTTPException(status_code=400, detail="There is no account with this email!")
+
+        await send_reset_password_email(user, reset.new_password)
+
+        return RedirectResponse(url="/login", status_code=302)
+
+    async def reset_password_verify(self, token: str) -> str:
+        claims = extract_claims_from_jwt(token)
+        if claims is None:
+            raise HTTPException(status_code=400, detail="Invalid Token!")
+
+        id = claims["sub"]
+        id = int(id)
+        user = await self.db.users.get_by_id(id)
+
+        new_password = claims["np"]
+
         if not user:
             raise HTTPException(status_code=400, detail="user is not found")
 
         user.verified = True
-        user.password_hash = Password.new(form.password)
+        user.password_hash = Password.new(new_password)
         await self.db.users.update(user)
 
         return user.jwt_token
