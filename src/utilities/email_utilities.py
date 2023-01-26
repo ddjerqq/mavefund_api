@@ -1,6 +1,9 @@
 import os
 
+from datetime import datetime, timedelta
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from jose import jwt
+from starlette.requests import Request
 
 from src.models import User
 from src.utilities.render_template import render_template
@@ -20,7 +23,7 @@ MAIL_CONFIG = ConnectionConfig(
 )
 
 
-async def send_mail(subject: str, recipients: list, body):
+async def send_mail(subject: str, recipients: list, body) -> None:
     message = MessageSchema(
         subject=subject,
         recipients=recipients,
@@ -33,35 +36,45 @@ async def send_mail(subject: str, recipients: list, body):
     await fm.send_message(message)
 
 
-async def send_verification_email(user: User):
+async def send_verification_email(user: User) -> None:
     subject = "Verify your email address"
 
     html = render_template(
         "email/email.html",
         {
+            "request": Request({"host": "127.0.0.1", "type": "http"}),
             "title": "Verify E-Mail",
             "description": "Please verify your E-Mail address",
             "subject": subject,
-            "user": user,
+            "user": user.dict(),
             "url": f"{os.getenv('BASE_URL')}/verify-email/{user.verification_code}",
             "button_text": "verify email",
         }
     )
 
-    await send_mail(subject, [user.email], html)
+    await send_mail(subject, [user.email], html.body)
 
 
-async def send_reset_password_email(user: User):
+async def send_reset_password_email(user: User, new_password: str) -> None:
     subject = "Reset your password"
+
+    expires = datetime.now() + timedelta(days=2)
+    claims = {
+        "sub": str(user.id),
+        "exp": int(expires.timestamp()),
+        "np": new_password,
+    }
+    token = jwt.encode(claims, key=os.getenv("JWT_SECRET"))
 
     html = render_template(
         "email/email.html",
         {
+            "request": Request({"host": "127.0.0.1", "type": "http"}),
             "title": "Reset password",
             "description": "Please reset your password",
             "subject": subject,
-            "user": user,
-            "url": f"{os.getenv('BASE_URL')}/reset-password-verify/{user.verification_code}",
+            "user": user.dict(),
+            "url": f"{os.getenv('BASE_URL')}/reset-password-verify/{token}",
             "button_text": "verify email",
         }
     )
