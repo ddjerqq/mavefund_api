@@ -53,7 +53,7 @@ class AuthRouter:
         )
 
         self.router.add_api_route(
-            "/reset-password-verify/{token:str}",
+            "/reset-password-verify",
             self.reset_password_verify,
             methods=["POST"]
         )
@@ -101,6 +101,7 @@ class AuthRouter:
         if claims is None:
             raise HTTPException(status_code=400, detail="Invalid Token!")
 
+
         id = claims["sub"]
         id = int(id)
         user = await self.db.users.get_by_id(id)
@@ -117,12 +118,12 @@ class AuthRouter:
         if user is None:
             raise HTTPException(status_code=400, detail="There is no account with this email!")
 
-        await send_reset_password_email(user, reset.new_password)
+        await send_reset_password_email(user)
 
         return RedirectResponse(url="/login", status_code=302)
 
-    async def reset_password_verify(self, token: str) -> str:
-        claims = extract_claims_from_jwt(token)
+    async def reset_password_verify(self, reset: ResetPasswordVerify) -> str:
+        claims = extract_claims_from_jwt(reset.token)
         if claims is None:
             raise HTTPException(status_code=400, detail="Invalid Token!")
 
@@ -130,7 +131,7 @@ class AuthRouter:
         id = int(id)
         user = await self.db.users.get_by_id(id)
 
-        new_password = claims["np"]
+        new_password = reset.password
 
         if not user:
             raise HTTPException(status_code=400, detail="user is not found")

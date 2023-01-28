@@ -47,7 +47,7 @@ async def send_verification_email(user: User) -> None:
             "description": "Please verify your E-Mail address",
             "subject": subject,
             "user": user.dict(),
-            "url": f"{os.getenv('BASE_URL')}/verify-email/{user.verification_code}",
+            "url": f"{os.getenv('BASE_URL')}/api/v1/auth/verify-email/{user.verification_code}",
             "button_text": "verify email",
         }
     )
@@ -55,14 +55,13 @@ async def send_verification_email(user: User) -> None:
     await send_mail(subject, [user.email], html.body)
 
 
-async def send_reset_password_email(user: User, new_password: str) -> None:
+async def send_reset_password_email(user: User) -> None:
     subject = "Reset your password"
 
     expires = datetime.now() + timedelta(days=2)
     claims = {
         "sub": str(user.id),
         "exp": int(expires.timestamp()),
-        "np": new_password,
     }
     token = jwt.encode(claims, key=os.getenv("JWT_SECRET"))
 
@@ -74,9 +73,9 @@ async def send_reset_password_email(user: User, new_password: str) -> None:
             "description": "Please reset your password",
             "subject": subject,
             "user": user.dict(),
-            "url": f"{os.getenv('BASE_URL')}/reset-password-verify/{token}",
+            "url": f"{os.getenv('BASE_URL')}/reset.html?token={token}",
             "button_text": "verify email",
         }
     )
 
-    await send_mail(subject, [user.email], html)
+    await send_mail(subject, [user.email], html.body)
