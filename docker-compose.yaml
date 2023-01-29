@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   server:
-    image: ddjerqq/private:latest
+    image: mavefund/mavefun_api:latest
     build: .
     container_name: server
     depends_on:
