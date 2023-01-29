@@ -50,6 +50,9 @@ class CsvDataParser:
 
         columns = list(map(list, zip(*lines)))
 
+        # remove TTM 
+        columns = list(filter(lambda x: False if (len(x) > 0 and x[0] == "TTM") else True, columns))
+
         return [
             {
                 key: row[idx]
