@@ -15,7 +15,7 @@ class CompanyInfo(BaseModel):
 
     dates: list[date] = []
 
-    stock_prices: list[float] = []
+    stock_prices: dict[str, float] = []
 
     # region fields
 
@@ -168,7 +168,9 @@ class CompanyInfo(BaseModel):
         )
 
         df_dict = df.iloc[::12, 0:1].to_dict()["Open"]
-        self.stock_prices = list(df_dict.values())
+        for key in df_dict.keys():
+            df_dict[str(key.date())] = df_dict.pop(key)
+        self.stock_prices =  df_dict
 
     @property
     def as_df(self) -> pd.DataFrame:
