@@ -19,6 +19,8 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4MX52W1M9P"></script>
 
   <script src="js/site.js"></script>
   <title>Dashboard - Mavefund</title>
@@ -266,7 +268,7 @@
         label: 'Stock Price',
         yAxisID: 'A',
         borderColor: '#36a2eb',
-        data: data.stock_prices,
+        data: Object.values(data.stock_prices),
         // fill: true,
         tension: 0
       }];
@@ -392,10 +394,15 @@
         }
       });
 
+      let labels = Object.keys(data.stock_prices);
+      if (new Date(data.dates[data.length - 1]).getFullYear() > new Date(labels[labels.length - 1]).getFullYear()) {
+        labels = data.dates;
+      }
+
       const config = {
         type: 'line',
         data: {
-          labels: data.dates,
+          labels: labels,
           datasets: datasets
         },
         options: {

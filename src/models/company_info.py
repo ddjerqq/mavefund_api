@@ -15,7 +15,7 @@ class CompanyInfo(BaseModel):
 
     dates: list[date] = []
 
-    stock_prices: list[float] = []
+    stock_prices: dict[str, float] = []
 
     # region fields
 
@@ -157,6 +157,10 @@ class CompanyInfo(BaseModel):
         last_date = date(last_date.year + 1, last_date.month, last_date.day)
         end = last_date.strftime("%Y-%m-%d")
 
+        today = date.today().strftime("%Y-%m-%d")
+
+
+
         df = await loop.run_in_executor(
             None,
             lambda: ticker.history(
@@ -167,11 +171,23 @@ class CompanyInfo(BaseModel):
             )
         )
 
-        df_dict = df.iloc[::12, 0:1].to_dict()["Open"]
-        self.stock_prices = list(df_dict.values())
+        df_dict = df.iloc[::12, [3]].to_dict()["Close"]
+
+        keys = list(df_dict.keys())
+
+        for key in keys:
+            df_dict[str(key.date())] = df_dict.pop(key)
+
+        # add current stock price
+        if (today != end):
+            recent = ticker.fast_info
+            df_dict[str(recent._today_close.date())] = recent.last_price
+
+
+        self.stock_prices =  df_dict
 
     @property
-    def as_df(self) -> pd.DataFrame:
+    def as_df(self) -> pd.DataFram:
         """return the CompanyInfo object as a pandas dataframe
 
         return type is a pandas dataframe
