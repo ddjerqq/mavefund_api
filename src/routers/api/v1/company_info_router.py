@@ -6,7 +6,7 @@ from starlette.responses import StreamingResponse
 
 from src.data import ApplicationDbContext
 from src.models import CompanyInfo
-from src.dependencies.auth import subscriber_only
+from src.dependencies.auth import subscriber_only, api_subscriber_only
 
 
 class CompanyInfoRouter:
@@ -38,6 +38,14 @@ class CompanyInfoRouter:
             dependencies=[Depends(subscriber_only)],
         )
 
+        self.router.add_api_route(
+            "",
+            self.get_by_ticker_api,
+            methods=["GET"],
+            response_model=CompanyInfo,
+            dependencies=[Depends(api_subscriber_only)],
+        )
+
     async def download_csv(self, q: str):
         csv = await self.db.companies.get_csv_by_ticker(q)
 
@@ -60,10 +68,29 @@ class CompanyInfoRouter:
     async def get_all_companies_by_name_or_ticker(self, q: str) -> dict[str, str]:
         return await self.db.companies.get_all_companies_by_name_or_ticker(q)
 
-    async def get_by_ticker(self, q: str) -> CompanyInfo | None:
-        info = await self.db.companies.get_by_ticker(q)
+    async def get_by_ticker(self, q: str, quarterly: bool = False) -> CompanyInfo | None:
+        if (quarterly):
+            info = await self.db.companies.get_by_ticker(q, True)
+        else:
+            info = await self.db.companies.get_by_ticker(q)
 
         if not info:
             raise HTTPException(status_code=404, detail=f"no records found for {q}.")
+
+        return info
+
+
+    async def get_by_ticker_api(self, ticker: str, quarterly: bool = False) -> CompanyInfo | None:
+        try:
+            if (quarterly):
+                info = await self.db.companies.get_by_ticker(ticker, True)
+            else:
+                info = await self.db.companies.get_by_ticker(ticker)
+        except AttributeError:
+            raise HTTPException(status_code=404, detail=f"no records found for {ticker}.")
+
+
+        if not info:
+            raise HTTPException(status_code=404, detail=f"no records found for {ticker}.")
 
         return info

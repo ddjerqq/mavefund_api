@@ -10,7 +10,7 @@ def authenticated_only(req: Request):
         raise UNAUTHORIZED
 
 
-def subscriber_only(req: Request, q: str):
+def subscriber_only(req: Request, q: str=""):
     if q in ["FB", "META", "AAPL", "AMZN", "NFLX", "GOOGL"]:
         return
 
@@ -18,6 +18,17 @@ def subscriber_only(req: Request, q: str):
         raise UNAUTHORIZED
 
     if req.user.rank == -1:
+        raise FORBIDDEN
+
+def api_subscriber_only(req: Request, ticker:str, quarterly:bool = False):
+    api_user = req.scope.get("api-user", None)
+    if api_user is None:
+        raise UNAUTHORIZED
+
+    if api_user.rank < 1:
+        raise FORBIDDEN
+
+    if quarterly and api_user.rank < 2:
         raise FORBIDDEN
 
 

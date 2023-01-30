@@ -15,7 +15,7 @@ class CompanyInfoRepository:
             conn: asyncpg.Connection
             csv: str | None = await conn.fetchval("""
             SELECT content
-            FROM csv_data
+            FROM csv_data_k
             WHERE
                 ticker = $1
             """, ticker.upper())
@@ -28,13 +28,13 @@ class CompanyInfoRepository:
         async with self.__pool.acquire(timeout=60) as conn:
             company_names = await conn.fetch("""
             SELECT ticker, company_name
-            FROM csv_data
+            FROM csv_data_k
             WHERE company_name ILIKE $1
             """, q)
 
             ticker_companies = await conn.fetch("""
             SELECT ticker, company_name
-            FROM csv_data
+            FROM csv_data_k
             WHERE ticker ILIKE $1
             """, q)
 
@@ -43,14 +43,16 @@ class CompanyInfoRepository:
                 for symbol, company_name in company_names + ticker_companies
             }
 
-    async def get_by_ticker(self, ticker: str) -> CompanyInfo | None:
+    async def get_by_ticker(self, ticker: str, quarterly: bool = False) -> CompanyInfo | None:
         ticker = ticker.upper()
+
+        table = "csv_data_q" if quarterly else "csv_data_k"
 
         async with self.__pool.acquire(timeout=60) as conn:
             conn: asyncpg.Connection
-            row = await conn.fetchrow("""
+            row = await conn.fetchrow(f"""
             SELECT *
-            FROM csv_data
+            FROM {table}
             WHERE
                 ticker = $1
             """, ticker)

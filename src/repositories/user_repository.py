@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncpg
 from src.models.user import User
+from src.models.api_key import ApiKey
 
 
 class UserRepository:
@@ -90,3 +91,34 @@ class UserRepository:
         WHERE
             id = $1
         """, id)
+
+
+    async def get_api_key(self, user_id: int) -> ApiKey | None:
+        async with self._pool.acquire(timeout=60) as conn:
+            row = await conn.fetchrow("""
+            SELECT * FROM user_api_key 
+            WHERE user_id = $1;
+            """, user_id)
+
+            if (row is not None):
+                return ApiKey.from_db(row)
+    
+
+    async def get_api_key_by_key(self, api_key: str) -> ApiKey | None:
+        async with self._pool.acquire(timeout=60) as conn:
+            row = await conn.fetchrow("""
+            SELECT * FROM user_api_key 
+            WHERE api_key = $1;
+            """, api_key)
+
+            if (row is not None):
+                return ApiKey.from_db(row)
+    
+    async def set_api_key(self, user_id: int, api_key:str) -> None:
+        async with self._pool.acquire(timeout=60) as conn:
+            await conn.execute("""
+            INSERT INTO user_api_key (user_id, api_key)
+            VALUES ($1, $2);
+            """, user_id, api_key)
+
+

@@ -16,8 +16,8 @@ class CompanyInfoService:
     async def get_all_companies_by_name_or_ticker(self, name_or_ticker: str) -> dict[str, str]:
         return await self._repo.get_all_companies_by_name_or_ticker(name_or_ticker)
 
-    async def get_by_ticker(self, ticker: str) -> CompanyInfo | None:
-        info = await self._repo.get_by_ticker(ticker)
+    async def get_by_ticker(self, ticker: str, quarterly: bool = False) -> CompanyInfo | None:
+        info = await self._repo.get_by_ticker(ticker, quarterly)
         await info.fetch_stock_price()
         return info
 
