@@ -73,6 +73,23 @@ $(document).ready(function() {
 
 $('.premium-btn').click(function(e) {
   e.preventDefault();
+
+  // google tag manager
+  let type = "";
+  switch ($(this).data('level')) {
+    case 0:
+      type = "basic";
+      break;
+    case 1:
+      type = "premium";
+      break;
+    case 2:
+      type = "super";
+      break;
+  }
+
+  dataLayer.push({'event': 'pay-button-click', 'type': type});
+
   checkout($(this).data('level'))
 })
 
