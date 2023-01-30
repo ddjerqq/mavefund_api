@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncpg
 
 from src.models.user import User
+from src.models.api_key import ApiKey
 from src.repositories.user_repository import UserRepository
 
 
@@ -30,3 +31,12 @@ class UserService:
 
     async def delete(self, id: int) -> None:
         await self._users.delete(id)
+
+    async def get_api_key(self, user_id: int) -> ApiKey | None:
+        return await self._users.get_api_key(user_id)
+
+    async def get_api_key_by_key(self, api_key: str) -> ApiKey | None:
+        return await self._users.get_api_key_by_key(api_key)
+
+    async def set_api_key(self, user_id: int, api_key: str) -> None:
+        await self._users.set_api_key(user_id, api_key)

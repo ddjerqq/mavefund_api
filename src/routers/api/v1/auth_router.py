@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from uuid import uuid4
+
 from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.responses import RedirectResponse
+
 
 from src.data import ApplicationDbContext
 from src.models.user import User
@@ -37,7 +40,7 @@ class AuthRouter:
             self.api_key,
             methods=["GET"],
             dependencies=[Depends(subscriber_only)],
-            response_model=str
+            response_model=dict
         )
 
         self.router.add_api_route(
@@ -83,6 +86,9 @@ class AuthRouter:
         user = await self.db.users.get_by_username(login.username)
 
         if not user:
+            user = await self.db.users.get_by_email(login.username)
+
+        if not user:
             raise HTTPException(status_code=404, detail="username not registered")
 
         if not user.verified:
@@ -94,7 +100,17 @@ class AuthRouter:
         return user.jwt_token
 
     async def api_key(self, req: Request) -> User:
-        return req.user.api_key
+        key_obj = await self.db.users.get_api_key(req.user.id)
+
+        key = ""
+
+        if key_obj is None:
+            key = str(uuid4())
+            await self.db.users.set_api_key(req.user.id, key)
+        else:
+            key = key_obj.api_key
+
+        return {"token": key}
 
     async def verify_email(self, token: str):
         claims = extract_claims_from_jwt(token)

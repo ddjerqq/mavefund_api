@@ -32,5 +32,15 @@ class AuthMiddleware:
                 user_id = int(claims["sub"])
                 user = await self.db.users.get_by_id(user_id)
                 scope["user"] = user
+            
+            # check api key
+            api_key = request.headers.get("x-api-key")
+            if api_key is not None:
+                key = await self.db.users.get_api_key_by_key(api_key)
+                user_id = key.user_id
+                
+                if (user_id is not None):
+                    user = await self.db.users.get_by_id(user_id)
+                    scope["api-user"] = user
 
         return await self.app(scope, receive, send)
