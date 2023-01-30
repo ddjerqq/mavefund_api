@@ -134,3 +134,12 @@ async function checkout(level) {
 
 
 })
+
+
+$(document).ready(function() {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4MX52W1M9P');
+});
