@@ -14,5 +14,5 @@ async def https_redirect(request: Request):
     )
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, port=80, host="0.0.0.0")
+# if __name__ == "__main__":
+#     uvicorn.run(app, port=80, host="0.0.0.0")

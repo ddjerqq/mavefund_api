@@ -63,7 +63,7 @@ async def startup():
     )
 
     # add HTTP*S*
-    app.add_middleware(HTTPSRedirectMiddleware)
+    # app.add_middleware(HTTPSRedirectMiddleware)
 
 
     # mount static
@@ -83,11 +83,11 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "__main__:app",
-        ssl_certfile=join(PATH, "cert", "server.crt"),
-        ssl_keyfile=join(PATH, "cert", "server.key"),
+        # ssl_certfile=join(PATH, "cert", "server.crt"),
+        # ssl_keyfile=join(PATH, "cert", "server.key"),
         loop="asyncio",
         host="0.0.0.0",
-        port=443,
+        port=8000,
         # reload=True,
         env_file="../.env",
         # reload_dirs=["../"],
