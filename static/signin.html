@@ -215,6 +215,7 @@
             contentType: "application/json",
             dataType: "json",
             success: function (e) {
+              localStorage.setItem('username', $('#username').val())
               console.log(e)
               localStorage.setItem('token', e);
               location.href = '/'
