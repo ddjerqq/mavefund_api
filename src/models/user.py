@@ -58,6 +58,7 @@ class User(BaseModel):
         expires = datetime.now() + timedelta(days=2)
         claims = {
             "sub": str(self.id),
+            "iss": self.email,
             "exp": int(expires.timestamp()),
         }
         return jwt.encode(claims, key=os.getenv("JWT_SECRET"))
