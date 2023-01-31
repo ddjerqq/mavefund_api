@@ -202,12 +202,15 @@
             success: function (e) {
               console.log(e)
               // localStorage.setItem('token', e);
-              location.href = '/'
+              location.href = '/';
+              const toast = new bootstrap.Toast(document.getElementById('liveToastBtn'))
+              toast.show()
+              $('.toast-body').text('Password reset mail sent')
             },
             error: function (err) {
               const toast = new bootstrap.Toast(document.getElementById('liveToastBtn'))
               toast.show()
-              $('.toast-body').text('Wrong username or password')
+              $('.toast-body').text('Password reset mail sent')
             }
           })
         });
@@ -217,7 +220,7 @@
   </script>
 
 
-<div id="liveToastBtn" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+<div id="liveToastBtn" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
   <div class="d-flex">
     <div class="toast-body">
 

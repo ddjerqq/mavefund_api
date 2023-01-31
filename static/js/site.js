@@ -22,6 +22,11 @@ const companies = [
 $(document).ready(function() {
   if (localStorage.getItem('token')) {
     $('.nav-login-button').text('Logout')
+    $('.navbar-nav').append(`
+    <li class="nav-item">
+      <a class="nav-link" href="profile.html">Profile</a>
+    </li>
+    `);
   } else {
     $('.nav-login-button').text('Login')
   }
