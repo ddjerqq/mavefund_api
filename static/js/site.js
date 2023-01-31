@@ -44,23 +44,28 @@ $(document).ready(function() {
         for (let key in res) {
           if (res[key]) {
             
-    
-            let company = `<li class="DocSearch-Hit" id="docsearch-item-0" role="option" aria-selected="true">
-            <a class="no-underline" href="company.html?key=${key}">
-              <div class="DocSearch-Hit-Container">
-                <div>
-                  <div class="DocSearch-Hit-icon">
+            for (let quarterly of [false, true]) {
+      
+              let company = `<li class="DocSearch-Hit" id="docsearch-item-0" role="option" aria-selected="true">
+              <a class="no-underline" href="company.html?key=${key}&quarterly=${quarterly}">
+                <div class="DocSearch-Hit-Container">
+                  <div>
+                    <div class="DocSearch-Hit-icon">
+                    </div>
+                    <div class="DocSearch-Hit-content-wrapper">
+                      <span class="DocSearch-Hit-title"><strong>${key}</strong> ${res[key]}</span>
+                      <small><em>${quarterly ? "Quarterly" : "Yearly"}</em></small>
+                    </div>
                   </div>
-                  <div class="DocSearch-Hit-content-wrapper"><span class="DocSearch-Hit-title"><strong>${key}</strong> ${res[key]}</span>
+                  <div>
+                  
                   </div>
                 </div>
-                <div>
-                 
-                </div>
-              </div>
-            </a>
-          </li>`;
-            $('#docsearch-list').append(company);
+              </a>
+            </li>`;
+              $('#docsearch-list').append(company);
+
+            }
           }
         }
       },

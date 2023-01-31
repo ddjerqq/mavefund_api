@@ -201,11 +201,19 @@
 
     if (location.href && location.href.split('?')[1]) {
       var params = new URLSearchParams(location.href.split('?')[1]);
+
+      const url = new URL("/api/v1/info/get", location.origin);
+      url.searchParams.append("q", params.get("key"))
+
+      const quarterly = params.get("quarterly");
+
+      if (quarterly) url.searchParams.append("quarterly", quarterly)
+
       $.ajax({
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         },
-        url: `/api/v1/info/get?q=${params.get('key')}`,
+        url: url.href,
         success: function (res) {
           $('.company-tag').text(params.get('key'));
           $('.company-name').text(res.company_name);

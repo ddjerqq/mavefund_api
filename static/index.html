@@ -215,7 +215,9 @@ $('.search-input-in').keyup(function(e){
         $('.search-results').empty();
         for (let key in res) {
           if (res[key]) {
-            $('.search-results').append(`<li><a href="company.html?key=${key}"><strong>${key}</strong> - ${res[key]}</a></li>`)
+            for (let quarterly of [false, true]) {
+              $('.search-results').append(`<li><a href="company.html?key=${key}&quarterly=${quarterly}"><strong>${key}</strong> - ${res[key]} <small><em>${quarterly ? "Quarterly": "Yearly"}</em></small></a></li>`)
+            }
           }
         }
       },
@@ -239,10 +241,10 @@ $('.search-input-in').keyup(function(e){
     //   }
     // })
 
-    function returnCardString(name, key) {
+    function returnCardString(name, key, quarterly) {
       return `<div class="col-lg-4 col-md-4 col-sm12">
       <div class="card mb-3 home-result-card" style="max-width: 540px;" title="${name}">
-        <a href="company.html?key=${key}">
+        <a href="company.html?key=${key}&quarterly=${quarterly}">
         <div class="row g-0">
           <div class="col-md-4" style="background-image: url(https://logo.clearbit.com/${name}.com); background-size: contain; background-position: center; background-repeat: no-repeat;">
           </div>
@@ -250,6 +252,7 @@ $('.search-input-in').keyup(function(e){
             <div class="card-body">
               <h5 class="card-title">${name}</h5>
               <strong class="card-text">${key}</strong>
+              <small><em>${quarterly ? "Quarterly" : "Yearly"}</em></small>
               <p class="card-text"><small class="text-muted"></small></p>
             </div>
           </div>
